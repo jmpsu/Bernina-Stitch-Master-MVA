@@ -1,0 +1,6 @@
+# Ignore the heavy reference images
+reference_images/
+
+# Ignore Linux/system hidden files
+.DS_Store
+*~
