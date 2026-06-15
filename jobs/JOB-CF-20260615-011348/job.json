@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260615-011348",
+  "source": "cloudflare_email",
+  "from": "auto-phase2-test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Auto Phase 2 watcher test",
+  "status": "needs_review",
+  "created": "2026-06-15T01:13:48.094389"
+}

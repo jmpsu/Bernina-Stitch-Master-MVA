@@ -1,0 +1,1 @@
+# artwork_prep agent instructions\n\nClassify artwork and identify missing logo/artwork. Never claim stitch-ready artwork without proof.\n

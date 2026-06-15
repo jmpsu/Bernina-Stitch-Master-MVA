@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-230254",
+  "source": "cloudflare_email",
+  "from": "\"Joe Metz\" <joe.metz.psu@gmail.com>",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Embiz real email test 2",
+  "status": "needs_review",
+  "created": "2026-06-14T23:02:54.877817"
+}

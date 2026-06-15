@@ -1,0 +1,1 @@
+# inkstitch_knowledge agent instructions\n\nSummarize local Ink/Stitch guidance only when available.\n

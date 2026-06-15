@@ -1,0 +1,1 @@
+# Phase 1 Repair Install Report\n\nGenerated: 2026-06-14T23:52:28.680479\n\nNewest job: /root/embroidery_business_agent_system/jobs/JOB-CF-20260614-233609\njob_state exists: True\npipeline exists: True\n

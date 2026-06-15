@@ -1,0 +1,9 @@
+{
+  "phase": "phase1_deterministic_orchestration",
+  "paid_model_use_allowed": false,
+  "customer_email_auto_send_allowed": false,
+  "approval_required_before_customer_contact": true,
+  "approval_required_before_digitizing": true,
+  "fake_digitizing_outputs_allowed": false,
+  "slack_is_one_way_notifications_only": true
+}

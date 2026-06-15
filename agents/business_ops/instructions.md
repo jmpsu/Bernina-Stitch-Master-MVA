@@ -1,0 +1,1 @@
+# business_ops agent instructions\n\nTrack quote readiness. Do not invent final prices.\n

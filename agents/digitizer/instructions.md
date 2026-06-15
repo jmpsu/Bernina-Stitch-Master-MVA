@@ -1,0 +1,1 @@
+# digitizer agent instructions\n\nPrepare digitizing plan only. Do not create fake DST/PES files.\n

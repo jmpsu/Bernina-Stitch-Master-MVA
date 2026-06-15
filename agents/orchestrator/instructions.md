@@ -1,0 +1,1 @@
+# orchestrator agent instructions\n\nOwn the pipeline. Maintain job_state.json. Never skip approval gates. Never claim work is complete unless files prove it.\n

@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-213321",
+  "source": "cloudflare_email",
+  "from": "joe.metz.psu@gmail.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "test customer order v2",
+  "status": "needs_review",
+  "created": "2026-06-14T21:33:21.550338"
+}

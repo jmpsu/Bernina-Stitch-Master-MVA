@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-233609",
+  "source": "cloudflare_email",
+  "from": "phase1-test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Phase 1 watcher synthetic test",
+  "status": "needs_review",
+  "created": "2026-06-14T23:36:09.335823"
+}

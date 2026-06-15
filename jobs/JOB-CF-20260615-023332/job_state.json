@@ -1,0 +1,63 @@
+{
+  "job_id": "JOB-CF-20260615-023332",
+  "status": "needs_review",
+  "source": "cloudflare_email",
+  "created": "2026-06-15T02:33:32.124119",
+  "watcher_seen": "2026-06-15T02:33:34.735105",
+  "pipeline_initialized": true,
+  "current_stage": "requirements",
+  "stages": {
+    "requirements": {
+      "status": "ready",
+      "assigned_agent": "requirements",
+      "task_file": "pipeline/requirements/task.md"
+    },
+    "artwork_prep": {
+      "status": "waiting",
+      "assigned_agent": "artwork_prep",
+      "task_file": "pipeline/artwork_prep/task.md"
+    },
+    "digitizer": {
+      "status": "waiting",
+      "assigned_agent": "digitizer",
+      "task_file": "pipeline/digitizer/task.md"
+    },
+    "qa": {
+      "status": "waiting",
+      "assigned_agent": "qa",
+      "task_file": "pipeline/qa/task.md"
+    },
+    "customer_reply": {
+      "status": "waiting",
+      "assigned_agent": "customer_reply",
+      "task_file": "pipeline/customer_reply/task.md"
+    }
+  },
+  "approval_required_before_customer_contact": true,
+  "approval_required_before_digitizing": true,
+  "paid_model_use_allowed": false,
+  "customer_email_auto_send_allowed": false,
+  "updated": "2026-06-15T02:33:34.916720",
+  "phase2_requirements_extracted": true,
+  "customer_reply_draft_ready": true,
+  "pipeline_status": "artwork_received",
+  "current_owner": "artwork_prep_agent",
+  "next_action": "Review artwork quality and stitch feasibility.",
+  "status_updated": "2026-06-15T03:57:48.294624",
+  "status_history": [
+    {
+      "time": "2026-06-15T02:33:35.251529",
+      "status": "requirements_extracted",
+      "owner": "joey_review",
+      "note": "Review requirements and draft reply."
+    },
+    {
+      "time": "2026-06-15T02:46:22.033936",
+      "status": "artwork_received",
+      "owner": "artwork_prep_agent",
+      "note": "Review artwork quality and stitch feasibility."
+    }
+  ],
+  "attachments_extracted": true,
+  "attachment_count": 1
+}

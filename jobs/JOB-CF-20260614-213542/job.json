@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-213542",
+  "source": "cloudflare_email",
+  "from": "UNKNOWN_SENDER",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "No subject",
+  "status": "needs_review",
+  "created": "2026-06-14T21:35:42.858537"
+}

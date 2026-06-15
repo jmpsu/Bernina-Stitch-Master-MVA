@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-190857",
+  "source": "cloudflare_email",
+  "from": "public-tunnel-test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Public tunnel quote test",
+  "status": "needs_review",
+  "created": "2026-06-14T19:08:57.729740"
+}

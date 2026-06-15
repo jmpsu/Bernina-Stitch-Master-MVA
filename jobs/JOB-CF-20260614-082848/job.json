@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-082848",
+  "source": "cloudflare_email",
+  "from": "testcustomer@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Quote request - 24 polos with logo",
+  "status": "needs_review",
+  "created": "2026-06-14T08:28:48.347360"
+}

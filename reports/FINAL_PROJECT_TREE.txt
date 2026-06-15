@@ -1,0 +1,104 @@
+/root/embroidery_business_agent_system
+├── README.md
+├── agents
+│   ├── artwork_prep
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   ├── business_ops
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   ├── customer_reply
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   ├── digitizer
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   ├── gmail_intake
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   ├── inkstitch_knowledge
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   ├── orchestrator
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   ├── qa
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   ├── requirements
+│   │   ├── in
+│   │   ├── instructions.md
+│   │   ├── logs
+│   │   ├── out
+│   │   └── status.json
+│   └── security_audit
+│       ├── in
+│       ├── instructions.md
+│       ├── logs
+│       ├── out
+│       └── status.json
+├── approvals
+├── config
+│   ├── approval_policy.json
+│   ├── gmail.json
+│   └── slack.json
+├── dashboard
+│   └── index.md
+├── designs
+├── inbox
+│   └── sample_customer_request.txt
+├── jobs
+│   └── JOB-20260614-063052
+│       ├── approvals
+│       │   └── WAITING_FOR_JOEY_APPROVAL.md
+│       ├── artwork
+│       │   └── artwork_assessment.md
+│       ├── attachments
+│       ├── customer_replies
+│       │   └── draft_customer_reply.md
+│       ├── designs
+│       │   ├── digitizing_plan.md
+│       │   └── machine_file_manifest.json
+│       ├── inkstitch
+│       │   └── inkstitch_research_notes.md
+│       ├── intake_summary.md
+│       ├── job.json
+│       ├── logs
+│       ├── missing_questions.md
+│       ├── qa
+│       │   ├── approval_packet.md
+│       │   └── qa_report.md
+│       ├── raw_email.txt
+│       └── requirements.md
+├── logs
+├── reports
+│   ├── FINAL_PROJECT_TREE.txt
+│   └── FULL_SYSTEM_VALIDATION.md
+├── scripts
+└── tests
+
+61 directories, 41 files

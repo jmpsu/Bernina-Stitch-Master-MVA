@@ -1,0 +1,7 @@
+{
+  "from": "slack-status-test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Slack status tracking test",
+  "text": "Hi, I need embroidery on 24 gray hats. Front logo placement. Thread colors black and white. Needed within 3 weeks. I can send the logo file after you confirm the best format.",
+  "receivedAt": "2026-06-15T01:59:10+02:00"
+}

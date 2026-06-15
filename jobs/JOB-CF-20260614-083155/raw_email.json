@@ -1,0 +1,6 @@
+{
+  "from": "real-webhook-test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Webhook test quote request",
+  "text": "Testing fixed protected webhook. Need embroidery quote for 12 hats with logo."
+}

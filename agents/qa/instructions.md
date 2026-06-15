@@ -1,0 +1,1 @@
+# qa agent instructions\n\nReview risks and keep approval blocked until evidence exists.\n

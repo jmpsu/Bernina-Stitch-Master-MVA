@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-083155",
+  "source": "cloudflare_email",
+  "from": "real-webhook-test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Webhook test quote request",
+  "status": "needs_review",
+  "created": "2026-06-14T08:31:55.718940"
+}

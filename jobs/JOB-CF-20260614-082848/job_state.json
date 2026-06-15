@@ -1,0 +1,53 @@
+{
+  "job_id": "JOB-CF-20260614-082848",
+  "status": "needs_review",
+  "source": "cloudflare_email",
+  "created": "2026-06-14T08:28:48.347181",
+  "watcher_seen": "2026-06-14T23:52:28.491457",
+  "pipeline_initialized": true,
+  "current_stage": "requirements",
+  "stages": {
+    "requirements": {
+      "status": "ready",
+      "assigned_agent": "requirements",
+      "task_file": "pipeline/requirements/task.md"
+    },
+    "artwork_prep": {
+      "status": "waiting",
+      "assigned_agent": "artwork_prep",
+      "task_file": "pipeline/artwork_prep/task.md"
+    },
+    "digitizer": {
+      "status": "waiting",
+      "assigned_agent": "digitizer",
+      "task_file": "pipeline/digitizer/task.md"
+    },
+    "qa": {
+      "status": "waiting",
+      "assigned_agent": "qa",
+      "task_file": "pipeline/qa/task.md"
+    },
+    "customer_reply": {
+      "status": "waiting",
+      "assigned_agent": "customer_reply",
+      "task_file": "pipeline/customer_reply/task.md"
+    }
+  },
+  "approval_required_before_customer_contact": true,
+  "approval_required_before_digitizing": true,
+  "paid_model_use_allowed": false,
+  "customer_email_auto_send_allowed": false,
+  "updated": "2026-06-14T23:52:28.491464",
+  "pipeline_status": "artwork_needed",
+  "current_owner": "customer",
+  "next_action": "Request logo/artwork file from customer.",
+  "status_updated": "2026-06-15T03:57:48.274486",
+  "status_history": [
+    {
+      "time": "2026-06-15T01:49:57.501034",
+      "status": "artwork_needed",
+      "owner": "customer",
+      "note": "Request logo/artwork file from customer."
+    }
+  ]
+}

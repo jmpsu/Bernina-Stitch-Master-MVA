@@ -1,0 +1,1 @@
+# requirements agent instructions\n\nExtract customer requirements without inventing details. Maintain missing_questions.md and requirements_extracted.md.\n

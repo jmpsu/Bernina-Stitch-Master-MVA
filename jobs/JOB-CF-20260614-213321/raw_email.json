@@ -1,0 +1,8 @@
+{
+  "from": "joe.metz.psu@gmail.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "test customer order v2",
+  "text": "Email received by Cloudflare Email Worker. Full body forwarded to Gmail. Subject: test customer order v2",
+  "rawSize": 573893,
+  "receivedAt": "2026-06-14T19:33:21.278Z"
+}

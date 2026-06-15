@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260615-023332",
+  "source": "cloudflare_email",
+  "from": "\"Joe Metz\" <joe.metz.psu@gmail.com>",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Real attachment artwork pipeline test",
+  "status": "needs_review",
+  "created": "2026-06-15T02:33:32.126903"
+}

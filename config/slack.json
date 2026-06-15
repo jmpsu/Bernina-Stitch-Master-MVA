@@ -1,0 +1,1 @@
+{"mode":"outbound_only","command":"openclaw-slack","can_read_replies":false,"secret_rule":"never print slack.env or webhook"}

@@ -1,0 +1,7 @@
+{
+  "from": "test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Quote Request: Embroidery (hat/cap) x24",
+  "text": "Name: Test Customer\nEmail: test@example.com\nType: Embroidery (hat/cap)\nQuantity: 24\nGarment: Richardson 112\nColors: Red and white\nDetails: Company logo on front\n\n--- Submitted via website form ---",
+  "receivedAt": "2026-06-14T22:15:02+02:00"
+}

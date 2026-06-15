@@ -1,0 +1,6 @@
+{
+  "from": "public-tunnel-test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Public tunnel quote test",
+  "text": "Testing Cloudflare Tunnel public endpoint. Need embroidery quote for 18 shirts."
+}

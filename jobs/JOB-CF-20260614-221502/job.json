@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-221502",
+  "source": "cloudflare_email",
+  "from": "test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Quote Request: Embroidery (hat/cap) x24",
+  "status": "needs_review",
+  "created": "2026-06-14T22:15:02.479012"
+}

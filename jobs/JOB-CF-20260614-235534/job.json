@@ -1,0 +1,9 @@
+{
+  "job_id": "JOB-CF-20260614-235534",
+  "source": "cloudflare_email",
+  "from": "phase1-live-test@example.com",
+  "to": "info@jupiterembroideryco.com",
+  "subject": "Phase 1 live watcher test",
+  "status": "needs_review",
+  "created": "2026-06-14T23:55:34.317287"
+}
