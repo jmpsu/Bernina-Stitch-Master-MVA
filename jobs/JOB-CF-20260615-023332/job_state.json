@@ -43,7 +43,7 @@
   "pipeline_status": "artwork_received",
   "current_owner": "artwork_prep_agent",
   "next_action": "Review artwork quality and stitch feasibility.",
-  "status_updated": "2026-06-15T03:57:48.294624",
+  "status_updated": "2026-06-15T05:11:16.493040",
   "status_history": [
     {
       "time": "2026-06-15T02:33:35.251529",
@@ -59,5 +59,13 @@
     }
   ],
   "attachments_extracted": true,
-  "attachment_count": 1
+  "attachment_count": 1,
+  "production_protocol": "embroidery_production_protocol_v1",
+  "dual_size_pipeline_required": true,
+  "standard_variant_required": "2.5x2.5in",
+  "expanded_variant_required": "6.0x6.0in",
+  "aspect_ratio_locked": true,
+  "fake_digitizing_outputs_allowed": false,
+  "stitch_files_generated": false,
+  "protocol_updated": "2026-06-15T05:11:16.172383"
 }

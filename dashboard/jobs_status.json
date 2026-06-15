@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-15T03:57:48.305712",
+  "generated": "2026-06-15T05:11:16.579949",
   "statuses": [
     "new_intake",
     "requirements_extracted",
@@ -25,6 +25,30 @@
     "cancelled"
   ],
   "jobs": [
+    {
+      "job_id": "JOB-CF-20260615-023332",
+      "from": "\"Joe Metz\" <joe.metz.psu@gmail.com>",
+      "subject": "Real attachment artwork pipeline test",
+      "status": "artwork_received",
+      "owner": "artwork_prep_agent",
+      "next_action": "Review artwork quality and stitch feasibility.",
+      "draft_preview": "Hi,\n\nThanks for reaching out. I have the basic request noted and can help with an embroidery quote.\n\nWhat I have so far:\n- Garment: hat/cap mentioned\n- Placement: left chest\n- Logo size: 3.5 inches wide\n- Thread colors: keep it to 1=E2=80=933 solid colors if possible\n\nTo quote it accurately, please send:\n- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available\n- Confirmation of the garment brand/style if you already have one picked\n- Whether you are supplying the garments or want them sourced\n- Confirmation of quantity\n- Confirmation of deadline or desired turnaround\n\nOnce I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.\n\nThanks,\nJupiter Embroidery\n",
+      "requirements_preview": "# Requirements Extracted\n\n```json\n{\n  \"customer_email\": \"\\\"Joe Metz\\\" <joe.metz.psu@gmail.com>\",\n  \"to\": \"info@jupiterembroideryco.com\",\n  \"subject\": \"Real attachment artwork pipeline test\",\n  \"quantity\": \"\",\n  \"garment_type\": \"hat/cap mentioned\",\n  \"placement\": \"left chest\",\n  \"logo_size\": \"3.5 inches wide\",\n  \"thread_colors\": \"keep it to 1=E2=80=933 solid colors if possible\",\n  \"deadline\": \"\",\n  \"artwork_status\": \"customer says logo/artwork can be sent or is needed\",\n  \"budget\": \"\",\n  \"shipping_or_pickup\": \"\",\n  \"confidence\": \"deterministic extraction only\"\n}\n```\n",
+      "missing_questions": "# Missing Questions\n\n- Confirm quantity.\n- Confirm deadline or desired turnaround.\n",
+      "path": "/root/embroidery_business_agent_system/jobs/JOB-CF-20260615-023332"
+    },
+    {
+      "job_id": "JOB-CF-20260615-015911",
+      "from": "slack-status-test@example.com",
+      "subject": "Slack status tracking test",
+      "status": "artwork_needed",
+      "owner": "customer",
+      "next_action": "Request logo/artwork file from customer.",
+      "draft_preview": "Hi,\n\nThanks for reaching out. I have the basic request noted and can help with an embroidery quote.\n\nWhat I have so far:\n- Quantity/garment: 24 gray hats\n- Placement: front\n- Thread colors: black and white\n- Timing: Needed within 3 weeks\n\nTo quote it accurately, please send:\n- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available\n- Confirmation of the garment brand/style if you already have one picked\n- Whether you are supplying the garments or want them sourced\n\nOnce I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.\n\nThanks,\nJupiter Embroidery\n",
+      "requirements_preview": "# Requirements Extracted\n\n```json\n{\n  \"customer_email\": \"slack-status-test@example.com\",\n  \"to\": \"info@jupiterembroideryco.com\",\n  \"subject\": \"Slack status tracking test\",\n  \"quantity\": \"24 gray hats\",\n  \"garment_type\": \"hat/cap mentioned\",\n  \"placement\": \"front\",\n  \"logo_size\": \"\",\n  \"thread_colors\": \"black and white\",\n  \"deadline\": \"Needed within 3 weeks\",\n  \"artwork_status\": \"customer says logo/artwork can be sent or is needed\",\n  \"budget\": \"\",\n  \"shipping_or_pickup\": \"\",\n  \"confidence\": \"deterministic extraction only\"\n}\n```\n",
+      "missing_questions": "# Missing Questions\n\n- Request logo/artwork file in the best available format before quoting final digitizing/production details.\n",
+      "path": "/root/embroidery_business_agent_system/jobs/JOB-CF-20260615-015911"
+    },
     {
       "job_id": "JOB-CF-20260615-011348",
       "from": "auto-phase2-test@example.com",
@@ -156,30 +180,6 @@
       "requirements_preview": "",
       "missing_questions": "# Missing questions\n\n- Confirm final garment brand/style/sizes.\n- Send clean logo file: SVG/PDF/AI/EPS preferred, high-resolution transparent PNG acceptable.\n- Confirm exact thread colors if brand matching matters.\n- Confirm delivery/pickup timeline.\n",
       "path": "/root/embroidery_business_agent_system/jobs/JOB-20260614-063052"
-    },
-    {
-      "job_id": "JOB-CF-20260615-015911",
-      "from": "slack-status-test@example.com",
-      "subject": "Slack status tracking test",
-      "status": "artwork_needed",
-      "owner": "customer",
-      "next_action": "Request logo/artwork file from customer.",
-      "draft_preview": "Hi,\n\nThanks for reaching out. I have the basic request noted and can help with an embroidery quote.\n\nWhat I have so far:\n- Quantity/garment: 24 gray hats\n- Placement: front\n- Thread colors: black and white\n- Timing: Needed within 3 weeks\n\nTo quote it accurately, please send:\n- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available\n- Confirmation of the garment brand/style if you already have one picked\n- Whether you are supplying the garments or want them sourced\n\nOnce I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.\n\nThanks,\nJupiter Embroidery\n",
-      "requirements_preview": "# Requirements Extracted\n\n```json\n{\n  \"customer_email\": \"slack-status-test@example.com\",\n  \"to\": \"info@jupiterembroideryco.com\",\n  \"subject\": \"Slack status tracking test\",\n  \"quantity\": \"24 gray hats\",\n  \"garment_type\": \"hat/cap mentioned\",\n  \"placement\": \"front\",\n  \"logo_size\": \"\",\n  \"thread_colors\": \"black and white\",\n  \"deadline\": \"Needed within 3 weeks\",\n  \"artwork_status\": \"customer says logo/artwork can be sent or is needed\",\n  \"budget\": \"\",\n  \"shipping_or_pickup\": \"\",\n  \"confidence\": \"deterministic extraction only\"\n}\n```\n",
-      "missing_questions": "# Missing Questions\n\n- Request logo/artwork file in the best available format before quoting final digitizing/production details.\n",
-      "path": "/root/embroidery_business_agent_system/jobs/JOB-CF-20260615-015911"
-    },
-    {
-      "job_id": "JOB-CF-20260615-023332",
-      "from": "\"Joe Metz\" <joe.metz.psu@gmail.com>",
-      "subject": "Real attachment artwork pipeline test",
-      "status": "artwork_received",
-      "owner": "artwork_prep_agent",
-      "next_action": "Review artwork quality and stitch feasibility.",
-      "draft_preview": "Hi,\n\nThanks for reaching out. I have the basic request noted and can help with an embroidery quote.\n\nWhat I have so far:\n- Garment: hat/cap mentioned\n- Placement: left chest\n- Logo size: 3.5 inches wide\n- Thread colors: keep it to 1=E2=80=933 solid colors if possible\n\nTo quote it accurately, please send:\n- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available\n- Confirmation of the garment brand/style if you already have one picked\n- Whether you are supplying the garments or want them sourced\n- Confirmation of quantity\n- Confirmation of deadline or desired turnaround\n\nOnce I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.\n\nThanks,\nJupiter Embroidery\n",
-      "requirements_preview": "# Requirements Extracted\n\n```json\n{\n  \"customer_email\": \"\\\"Joe Metz\\\" <joe.metz.psu@gmail.com>\",\n  \"to\": \"info@jupiterembroideryco.com\",\n  \"subject\": \"Real attachment artwork pipeline test\",\n  \"quantity\": \"\",\n  \"garment_type\": \"hat/cap mentioned\",\n  \"placement\": \"left chest\",\n  \"logo_size\": \"3.5 inches wide\",\n  \"thread_colors\": \"keep it to 1=E2=80=933 solid colors if possible\",\n  \"deadline\": \"\",\n  \"artwork_status\": \"customer says logo/artwork can be sent or is needed\",\n  \"budget\": \"\",\n  \"shipping_or_pickup\": \"\",\n  \"confidence\": \"deterministic extraction only\"\n}\n```\n",
-      "missing_questions": "# Missing Questions\n\n- Confirm quantity.\n- Confirm deadline or desired turnaround.\n",
-      "path": "/root/embroidery_business_agent_system/jobs/JOB-CF-20260615-023332"
     }
   ]
 }

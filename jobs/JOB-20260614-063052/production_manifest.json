@@ -1,0 +1,30 @@
+{
+  "protocol": "embroidery_production_protocol_v1",
+  "created": "2026-06-15T05:11:15.772976",
+  "aspect_ratio_locked": true,
+  "no_warping": true,
+  "variants": [
+    {
+      "variant": "standard",
+      "max_box_in": "2.5 x 2.5",
+      "scale_policy": "uniform_fit_longest_dimension",
+      "planned_dst": "artwork_assessment_2.5in.dst",
+      "planned_pes": "artwork_assessment_2.5in.pes",
+      "status": "planned_not_generated",
+      "image_info": {}
+    },
+    {
+      "variant": "expanded",
+      "max_box_in": "6.0 x 6.0",
+      "scale_policy": "uniform_fit_longest_dimension",
+      "planned_dst": "artwork_assessment_6.0in.dst",
+      "planned_pes": "artwork_assessment_6.0in.pes",
+      "status": "planned_not_generated",
+      "image_info": {}
+    }
+  ],
+  "source_artwork": [
+    "/root/embroidery_business_agent_system/jobs/JOB-20260614-063052/artwork/artwork_assessment.md"
+  ],
+  "stitch_files_generated": false
+}

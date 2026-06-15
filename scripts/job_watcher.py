@@ -98,6 +98,13 @@ def process_job(job_dir, seen):
             log_file("job_watcher.log", f"DASHBOARD_REFRESH_OK {job_id}")
         except Exception as e:
             log_file("job_watcher.log", f"DASHBOARD_REFRESH_FAIL {job_id} {e}")
+    proto = ROOT / "scripts" / "apply_production_protocol.py"
+    if proto.exists():
+        try:
+            subprocess.run([sys.executable, str(proto)], check=False, timeout=60)
+            log_file("job_watcher.log", f"PRODUCTION_PROTOCOL_OK {job_id}")
+        except Exception as e:
+            log_file("job_watcher.log", f"PRODUCTION_PROTOCOL_FAIL {job_id} {e}")
     send_agent(job_id)
     seen["seen_jobs"][job_id] = {"first_seen": rec.get("first_seen") if rec else now_iso(), "processed": True, "slack_notified": ok, "pipeline_initialized": True, "last_attempt": now_iso()}
     save_seen(seen)

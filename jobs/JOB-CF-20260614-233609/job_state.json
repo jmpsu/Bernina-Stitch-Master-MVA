@@ -41,7 +41,7 @@
   "pipeline_status": "artwork_needed",
   "current_owner": "customer",
   "next_action": "Request logo/artwork file from customer.",
-  "status_updated": "2026-06-15T03:57:48.230022",
+  "status_updated": "2026-06-15T05:11:16.536573",
   "status_history": [
     {
       "time": "2026-06-15T01:49:57.413953",
@@ -49,5 +49,13 @@
       "owner": "customer",
       "note": "Request logo/artwork file from customer."
     }
-  ]
+  ],
+  "production_protocol": "embroidery_production_protocol_v1",
+  "dual_size_pipeline_required": true,
+  "standard_variant_required": "2.5x2.5in",
+  "expanded_variant_required": "6.0x6.0in",
+  "aspect_ratio_locked": true,
+  "fake_digitizing_outputs_allowed": false,
+  "stitch_files_generated": false,
+  "protocol_updated": "2026-06-15T05:11:16.146973"
 }

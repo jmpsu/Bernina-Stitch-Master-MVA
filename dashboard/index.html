@@ -1,4 +1,89 @@
-<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Embiz Pipeline Dashboard</title><style>body{font-family:Arial,sans-serif;background:#111;color:#eee;margin:18px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #333;padding:10px;vertical-align:top}th{background:#222}.badge{display:inline-block;background:#2b6cb0;color:white;padding:4px 8px;border-radius:999px;font-size:12px}pre{white-space:pre-wrap;background:#181818;padding:10px;border-radius:6px;max-width:700px}.statuses{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.statuses span{background:#222;border:1px solid #333;border-radius:999px;padding:5px 8px;font-size:12px}small{color:#aaa}</style></head><body><h1>Embiz Pipeline Dashboard</h1><small>Review-only. No auto-send. Generated 2026-06-15T03:57:48.306619</small><div class=statuses><span>new_intake</span><span>requirements_extracted</span><span>needs_customer_info</span><span>artwork_needed</span><span>artwork_received</span><span>artwork_review</span><span>artwork_approved</span><span>digitizing_plan</span><span>digitizing_in_progress</span><span>stitch_file_ready</span><span>qa_review</span><span>qa_passed</span><span>customer_approval_needed</span><span>approved_for_production</span><span>with_sarah_for_embroidery</span><span>embroidering_on_bernina</span><span>embroidered_complete</span><span>ready_for_pickup_or_shipping</span><span>sent_to_customer</span><span>project_complete</span><span>blocked</span><span>cancelled</span></div><table><thead><tr><th>Job</th><th>Subject</th><th>Status / Owner</th><th>Next action</th><th>Draft</th><th>Details</th></tr></thead><tbody><tr><td><b>JOB-CF-20260615-011348</b><br><small>auto-phase2-test@example.com</small></td><td>Auto Phase 2 watcher test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Hi,
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Embiz Pipeline Dashboard</title><style>body{font-family:Arial,sans-serif;background:#111;color:#eee;margin:18px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #333;padding:10px;vertical-align:top}th{background:#222}.badge{display:inline-block;background:#2b6cb0;color:white;padding:4px 8px;border-radius:999px;font-size:12px}pre{white-space:pre-wrap;background:#181818;padding:10px;border-radius:6px;max-width:700px}.statuses{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.statuses span{background:#222;border:1px solid #333;border-radius:999px;padding:5px 8px;font-size:12px}small{color:#aaa}</style></head><body><h1>Embiz Pipeline Dashboard</h1><small>Review-only. No auto-send. Generated 2026-06-15T05:11:16.580762</small><div class=statuses><span>new_intake</span><span>requirements_extracted</span><span>needs_customer_info</span><span>artwork_needed</span><span>artwork_received</span><span>artwork_review</span><span>artwork_approved</span><span>digitizing_plan</span><span>digitizing_in_progress</span><span>stitch_file_ready</span><span>qa_review</span><span>qa_passed</span><span>customer_approval_needed</span><span>approved_for_production</span><span>with_sarah_for_embroidery</span><span>embroidering_on_bernina</span><span>embroidered_complete</span><span>ready_for_pickup_or_shipping</span><span>sent_to_customer</span><span>project_complete</span><span>blocked</span><span>cancelled</span></div><table><thead><tr><th>Job</th><th>Subject</th><th>Status / Owner</th><th>Next action</th><th>Draft</th><th>Details</th></tr></thead><tbody><tr><td><b>JOB-CF-20260615-023332</b><br><small>&quot;Joe Metz&quot; &lt;joe.metz.psu@gmail.com&gt;</small></td><td>Real attachment artwork pipeline test</td><td><span class=badge>artwork_received</span><br><small>artwork_prep_agent</small></td><td>Review artwork quality and stitch feasibility.</td><td><details><summary>Draft reply</summary><pre>Hi,
+
+Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
+
+What I have so far:
+- Garment: hat/cap mentioned
+- Placement: left chest
+- Logo size: 3.5 inches wide
+- Thread colors: keep it to 1=E2=80=933 solid colors if possible
+
+To quote it accurately, please send:
+- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available
+- Confirmation of the garment brand/style if you already have one picked
+- Whether you are supplying the garments or want them sourced
+- Confirmation of quantity
+- Confirmation of deadline or desired turnaround
+
+Once I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.
+
+Thanks,
+Jupiter Embroidery
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre># Requirements Extracted
+
+```json
+{
+  &quot;customer_email&quot;: &quot;\&quot;Joe Metz\&quot; &lt;joe.metz.psu@gmail.com&gt;&quot;,
+  &quot;to&quot;: &quot;info@jupiterembroideryco.com&quot;,
+  &quot;subject&quot;: &quot;Real attachment artwork pipeline test&quot;,
+  &quot;quantity&quot;: &quot;&quot;,
+  &quot;garment_type&quot;: &quot;hat/cap mentioned&quot;,
+  &quot;placement&quot;: &quot;left chest&quot;,
+  &quot;logo_size&quot;: &quot;3.5 inches wide&quot;,
+  &quot;thread_colors&quot;: &quot;keep it to 1=E2=80=933 solid colors if possible&quot;,
+  &quot;deadline&quot;: &quot;&quot;,
+  &quot;artwork_status&quot;: &quot;customer says logo/artwork can be sent or is needed&quot;,
+  &quot;budget&quot;: &quot;&quot;,
+  &quot;shipping_or_pickup&quot;: &quot;&quot;,
+  &quot;confidence&quot;: &quot;deterministic extraction only&quot;
+}
+```
+</pre><pre># Missing Questions
+
+- Confirm quantity.
+- Confirm deadline or desired turnaround.
+</pre></details></td></tr><tr><td><b>JOB-CF-20260615-015911</b><br><small>slack-status-test@example.com</small></td><td>Slack status tracking test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Hi,
+
+Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
+
+What I have so far:
+- Quantity/garment: 24 gray hats
+- Placement: front
+- Thread colors: black and white
+- Timing: Needed within 3 weeks
+
+To quote it accurately, please send:
+- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available
+- Confirmation of the garment brand/style if you already have one picked
+- Whether you are supplying the garments or want them sourced
+
+Once I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.
+
+Thanks,
+Jupiter Embroidery
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre># Requirements Extracted
+
+```json
+{
+  &quot;customer_email&quot;: &quot;slack-status-test@example.com&quot;,
+  &quot;to&quot;: &quot;info@jupiterembroideryco.com&quot;,
+  &quot;subject&quot;: &quot;Slack status tracking test&quot;,
+  &quot;quantity&quot;: &quot;24 gray hats&quot;,
+  &quot;garment_type&quot;: &quot;hat/cap mentioned&quot;,
+  &quot;placement&quot;: &quot;front&quot;,
+  &quot;logo_size&quot;: &quot;&quot;,
+  &quot;thread_colors&quot;: &quot;black and white&quot;,
+  &quot;deadline&quot;: &quot;Needed within 3 weeks&quot;,
+  &quot;artwork_status&quot;: &quot;customer says logo/artwork can be sent or is needed&quot;,
+  &quot;budget&quot;: &quot;&quot;,
+  &quot;shipping_or_pickup&quot;: &quot;&quot;,
+  &quot;confidence&quot;: &quot;deterministic extraction only&quot;
+}
+```
+</pre><pre># Missing Questions
+
+- Request logo/artwork file in the best available format before quoting final digitizing/production details.
+</pre></details></td></tr><tr><td><b>JOB-CF-20260615-011348</b><br><small>auto-phase2-test@example.com</small></td><td>Auto Phase 2 watcher test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Hi,
 
 Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
 
@@ -159,89 +244,4 @@ Jupiter Embroidery
 - Send clean logo file: SVG/PDF/AI/EPS preferred, high-resolution transparent PNG acceptable.
 - Confirm exact thread colors if brand matching matters.
 - Confirm delivery/pickup timeline.
-</pre></details></td></tr><tr><td><b>JOB-CF-20260615-015911</b><br><small>slack-status-test@example.com</small></td><td>Slack status tracking test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Hi,
-
-Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
-
-What I have so far:
-- Quantity/garment: 24 gray hats
-- Placement: front
-- Thread colors: black and white
-- Timing: Needed within 3 weeks
-
-To quote it accurately, please send:
-- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available
-- Confirmation of the garment brand/style if you already have one picked
-- Whether you are supplying the garments or want them sourced
-
-Once I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.
-
-Thanks,
-Jupiter Embroidery
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre># Requirements Extracted
-
-```json
-{
-  &quot;customer_email&quot;: &quot;slack-status-test@example.com&quot;,
-  &quot;to&quot;: &quot;info@jupiterembroideryco.com&quot;,
-  &quot;subject&quot;: &quot;Slack status tracking test&quot;,
-  &quot;quantity&quot;: &quot;24 gray hats&quot;,
-  &quot;garment_type&quot;: &quot;hat/cap mentioned&quot;,
-  &quot;placement&quot;: &quot;front&quot;,
-  &quot;logo_size&quot;: &quot;&quot;,
-  &quot;thread_colors&quot;: &quot;black and white&quot;,
-  &quot;deadline&quot;: &quot;Needed within 3 weeks&quot;,
-  &quot;artwork_status&quot;: &quot;customer says logo/artwork can be sent or is needed&quot;,
-  &quot;budget&quot;: &quot;&quot;,
-  &quot;shipping_or_pickup&quot;: &quot;&quot;,
-  &quot;confidence&quot;: &quot;deterministic extraction only&quot;
-}
-```
-</pre><pre># Missing Questions
-
-- Request logo/artwork file in the best available format before quoting final digitizing/production details.
-</pre></details></td></tr><tr><td><b>JOB-CF-20260615-023332</b><br><small>&quot;Joe Metz&quot; &lt;joe.metz.psu@gmail.com&gt;</small></td><td>Real attachment artwork pipeline test</td><td><span class=badge>artwork_received</span><br><small>artwork_prep_agent</small></td><td>Review artwork quality and stitch feasibility.</td><td><details><summary>Draft reply</summary><pre>Hi,
-
-Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
-
-What I have so far:
-- Garment: hat/cap mentioned
-- Placement: left chest
-- Logo size: 3.5 inches wide
-- Thread colors: keep it to 1=E2=80=933 solid colors if possible
-
-To quote it accurately, please send:
-- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available
-- Confirmation of the garment brand/style if you already have one picked
-- Whether you are supplying the garments or want them sourced
-- Confirmation of quantity
-- Confirmation of deadline or desired turnaround
-
-Once I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.
-
-Thanks,
-Jupiter Embroidery
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre># Requirements Extracted
-
-```json
-{
-  &quot;customer_email&quot;: &quot;\&quot;Joe Metz\&quot; &lt;joe.metz.psu@gmail.com&gt;&quot;,
-  &quot;to&quot;: &quot;info@jupiterembroideryco.com&quot;,
-  &quot;subject&quot;: &quot;Real attachment artwork pipeline test&quot;,
-  &quot;quantity&quot;: &quot;&quot;,
-  &quot;garment_type&quot;: &quot;hat/cap mentioned&quot;,
-  &quot;placement&quot;: &quot;left chest&quot;,
-  &quot;logo_size&quot;: &quot;3.5 inches wide&quot;,
-  &quot;thread_colors&quot;: &quot;keep it to 1=E2=80=933 solid colors if possible&quot;,
-  &quot;deadline&quot;: &quot;&quot;,
-  &quot;artwork_status&quot;: &quot;customer says logo/artwork can be sent or is needed&quot;,
-  &quot;budget&quot;: &quot;&quot;,
-  &quot;shipping_or_pickup&quot;: &quot;&quot;,
-  &quot;confidence&quot;: &quot;deterministic extraction only&quot;
-}
-```
-</pre><pre># Missing Questions
-
-- Confirm quantity.
-- Confirm deadline or desired turnaround.
 </pre></details></td></tr></tbody></table></body></html>

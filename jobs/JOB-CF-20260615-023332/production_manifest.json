@@ -1,0 +1,36 @@
+{
+  "protocol": "embroidery_production_protocol_v1",
+  "created": "2026-06-15T05:11:16.166089",
+  "aspect_ratio_locked": true,
+  "no_warping": true,
+  "variants": [
+    {
+      "variant": "standard",
+      "max_box_in": "2.5 x 2.5",
+      "scale_policy": "uniform_fit_longest_dimension",
+      "planned_dst": "sailboat_pencil_2.5in.dst",
+      "planned_pes": "sailboat_pencil_2.5in.pes",
+      "status": "planned_not_generated",
+      "image_info": {
+        "width_px": 696,
+        "height_px": 593
+      }
+    },
+    {
+      "variant": "expanded",
+      "max_box_in": "6.0 x 6.0",
+      "scale_policy": "uniform_fit_longest_dimension",
+      "planned_dst": "sailboat_pencil_6.0in.dst",
+      "planned_pes": "sailboat_pencil_6.0in.pes",
+      "status": "planned_not_generated",
+      "image_info": {
+        "width_px": 696,
+        "height_px": 593
+      }
+    }
+  ],
+  "source_artwork": [
+    "/root/embroidery_business_agent_system/jobs/JOB-CF-20260615-023332/artwork/sailboat_pencil.png"
+  ],
+  "stitch_files_generated": false
+}
