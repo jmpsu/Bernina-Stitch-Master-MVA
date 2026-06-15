@@ -1,4 +1,63 @@
-<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Embiz Pipeline Dashboard</title><style>body{font-family:Arial,sans-serif;background:#111;color:#eee;margin:18px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #333;padding:10px;vertical-align:top}th{background:#222}.badge{display:inline-block;background:#2b6cb0;color:white;padding:4px 8px;border-radius:999px;font-size:12px}pre{white-space:pre-wrap;background:#181818;padding:10px;border-radius:6px;max-width:700px}.statuses{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.statuses span{background:#222;border:1px solid #333;border-radius:999px;padding:5px 8px;font-size:12px}small{color:#aaa}</style></head><body><h1>Embiz Pipeline Dashboard</h1><small>Review-only. No auto-send. Generated 2026-06-15T05:11:16.580762</small><div class=statuses><span>new_intake</span><span>requirements_extracted</span><span>needs_customer_info</span><span>artwork_needed</span><span>artwork_received</span><span>artwork_review</span><span>artwork_approved</span><span>digitizing_plan</span><span>digitizing_in_progress</span><span>stitch_file_ready</span><span>qa_review</span><span>qa_passed</span><span>customer_approval_needed</span><span>approved_for_production</span><span>with_sarah_for_embroidery</span><span>embroidering_on_bernina</span><span>embroidered_complete</span><span>ready_for_pickup_or_shipping</span><span>sent_to_customer</span><span>project_complete</span><span>blocked</span><span>cancelled</span></div><table><thead><tr><th>Job</th><th>Subject</th><th>Status / Owner</th><th>Next action</th><th>Draft</th><th>Details</th></tr></thead><tbody><tr><td><b>JOB-CF-20260615-023332</b><br><small>&quot;Joe Metz&quot; &lt;joe.metz.psu@gmail.com&gt;</small></td><td>Real attachment artwork pipeline test</td><td><span class=badge>artwork_received</span><br><small>artwork_prep_agent</small></td><td>Review artwork quality and stitch feasibility.</td><td><details><summary>Draft reply</summary><pre>Hi,
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Embiz Pipeline Dashboard</title><style>body{font-family:Arial,sans-serif;background:#111;color:#eee;margin:18px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{border:1px solid #333;padding:10px;vertical-align:top}th{background:#222}.badge{display:inline-block;background:#2b6cb0;color:white;padding:4px 8px;border-radius:999px;font-size:12px}pre{white-space:pre-wrap;background:#181818;padding:10px;border-radius:6px;max-width:700px}.statuses{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.statuses span{background:#222;border:1px solid #333;border-radius:999px;padding:5px 8px;font-size:12px}small{color:#aaa}</style></head><body><h1>Embiz Pipeline Dashboard</h1><small>Review-only. No auto-send. Generated 2026-06-15T08:57:18.028164</small><div class=statuses><span>new_intake</span><span>requirements_extracted</span><span>needs_customer_info</span><span>artwork_needed</span><span>artwork_received</span><span>artwork_review</span><span>artwork_approved</span><span>digitizing_plan</span><span>digitizing_in_progress</span><span>stitch_file_ready</span><span>qa_review</span><span>qa_passed</span><span>customer_approval_needed</span><span>approved_for_production</span><span>with_sarah_for_embroidery</span><span>embroidering_on_bernina</span><span>embroidered_complete</span><span>ready_for_pickup_or_shipping</span><span>sent_to_customer</span><span>project_complete</span><span>blocked</span><span>cancelled</span></div><table><thead><tr><th>Job</th><th>Subject</th><th>Status / Owner</th><th>Next action</th><th>Draft</th><th>Details</th></tr></thead><tbody><tr><td><b>JOB-CF-20260614-213542</b><br><small>UNKNOWN_SENDER</small></td><td>No subject</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
+
+- Confirm garment type
+- Confirm quantity
+- Confirm logo/artwork file
+- Confirm placement
+- Confirm thread colors
+- Confirm deadline
+</pre></details></td></tr><tr><td><b>JOB-CF-20260614-082848</b><br><small>testcustomer@example.com</small></td><td>Quote request - 24 polos with logo</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
+
+- Confirm garment type
+- Confirm quantity
+- Confirm logo/artwork file
+- Confirm placement
+- Confirm thread colors
+- Confirm deadline
+</pre></details></td></tr><tr><td><b>JOB-CF-20260615-011348</b><br><small>auto-phase2-test@example.com</small></td><td>Auto Phase 2 watcher test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Hi,
+
+Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
+
+What I have so far:
+- Quantity/garment: 48 black polo shirts
+- Placement: left chest
+- Thread colors: white and red
+- Timing: Needed within 4 weeks
+
+To quote it accurately, please send:
+- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available
+- Confirmation of the garment brand/style if you already have one picked
+- Whether you are supplying the garments or want them sourced
+
+Once I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.
+
+Thanks,
+Jupiter Embroidery
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre># Requirements Extracted
+
+```json
+{
+  &quot;customer_email&quot;: &quot;auto-phase2-test@example.com&quot;,
+  &quot;to&quot;: &quot;info@jupiterembroideryco.com&quot;,
+  &quot;subject&quot;: &quot;Auto Phase 2 watcher test&quot;,
+  &quot;quantity&quot;: &quot;48 black polo shirts&quot;,
+  &quot;garment_type&quot;: &quot;polo/shirt mentioned&quot;,
+  &quot;placement&quot;: &quot;left chest&quot;,
+  &quot;logo_size&quot;: &quot;&quot;,
+  &quot;thread_colors&quot;: &quot;white and red&quot;,
+  &quot;deadline&quot;: &quot;Needed within 4 weeks&quot;,
+  &quot;artwork_status&quot;: &quot;customer says logo/artwork can be sent or is needed&quot;,
+  &quot;budget&quot;: &quot;&quot;,
+  &quot;shipping_or_pickup&quot;: &quot;&quot;,
+  &quot;confidence&quot;: &quot;deterministic extraction only&quot;
+}
+```
+</pre><pre># Missing Questions
+
+- Request logo/artwork file in the best available format before quoting final digitizing/production details.
+</pre></details></td></tr><tr><td><b>JOB-CF-20260615-023332</b><br><small>&quot;Joe Metz&quot; &lt;joe.metz.psu@gmail.com&gt;</small></td><td>Real attachment artwork pipeline test</td><td><span class=badge>artwork_received</span><br><small>artwork_prep_agent</small></td><td>Review artwork quality and stitch feasibility.</td><td><details><summary>Draft reply</summary><pre>Hi,
 
 Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
 
@@ -42,6 +101,40 @@ Jupiter Embroidery
 
 - Confirm quantity.
 - Confirm deadline or desired turnaround.
+</pre></details></td></tr><tr><td><b>JOB-20260614-063052</b><br><small></small></td><td></td><td><span class=badge>requirements_extracted</span><br><small>joey_review</small></td><td>Review requirements and draft reply.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing questions
+
+- Confirm final garment brand/style/sizes.
+- Send clean logo file: SVG/PDF/AI/EPS preferred, high-resolution transparent PNG acceptable.
+- Confirm exact thread colors if brand matching matters.
+- Confirm delivery/pickup timeline.
+</pre></details></td></tr><tr><td><b>JOB-CF-20260614-230254</b><br><small>&quot;Joe Metz&quot; &lt;joe.metz.psu@gmail.com&gt;</small></td><td>Embiz real email test 2</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
+
+- Confirm garment type
+- Confirm quantity
+- Confirm logo/artwork file
+- Confirm placement
+- Confirm thread colors
+- Confirm deadline
+</pre></details></td></tr><tr><td><b>JOB-CF-20260614-190857</b><br><small>public-tunnel-test@example.com</small></td><td>Public tunnel quote test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
+
+- Confirm garment type
+- Confirm quantity
+- Confirm logo/artwork file
+- Confirm placement
+- Confirm thread colors
+- Confirm deadline
+</pre></details></td></tr><tr><td><b>JOB-CF-20260614-083155</b><br><small>real-webhook-test@example.com</small></td><td>Webhook test quote request</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
+
+- Confirm garment type
+- Confirm quantity
+- Confirm logo/artwork file
+- Confirm placement
+- Confirm thread colors
+- Confirm deadline
 </pre></details></td></tr><tr><td><b>JOB-CF-20260615-015911</b><br><small>slack-status-test@example.com</small></td><td>Slack status tracking test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Hi,
 
 Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
@@ -83,47 +176,33 @@ Jupiter Embroidery
 </pre><pre># Missing Questions
 
 - Request logo/artwork file in the best available format before quoting final digitizing/production details.
-</pre></details></td></tr><tr><td><b>JOB-CF-20260615-011348</b><br><small>auto-phase2-test@example.com</small></td><td>Auto Phase 2 watcher test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Hi,
+</pre></details></td></tr><tr><td><b>JOB-CF-20260614-213321</b><br><small>joe.metz.psu@gmail.com</small></td><td>test customer order v2</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
 
-Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
+- Confirm garment type
+- Confirm quantity
+- Confirm logo/artwork file
+- Confirm placement
+- Confirm thread colors
+- Confirm deadline
+</pre></details></td></tr><tr><td><b>JOB-CF-20260614-233609</b><br><small>phase1-test@example.com</small></td><td>Phase 1 watcher synthetic test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
 
-What I have so far:
-- Quantity/garment: 48 black polo shirts
-- Placement: left chest
-- Thread colors: white and red
-- Timing: Needed within 4 weeks
+- Confirm garment type
+- Confirm quantity
+- Confirm logo/artwork file
+- Confirm placement
+- Confirm thread colors
+- Confirm deadline
+</pre></details></td></tr><tr><td><b>JOB-CF-20260614-221502</b><br><small>test@example.com</small></td><td>Quote Request: Embroidery (hat/cap) x24</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
+</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
 
-To quote it accurately, please send:
-- The logo/artwork file, preferably SVG, PDF, AI, EPS, or the highest-resolution PNG/JPG available
-- Confirmation of the garment brand/style if you already have one picked
-- Whether you are supplying the garments or want them sourced
-
-Once I have that, I can confirm stitch feasibility, placement, and the next steps for pricing and turnaround.
-
-Thanks,
-Jupiter Embroidery
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre># Requirements Extracted
-
-```json
-{
-  &quot;customer_email&quot;: &quot;auto-phase2-test@example.com&quot;,
-  &quot;to&quot;: &quot;info@jupiterembroideryco.com&quot;,
-  &quot;subject&quot;: &quot;Auto Phase 2 watcher test&quot;,
-  &quot;quantity&quot;: &quot;48 black polo shirts&quot;,
-  &quot;garment_type&quot;: &quot;polo/shirt mentioned&quot;,
-  &quot;placement&quot;: &quot;left chest&quot;,
-  &quot;logo_size&quot;: &quot;&quot;,
-  &quot;thread_colors&quot;: &quot;white and red&quot;,
-  &quot;deadline&quot;: &quot;Needed within 4 weeks&quot;,
-  &quot;artwork_status&quot;: &quot;customer says logo/artwork can be sent or is needed&quot;,
-  &quot;budget&quot;: &quot;&quot;,
-  &quot;shipping_or_pickup&quot;: &quot;&quot;,
-  &quot;confidence&quot;: &quot;deterministic extraction only&quot;
-}
-```
-</pre><pre># Missing Questions
-
-- Request logo/artwork file in the best available format before quoting final digitizing/production details.
+- Confirm garment type
+- Confirm quantity
+- Confirm logo/artwork file
+- Confirm placement
+- Confirm thread colors
+- Confirm deadline
 </pre></details></td></tr><tr><td><b>JOB-CF-20260614-235534</b><br><small>phase1-live-test@example.com</small></td><td>Phase 1 live watcher test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Hi,
 
 Thanks for reaching out. I have the basic request noted and can help with an embroidery quote.
@@ -165,83 +244,4 @@ Jupiter Embroidery
 </pre><pre># Missing Questions
 
 - Request logo/artwork file in the best available format before quoting final digitizing/production details.
-</pre></details></td></tr><tr><td><b>JOB-CF-20260614-233609</b><br><small>phase1-test@example.com</small></td><td>Phase 1 watcher synthetic test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
-
-- Confirm garment type
-- Confirm quantity
-- Confirm logo/artwork file
-- Confirm placement
-- Confirm thread colors
-- Confirm deadline
-</pre></details></td></tr><tr><td><b>JOB-CF-20260614-230254</b><br><small>&quot;Joe Metz&quot; &lt;joe.metz.psu@gmail.com&gt;</small></td><td>Embiz real email test 2</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
-
-- Confirm garment type
-- Confirm quantity
-- Confirm logo/artwork file
-- Confirm placement
-- Confirm thread colors
-- Confirm deadline
-</pre></details></td></tr><tr><td><b>JOB-CF-20260614-221502</b><br><small>test@example.com</small></td><td>Quote Request: Embroidery (hat/cap) x24</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
-
-- Confirm garment type
-- Confirm quantity
-- Confirm logo/artwork file
-- Confirm placement
-- Confirm thread colors
-- Confirm deadline
-</pre></details></td></tr><tr><td><b>JOB-CF-20260614-213542</b><br><small>UNKNOWN_SENDER</small></td><td>No subject</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
-
-- Confirm garment type
-- Confirm quantity
-- Confirm logo/artwork file
-- Confirm placement
-- Confirm thread colors
-- Confirm deadline
-</pre></details></td></tr><tr><td><b>JOB-CF-20260614-213321</b><br><small>joe.metz.psu@gmail.com</small></td><td>test customer order v2</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
-
-- Confirm garment type
-- Confirm quantity
-- Confirm logo/artwork file
-- Confirm placement
-- Confirm thread colors
-- Confirm deadline
-</pre></details></td></tr><tr><td><b>JOB-CF-20260614-190857</b><br><small>public-tunnel-test@example.com</small></td><td>Public tunnel quote test</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
-
-- Confirm garment type
-- Confirm quantity
-- Confirm logo/artwork file
-- Confirm placement
-- Confirm thread colors
-- Confirm deadline
-</pre></details></td></tr><tr><td><b>JOB-CF-20260614-083155</b><br><small>real-webhook-test@example.com</small></td><td>Webhook test quote request</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
-
-- Confirm garment type
-- Confirm quantity
-- Confirm logo/artwork file
-- Confirm placement
-- Confirm thread colors
-- Confirm deadline
-</pre></details></td></tr><tr><td><b>JOB-CF-20260614-082848</b><br><small>testcustomer@example.com</small></td><td>Quote request - 24 polos with logo</td><td><span class=badge>artwork_needed</span><br><small>customer</small></td><td>Request logo/artwork file from customer.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing Questions
-
-- Confirm garment type
-- Confirm quantity
-- Confirm logo/artwork file
-- Confirm placement
-- Confirm thread colors
-- Confirm deadline
-</pre></details></td></tr><tr><td><b>JOB-20260614-063052</b><br><small></small></td><td></td><td><span class=badge>requirements_extracted</span><br><small>joey_review</small></td><td>Review requirements and draft reply.</td><td><details><summary>Draft reply</summary><pre>Status: Not drafted yet.
-</pre></details></td><td><details><summary>Requirements / missing</summary><pre></pre><pre># Missing questions
-
-- Confirm final garment brand/style/sizes.
-- Send clean logo file: SVG/PDF/AI/EPS preferred, high-resolution transparent PNG acceptable.
-- Confirm exact thread colors if brand matching matters.
-- Confirm delivery/pickup timeline.
 </pre></details></td></tr></tbody></table></body></html>

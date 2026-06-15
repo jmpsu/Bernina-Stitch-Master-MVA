@@ -43,7 +43,7 @@
   "pipeline_status": "artwork_received",
   "current_owner": "artwork_prep_agent",
   "next_action": "Review artwork quality and stitch feasibility.",
-  "status_updated": "2026-06-15T05:11:16.493040",
+  "status_updated": "2026-06-15T08:57:17.980736",
   "status_history": [
     {
       "time": "2026-06-15T02:33:35.251529",
@@ -67,5 +67,16 @@
   "aspect_ratio_locked": true,
   "fake_digitizing_outputs_allowed": false,
   "stitch_files_generated": false,
-  "protocol_updated": "2026-06-15T05:11:16.172383"
+  "protocol_updated": "2026-06-15T08:57:17.875944",
+  "fallback_ingestion_amendment": "SOP-AMEND-004-2026",
+  "fallback_garment_type": "Premium Heavyweight Crew Neck Sweatshirt",
+  "fallback_garment_size": "Adult Medium",
+  "fallback_fabric": "80% Cotton / 20% Polyester Fleece Blend",
+  "fallback_placements": [
+    "center_chest",
+    "left_chest_duplicate"
+  ],
+  "fleece_density_compensation_planned": true,
+  "trim_commands_planned_between_disjoint_vector_groups": true,
+  "qa_required": true
 }

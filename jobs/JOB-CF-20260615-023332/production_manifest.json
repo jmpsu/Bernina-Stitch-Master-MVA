@@ -1,8 +1,23 @@
 {
   "protocol": "embroidery_production_protocol_v1",
-  "created": "2026-06-15T05:11:16.166089",
+  "amendment": "SOP-AMEND-004-2026",
+  "created": "2026-06-15T08:57:17.874403",
+  "fallback_defaults": {
+    "garment_type": "Premium Heavyweight Crew Neck Sweatshirt",
+    "garment_size": "Adult Medium",
+    "fabric": "80% Cotton / 20% Polyester Fleece Blend",
+    "placements": [
+      "center_chest",
+      "left_chest_duplicate"
+    ],
+    "fleece_density_compensation_planned": true,
+    "trim_commands_planned_between_disjoint_vector_groups": true
+  },
   "aspect_ratio_locked": true,
   "no_warping": true,
+  "source_artwork": [
+    "/root/embroidery_business_agent_system/jobs/JOB-CF-20260615-023332/artwork/sailboat_pencil.png"
+  ],
   "variants": [
     {
       "variant": "standard",
@@ -10,11 +25,7 @@
       "scale_policy": "uniform_fit_longest_dimension",
       "planned_dst": "sailboat_pencil_2.5in.dst",
       "planned_pes": "sailboat_pencil_2.5in.pes",
-      "status": "planned_not_generated",
-      "image_info": {
-        "width_px": 696,
-        "height_px": 593
-      }
+      "status": "planned_not_generated"
     },
     {
       "variant": "expanded",
@@ -22,15 +33,9 @@
       "scale_policy": "uniform_fit_longest_dimension",
       "planned_dst": "sailboat_pencil_6.0in.dst",
       "planned_pes": "sailboat_pencil_6.0in.pes",
-      "status": "planned_not_generated",
-      "image_info": {
-        "width_px": 696,
-        "height_px": 593
-      }
+      "status": "planned_not_generated"
     }
   ],
-  "source_artwork": [
-    "/root/embroidery_business_agent_system/jobs/JOB-CF-20260615-023332/artwork/sailboat_pencil.png"
-  ],
-  "stitch_files_generated": false
+  "stitch_files_generated": false,
+  "fake_outputs_allowed": false
 }
