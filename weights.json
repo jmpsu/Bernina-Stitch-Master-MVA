@@ -1,0 +1,7 @@
+{
+  "visual_similarity": 0.40,
+  "topology_quality": 0.25,
+  "embroidery_suitability": 0.20,
+  "performance": 0.10,
+  "code_reliability": 0.05
+}

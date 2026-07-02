@@ -1,0 +1,25 @@
+{
+  "description": "Known optimization parameters and their correlation history with OVERALL_SCORE. Correlation history is populated as future iterations vary parameters.",
+  "created_iteration": 1,
+  "created_timestamp": "2026-06-29T07:14:43.890048+00:00",
+  "parameters": {
+    "min_len_mm": {
+      "value": 1.2,
+      "source": "stitchscale_L3.sh",
+      "unit": "mm",
+      "correlation_history": []
+    },
+    "collapse_len_mm": {
+      "value": 3.0,
+      "source": "inkstitch doc default",
+      "unit": "mm",
+      "correlation_history": []
+    },
+    "min_stitch_len_mm": {
+      "value": 0.25,
+      "source": "inkstitch doc default",
+      "unit": "mm",
+      "correlation_history": []
+    }
+  }
+}
