@@ -1,0 +1,348 @@
+{
+  "description": "Known optimization parameters and their correlation history with OVERALL_SCORE. Correlation history is populated as future iterations vary parameters.",
+  "created_iteration": 1,
+  "created_timestamp": "2026-06-29T07:14:43.890048+00:00",
+  "parameters": {
+    "min_len_mm": {
+      "value": 1.2,
+      "source": "stitchscale_L3.sh",
+      "unit": "mm",
+      "correlation_history": []
+    },
+    "collapse_len_mm": {
+      "value": 3.0,
+      "source": "inkstitch doc default",
+      "unit": "mm",
+      "correlation_history": []
+    },
+    "min_stitch_len_mm": {
+      "value": 0.25,
+      "source": "inkstitch doc default",
+      "unit": "mm",
+      "correlation_history": []
+    },
+    "short_stitch_penalty": {
+      "value": 1.5,
+      "source": "run_iteration.py embroidery_suitability composite (introduced iteration 2)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 2,
+          "timestamp": "2026-07-04T05:22:02.397401+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.015998,
+          "overall_score": 0.512292,
+          "overall_score_delta": -0.00214
+        },
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "long_stitch_penalty": {
+      "value": 2.0,
+      "source": "run_iteration.py embroidery_suitability composite (introduced iteration 2)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 2,
+          "timestamp": "2026-07-04T05:22:02.397401+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.015998,
+          "overall_score": 0.512292,
+          "overall_score_delta": -0.00214
+        },
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "trim_penalty_divisor": {
+      "value": 50.0,
+      "source": "run_iteration.py embroidery_suitability composite (introduced iteration 2)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 2,
+          "timestamp": "2026-07-04T05:22:02.397401+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.015998,
+          "overall_score": 0.512292,
+          "overall_score_delta": -0.00214
+        },
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "trim_penalty_cap": {
+      "value": 0.3,
+      "source": "run_iteration.py embroidery_suitability composite (introduced iteration 2)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 2,
+          "timestamp": "2026-07-04T05:22:02.397401+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.015998,
+          "overall_score": 0.512292,
+          "overall_score_delta": -0.00214
+        },
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "PERF_RUNS": {
+      "value": 5,
+      "source": "run_iteration.py performance sub-score timing loop (introduced iteration 3)",
+      "unit": "runs",
+      "correlation_history": [
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "perf_runs": 5,
+          "performance": 0.877671,
+          "performance_delta": 0.002582,
+          "total_runtime_min_s": 0.237356,
+          "total_runtime_median_s": 0.244658,
+          "total_runtime_p95_s": 0.421615,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043,
+          "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.244658s) rather than a single noisy run, spread min=0.237356s p95=0.421615s"
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "perf_runs": 5,
+          "performance": 0.899926,
+          "performance_delta": 0.022255,
+          "total_runtime_min_s": 0.197763,
+          "total_runtime_median_s": 0.200148,
+          "total_runtime_p95_s": 0.207843,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829,
+          "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.200148s) rather than a single noisy run, spread min=0.197763s p95=0.207843s"
+        }
+      ]
+    },
+    "visual_ssim_weight": {
+      "value": 0.6,
+      "source": "run_iteration.py visual_similarity per-pair sub-score clamp(0.6*ssim+0.2*edge+0.2*(1-rmse)) (introduced iteration 4)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": null,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.581012,
+          "overall_score_continuity_4metric": 0.516432,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "visual_edge_weight": {
+      "value": 0.2,
+      "source": "run_iteration.py visual_similarity per-pair sub-score clamp(0.6*ssim+0.2*edge+0.2*(1-rmse)) (introduced iteration 4)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": null,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.581012,
+          "overall_score_continuity_4metric": 0.516432,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "visual_rmse_weight": {
+      "value": 0.2,
+      "source": "run_iteration.py visual_similarity per-pair sub-score clamp(0.6*ssim+0.2*edge+0.2*(1-rmse)) (introduced iteration 4)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": null,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.581012,
+          "overall_score_continuity_4metric": 0.516432,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "target_h_mm": {
+      "value": 76.2,
+      "source": "digitizer.py TARGET_H_MM (3 inch object height, introduced iteration 5)",
+      "unit": "mm",
+      "correlation_history": [
+        {
+          "iteration": 5,
+          "timestamp": "2026-07-04T13:29:31.238235+00:00",
+          "objects_digitized": 11,
+          "objects_height_ok": 11,
+          "note": "all 11 objects scaled to 76.2mm tall (within +-1mm)"
+        }
+      ]
+    },
+    "row_spacing_mm": {
+      "value": 0.4,
+      "source": "digitizer.py ROW_SPACING_MM (boustrophedon fill row spacing, introduced iteration 5)",
+      "unit": "mm",
+      "correlation_history": [
+        {
+          "iteration": 5,
+          "timestamp": "2026-07-04T13:29:31.238235+00:00",
+          "note": "scanline fill row spacing for solid regions"
+        }
+      ]
+    },
+    "max_stitch_mm": {
+      "value": 3.0,
+      "source": "digitizer.py MAX_STITCH_MM (max fill stitch length, introduced iteration 5)",
+      "unit": "mm",
+      "correlation_history": [
+        {
+          "iteration": 5,
+          "timestamp": "2026-07-04T13:29:31.238235+00:00",
+          "note": "max fill stitch length; also jump/trim threshold basis"
+        }
+      ]
+    },
+    "running_stitch_mm": {
+      "value": 2.0,
+      "source": "digitizer.py RUNNING_STITCH_MM (contour running-stitch spacing, introduced iteration 5)",
+      "unit": "mm",
+      "correlation_history": [
+        {
+          "iteration": 5,
+          "timestamp": "2026-07-04T13:29:31.238235+00:00",
+          "note": "running-stitch spacing along contours for thin/line shapes"
+        }
+      ]
+    }
+  },
+  "last_updated_iteration": 4,
+  "last_updated_timestamp": "2026-07-04T06:32:20.361162+00:00"
+}

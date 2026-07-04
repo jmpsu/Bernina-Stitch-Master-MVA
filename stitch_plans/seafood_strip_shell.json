@@ -1,0 +1,31 @@
+{
+  "object": "shell",
+  "name": "shell",
+  "width_mm": 42.4,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 649,
+  "jump_count": 15,
+  "trim_count": 12,
+  "color_count": 2,
+  "thread_rgb": [
+    [
+      177,
+      179,
+      170
+    ],
+    [
+      150,
+      153,
+      147
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "seafood_strip_shell.exp",
+    "pes": "seafood_strip_shell.pes",
+    "preview": "seafood_strip_shell_preview.png"
+  }
+}

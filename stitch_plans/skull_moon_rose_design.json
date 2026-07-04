@@ -1,0 +1,36 @@
+{
+  "object": "design",
+  "name": "design",
+  "width_mm": 51.0,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 1444,
+  "jump_count": 136,
+  "trim_count": 103,
+  "color_count": 3,
+  "thread_rgb": [
+    [
+      166,
+      135,
+      114
+    ],
+    [
+      51,
+      39,
+      39
+    ],
+    [
+      125,
+      101,
+      87
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "skull_moon_rose_design.exp",
+    "pes": "skull_moon_rose_design.pes",
+    "preview": "skull_moon_rose_design_preview.png"
+  }
+}

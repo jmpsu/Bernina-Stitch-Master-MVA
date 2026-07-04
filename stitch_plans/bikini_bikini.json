@@ -1,0 +1,36 @@
+{
+  "object": "bikini",
+  "name": "bikini",
+  "width_mm": 39.3,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 1628,
+  "jump_count": 146,
+  "trim_count": 92,
+  "color_count": 3,
+  "thread_rgb": [
+    [
+      197,
+      178,
+      169
+    ],
+    [
+      170,
+      158,
+      152
+    ],
+    [
+      126,
+      126,
+      122
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "bikini_bikini.exp",
+    "pes": "bikini_bikini.pes",
+    "preview": "bikini_bikini_preview.png"
+  }
+}

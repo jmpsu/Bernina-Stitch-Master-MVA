@@ -1,0 +1,31 @@
+{
+  "object": "cabana",
+  "name": "cabana",
+  "width_mm": 48.0,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 3270,
+  "jump_count": 358,
+  "trim_count": 246,
+  "color_count": 2,
+  "thread_rgb": [
+    [
+      149,
+      130,
+      128
+    ],
+    [
+      120,
+      101,
+      102
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "beach_strip_cabana.exp",
+    "pes": "beach_strip_cabana.pes",
+    "preview": "beach_strip_cabana_preview.png"
+  }
+}
