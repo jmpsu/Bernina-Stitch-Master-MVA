@@ -1,0 +1,51 @@
+{
+  "object": "logo",
+  "name": "logo",
+  "width_mm": 81.1,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 2118,
+  "jump_count": 119,
+  "trim_count": 90,
+  "color_count": 6,
+  "thread_rgb": [
+    [
+      35,
+      77,
+      56
+    ],
+    [
+      140,
+      174,
+      141
+    ],
+    [
+      236,
+      241,
+      241
+    ],
+    [
+      22,
+      27,
+      24
+    ],
+    [
+      128,
+      125,
+      129
+    ],
+    [
+      78,
+      111,
+      89
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "img_0277_logo.exp",
+    "pes": "img_0277_logo.pes",
+    "preview": "img_0277_logo_preview.png"
+  }
+}
