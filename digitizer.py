@@ -631,6 +631,67 @@ def copy_reference(img_path, stem):
         pass
 
 
+def _stem_from_path(path):
+    """Readable stem from an uploaded filename.
+    '340931ae-IMG_0331.jpeg' -> 'img_0331'."""
+    base = os.path.basename(path)
+    if "-" in base:
+        base = base.split("-", 1)[1]
+    stem = os.path.splitext(base)[0]
+    return stem.lower().replace(" ", "_").replace("-", "_")
+
+
+def _outputs_exist(stem):
+    import glob
+    return bool(glob.glob(os.path.join(OUT_DIR, f"{stem}_*.json")))
+
+
+def process_images(paths, target_h_mm=TARGET_H_MM):
+    """Digitize an arbitrary list of image paths.
+
+    Reuses the full pipeline: fallback bg-removal (with Sobel edge term),
+    layout-aware segmentation (aspect>1.8 strip splitter), and
+    digitize_object at target_h_mm. Single-design images -> one 'logo'
+    object (component union already handles disconnected logos + year text).
+    IDEMPOTENT: skips any image whose <stem>_*.json outputs already exist.
+    Returns list of (stem, label, stats)."""
+    rows = []
+    for path in paths:
+        if not os.path.exists(path):
+            print(f"MISSING: {path}")
+            continue
+        stem = _stem_from_path(path)
+        if _outputs_exist(stem):
+            print(f"[skip existing] {stem}")
+            continue
+        try:
+            rgb, mask, method = remove_background(path)
+            objects = segment_objects(mask)
+        except Exception as e:
+            print(f"[error] {stem}: {e}")
+            continue
+        n = len(objects)
+        print(f"\n=== {stem}  bg={method}  fg_frac={mask.mean():.3f}  objects={n} ===")
+        for idx, (obj_mask, bbox) in enumerate(objects):
+            label = "logo" if n == 1 else f"obj{idx+1}"
+            try:
+                pattern, stats = digitize_object(rgb, obj_mask, bbox,
+                                                 target_h_mm=target_h_mm, name=label)
+            except Exception as e:
+                print(f"  [error] {label}: {e}")
+                continue
+            if pattern is None:
+                print(f"  [skip] {label}: degenerate/empty")
+                continue
+            write_outputs(pattern, stats, stem, label, method)
+            rows.append((stem, label, stats))
+            print(f"  {label:8s} {stats['width_mm']:6.1f} x {stats['height_mm']:6.1f} mm "
+                  f"stitches={stats['stitch_count']:6d} jumps={stats['jump_count']:4d} "
+                  f"trims={stats['trim_count']:3d} colors={stats['color_count']} "
+                  f"{'LINE' if stats['line_art'] else 'FILL'}")
+    return rows
+
+
 def process_all():
     rows = []
     for img_path, stem, names in IMAGES:
@@ -677,4 +738,8 @@ def process_all():
 
 
 if __name__ == "__main__":
-    process_all()
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    if args:
+        process_images(args)
+    else:
+        process_all()
