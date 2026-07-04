@@ -41,6 +41,14 @@
           "embroidery_suitability_delta": 0.0,
           "overall_score": 0.512722,
           "overall_score_delta": 0.00043
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829
         }
       ]
     },
@@ -64,6 +72,14 @@
           "embroidery_suitability_delta": 0.0,
           "overall_score": 0.512722,
           "overall_score_delta": 0.00043
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829
         }
       ]
     },
@@ -87,6 +103,14 @@
           "embroidery_suitability_delta": 0.0,
           "overall_score": 0.512722,
           "overall_score_delta": 0.00043
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829
         }
       ]
     },
@@ -110,6 +134,14 @@
           "embroidery_suitability_delta": 0.0,
           "overall_score": 0.512722,
           "overall_score_delta": 0.00043
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829
         }
       ]
     },
@@ -130,10 +162,137 @@
           "overall_score": 0.512722,
           "overall_score_delta": 0.00043,
           "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.244658s) rather than a single noisy run, spread min=0.237356s p95=0.421615s"
+        },
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "perf_runs": 5,
+          "performance": 0.899926,
+          "performance_delta": 0.022255,
+          "total_runtime_min_s": 0.197763,
+          "total_runtime_median_s": 0.200148,
+          "total_runtime_p95_s": 0.207843,
+          "overall_score": 0.581012,
+          "overall_score_delta": 0.06829,
+          "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.200148s) rather than a single noisy run, spread min=0.197763s p95=0.207843s"
+        }
+      ]
+    },
+    "visual_ssim_weight": {
+      "value": 0.6,
+      "source": "run_iteration.py visual_similarity per-pair sub-score clamp(0.6*ssim+0.2*edge+0.2*(1-rmse)) (introduced iteration 4)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": null,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.581012,
+          "overall_score_continuity_4metric": 0.516432,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "visual_edge_weight": {
+      "value": 0.2,
+      "source": "run_iteration.py visual_similarity per-pair sub-score clamp(0.6*ssim+0.2*edge+0.2*(1-rmse)) (introduced iteration 4)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": null,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.581012,
+          "overall_score_continuity_4metric": 0.516432,
+          "overall_score_delta": 0.06829
+        }
+      ]
+    },
+    "visual_rmse_weight": {
+      "value": 0.2,
+      "source": "run_iteration.py visual_similarity per-pair sub-score clamp(0.6*ssim+0.2*edge+0.2*(1-rmse)) (introduced iteration 4)",
+      "unit": "coefficient",
+      "correlation_history": [
+        {
+          "iteration": 4,
+          "timestamp": "2026-07-04T06:32:20.361162+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": null,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.581012,
+          "overall_score_continuity_4metric": 0.516432,
+          "overall_score_delta": 0.06829
         }
       ]
     }
   },
-  "last_updated_iteration": 3,
-  "last_updated_timestamp": "2026-07-04T05:28:53.062077+00:00"
+  "last_updated_iteration": 4,
+  "last_updated_timestamp": "2026-07-04T06:32:20.361162+00:00"
 }

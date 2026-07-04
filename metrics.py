@@ -272,6 +272,249 @@ def pes_metrics(path):
         return result
 
 
+# --- Visual fidelity rendering + comparison (iteration 4) -------------------
+# These functions render a vector DESIGN (SVG) and its actual EMBROIDERY
+# STITCH-OUT (PES) to a common grayscale raster on the SAME framing convention
+# (design bounding box fit into a size*size white canvas, aspect preserved,
+# centered) so the two rasters are registration-comparable, then score real
+# visual fidelity between them. This is NOT circular: it compares the vector we
+# intend to sew against a simulation of what the machine actually sews, which is
+# the meaningful fidelity question for an image->vector->embroidery pipeline.
+#
+# Heavy deps (numpy / Pillow / scikit-image / cairosvg / playwright) are imported
+# lazily inside these functions so importing metrics.py stays stdlib-light and
+# the deterministic svg_metrics/pes_metrics timing path is unaffected. Every
+# function is robust: returns None on any failure.
+
+
+def _fit_gray_to_canvas(gray_img, size):
+    """Fit a grayscale PIL image (content on white) into a size*size white
+    canvas, preserving aspect ratio and centering. Returns a uint8 numpy array.
+
+    This is the SHARED framing convention for both the SVG and PES renderers so
+    the two rasters land in the same place and are registration-comparable.
+    """
+    from PIL import Image
+    import numpy as np
+    g = gray_img.copy()
+    # thumbnail() fits within (size, size) preserving aspect ratio in place.
+    g.thumbnail((size, size), Image.LANCZOS)
+    canvas = Image.new("L", (size, size), 255)
+    off = ((size - g.width) // 2, (size - g.height) // 2)
+    canvas.paste(g, off)
+    return np.asarray(canvas, dtype=np.uint8)
+
+
+def _render_svg_playwright(svg_path, size):
+    """Fallback SVG rasterizer via Playwright/Chromium. Returns a PIL RGBA
+    image or None. Only used when cairosvg is unavailable."""
+    try:
+        import io
+        from PIL import Image
+        from playwright.sync_api import sync_playwright
+        with open(svg_path, "rb") as f:
+            svg_data = f.read()
+        exe = os.environ.get("CHROMIUM_PATH", "/opt/pw-browsers/chromium")
+        with sync_playwright() as p:
+            browser = p.chromium.launch(executable_path=exe)
+            page = browser.new_page(viewport={"width": size, "height": size})
+            page.set_content(
+                '<html><body style="margin:0;background:#fff">'
+                '<img src="data:image/svg+xml;base64,%s" '
+                'style="width:%dpx"></body></html>' % (
+                    __import__("base64").b64encode(svg_data).decode(), size))
+            page.wait_for_timeout(200)
+            png = page.screenshot(type="png")
+            browser.close()
+        return Image.open(io.BytesIO(png))
+    except Exception:
+        return None
+
+
+def render_svg_to_gray(svg_path, size=512):
+    """Rasterize an SVG to a size*size grayscale numpy array (white canvas,
+    aspect preserved, centered). Prefers cairosvg; falls back to
+    Playwright/Chromium. Returns None on failure."""
+    try:
+        import io
+        from PIL import Image
+    except Exception:
+        return None
+
+    img = None
+    try:
+        import cairosvg
+        png_bytes = cairosvg.svg2png(url=svg_path, output_width=size)
+        img = Image.open(io.BytesIO(png_bytes))
+    except Exception:
+        img = None
+
+    if img is None:
+        img = _render_svg_playwright(svg_path, size)
+    if img is None:
+        return None
+
+    try:
+        # Composite over an opaque white background so transparency reads as
+        # white (matching the PES canvas), then convert to grayscale.
+        img = img.convert("RGBA")
+        bg = Image.new("RGBA", img.size, (255, 255, 255, 255))
+        bg.alpha_composite(img)
+        gray = bg.convert("L")
+        return _fit_gray_to_canvas(gray, size)
+    except Exception:
+        return None
+
+
+def render_pes_to_gray(pes_path, size=512):
+    """Rasterize a PES stitch-out to a size*size grayscale numpy array.
+
+    Reads the stitch list with pyembroidery and draws the SEWN paths as 1px dark
+    lines on white with PIL.ImageDraw: a line is drawn only for a consecutive
+    STITCH->STITCH segment (both endpoints needle-down). JUMP / TRIM /
+    COLOR_CHANGE moves are NOT drawn, so travel/thread-cut connectors don't
+    appear. Coordinates are normalized to the design bounding box and fit into
+    the size*size canvas with the SAME framing convention as render_svg_to_gray
+    (aspect preserved, centered). Y is NOT flipped: these PES files store
+    coordinates in image (Y-down) orientation already, empirically calibrated on
+    the asymmetric coastal layout (no-flip registers edge_overlap 0.41 / ssim
+    0.91 vs flipped 0.13 / 0.85 against its SVG), so the raw Y matches the
+    rendered SVG. Returns None on failure.
+    """
+    try:
+        from PIL import Image, ImageDraw
+        import numpy as np
+    except Exception:
+        return None
+    if not _HAVE_PYEMB:
+        return None
+    try:
+        pattern = pyembroidery.read(pes_path)
+    except Exception:
+        return None
+    if pattern is None:
+        return None
+
+    try:
+        stitches = pattern.stitches or []
+        if not stitches:
+            return None
+        STITCH = pyembroidery.STITCH
+
+        xs = [s[0] for s in stitches]
+        ys = [s[1] for s in stitches]
+        minx, maxx = min(xs), max(xs)
+        miny, maxy = min(ys), max(ys)
+        w = maxx - minx
+        h = maxy - miny
+        span = max(w, h)
+        if span <= 0:
+            return None
+
+        # Scale the larger bbox dimension to fill the canvas (matches the SVG
+        # thumbnail, which fills its larger dimension to `size`). Center both.
+        scale = (size - 1) / span
+        draw_w = w * scale
+        draw_h = h * scale
+        off_x = (size - draw_w) / 2.0
+        off_y = (size - draw_h) / 2.0
+
+        def tx(x, y):
+            px = off_x + (x - minx) * scale
+            # No Y flip: these PES coordinates are already Y-down (image
+            # orientation), verified by registration against the SVG designs.
+            py = off_y + (y - miny) * scale
+            return (px, py)
+
+        canvas = Image.new("L", (size, size), 255)
+        draw = ImageDraw.Draw(canvas)
+        prev = None
+        prev_cmd = None
+        for s in stitches:
+            cmd = _command_of(s)
+            pt = tx(s[0], s[1])
+            if prev is not None and cmd == STITCH and prev_cmd == STITCH:
+                draw.line([prev, pt], fill=0, width=1)
+            prev = pt
+            prev_cmd = cmd
+        return np.asarray(canvas, dtype=np.uint8)
+    except Exception:
+        return None
+
+
+def _edge_map(arr_float01):
+    """Binary edge map via Sobel magnitude thresholded at mean+std.
+
+    Returns an all-False map for a flat (all-zero-gradient) image so the IoU is
+    well defined. Input is a float array in [0, 1]."""
+    import numpy as np
+    from skimage.filters import sobel
+    e = sobel(arr_float01)
+    emax = float(e.max())
+    if emax <= 0.0:
+        return np.zeros(e.shape, dtype=bool)
+    thr = float(e.mean() + e.std())
+    if thr <= 0.0:
+        thr = 0.1 * emax
+    return e > thr
+
+
+def visual_compare(gray_a, gray_b):
+    """Compare two grayscale rasters and return real fidelity metrics.
+
+    Returns a dict with:
+      - ssim:         skimage structural_similarity (data_range=255), in [-1,1]
+      - rmse_norm:    root-mean-square error / 255, in [0,1]
+      - edge_overlap: IoU of binary Sobel edge maps, in [0,1]
+    Images are resized to a common shape if needed. Returns None if either input
+    is None/empty. Identity input yields ssim=1.0, rmse_norm=0.0,
+    edge_overlap=1.0.
+    """
+    try:
+        import numpy as np
+        from skimage.metrics import structural_similarity as ssim_fn
+    except Exception:
+        return None
+    if gray_a is None or gray_b is None:
+        return None
+    a = np.asarray(gray_a)
+    b = np.asarray(gray_b)
+    if a.size == 0 or b.size == 0:
+        return None
+
+    if a.shape != b.shape:
+        try:
+            from PIL import Image
+            b_img = Image.fromarray(b.astype(np.uint8)).resize(
+                (a.shape[1], a.shape[0]), Image.LANCZOS)
+            b = np.asarray(b_img)
+        except Exception:
+            return None
+
+    af = a.astype(np.float64)
+    bf = b.astype(np.float64)
+
+    try:
+        ssim_val = float(ssim_fn(af, bf, data_range=255.0))
+    except Exception:
+        ssim_val = 0.0
+
+    rmse = float(np.sqrt(np.mean((af - bf) ** 2)))
+    rmse_norm = rmse / 255.0
+
+    ea = _edge_map(af / 255.0)
+    eb = _edge_map(bf / 255.0)
+    inter = int(np.logical_and(ea, eb).sum())
+    union = int(np.logical_or(ea, eb).sum())
+    edge_overlap = float(inter / union) if union > 0 else 0.0
+
+    return {
+        "ssim": round(ssim_val, 6),
+        "rmse_norm": round(rmse_norm, 6),
+        "edge_overlap": round(edge_overlap, 6),
+    }
+
+
 if __name__ == "__main__":
     import json
     import sys

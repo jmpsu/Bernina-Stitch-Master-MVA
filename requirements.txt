@@ -1,1 +1,5 @@
 pyembroidery
+numpy
+pillow
+scikit-image
+cairosvg
