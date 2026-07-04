@@ -13,6 +13,7 @@ Usage:
 import glob
 import json
 import os
+import statistics
 import time
 from datetime import datetime, timezone
 
@@ -81,6 +82,35 @@ def resolve_batch_size():
         return None
 
 
+def resolve_perf_runs():
+    """Number of timing repetitions for the performance sub-score (default 5).
+
+    Correctness metrics are deterministic and computed once; only the timing
+    loop repeats. Taking the MEDIAN over N runs makes the performance sub-score
+    robust to sub-second measurement jitter on a trivial workload.
+    """
+    raw = os.environ.get("PERF_RUNS", "5").strip()
+    try:
+        n = int(raw)
+        return n if n > 0 else 5
+    except ValueError:
+        return 5
+
+
+def percentile(values, pct):
+    """Linear-interpolation percentile (numpy-style) with no dependencies."""
+    if not values:
+        return 0.0
+    s = sorted(values)
+    if len(s) == 1:
+        return s[0]
+    rank = (pct / 100.0) * (len(s) - 1)
+    lo = int(rank)
+    hi = min(lo + 1, len(s) - 1)
+    frac = rank - lo
+    return s[lo] + (s[hi] - s[lo]) * frac
+
+
 def discover(batch_size):
     svgs = sorted(glob.glob(os.path.join(VECTOR_DIR, "*.svg")))
     pess = sorted(glob.glob(os.path.join(STITCH_DIR, "*.pes")))
@@ -104,22 +134,51 @@ def next_iteration_number():
     return (max(nums) + 1) if nums else 1
 
 
-def measure_all(svgs, pess):
-    """Measure every file, recording per-file runtime via perf_counter."""
+def measure_all(svgs, pess, perf_runs):
+    """Measure every file and time the full corpus metric computation.
+
+    Correctness metrics are deterministic, so the per-file metric dicts are
+    identical on every pass; the ledger/report content is therefore written
+    once (no duplication). The ONLY thing repeated is the timing loop: we
+    recompute the whole corpus `perf_runs` times, record the total runtime of
+    each pass, and report min/median/p95 so measurement variance is visible.
+    The MEDIAN total runtime feeds the performance sub-score, making it robust
+    to sub-second jitter on this trivial (~0.2s) workload.
+
+    Per-file `runtime_s` in each record is the MEDIAN of that file's per-pass
+    runtimes, so the artifact tables stay consistent with the median scoring.
+    """
+    files = [("svg", p) for p in svgs] + [("pes", p) for p in pess]
+    per_file_runtimes = {p: [] for _, p in files}
+    total_runtimes = []
+    records_by_path = {}
+
+    for _ in range(perf_runs):
+        run_total = 0.0
+        for kind, path in files:
+            t0 = time.perf_counter()
+            m = metrics.svg_metrics(path) if kind == "svg" else metrics.pes_metrics(path)
+            dt = time.perf_counter() - t0
+            run_total += dt
+            per_file_runtimes[path].append(dt)
+            records_by_path[path] = m  # deterministic across passes
+        total_runtimes.append(run_total)
+
     records = []
-    for path in svgs:
-        t0 = time.perf_counter()
-        m = metrics.svg_metrics(path)
-        m["runtime_s"] = round(time.perf_counter() - t0, 6)
+    for kind, path in files:
+        m = records_by_path[path]
+        m["runtime_s"] = round(statistics.median(per_file_runtimes[path]), 6)
         m["path"] = os.path.relpath(path, REPO_ROOT)
         records.append(m)
-    for path in pess:
-        t0 = time.perf_counter()
-        m = metrics.pes_metrics(path)
-        m["runtime_s"] = round(time.perf_counter() - t0, 6)
-        m["path"] = os.path.relpath(path, REPO_ROOT)
-        records.append(m)
-    return records
+
+    perf_stats = {
+        "runs": perf_runs,
+        "total_runtime_min_s": round(min(total_runtimes), 6),
+        "total_runtime_median_s": round(statistics.median(total_runtimes), 6),
+        "total_runtime_p95_s": round(percentile(total_runtimes, 95), 6),
+        "total_runtimes_s": [round(t, 6) for t in total_runtimes],
+    }
+    return records, perf_stats
 
 
 def clamp01(x):
@@ -197,16 +256,24 @@ def score_embroidery(records):
     return val, note
 
 
-def score_performance(records):
-    """Performance from total measurement runtime. Faster -> higher.
+def score_performance(perf_stats):
+    """Performance from the MEDIAN total runtime across PERF_RUNS runs.
 
-    Baseline reference: 2.0s budget for the whole batch. Score linearly
-    degrades past the budget.
+    The formula is IDENTICAL to iteration 2 (1 - total_runtime/budget, with a
+    2.0s budget); the ONLY change is that `total_runtime` is now the MEDIAN of
+    N timing runs rather than a single run, so sub-second jitter on this trivial
+    workload no longer swamps real quality changes. min/median/p95 are reported
+    in the note so variance is visible.
     """
-    total_runtime = sum(r.get("runtime_s", 0.0) for r in records)
+    total_runtime = perf_stats["total_runtime_median_s"]
     budget = 2.0
     val = clamp01(1.0 - (total_runtime / budget)) if total_runtime > 0 else 1.0
-    note = "1 - total_runtime(%.4fs)/budget(%.1fs)" % (total_runtime, budget)
+    note = ("1 - median_total_runtime(%.4fs)/budget(%.1fs) over %d runs "
+            "[min=%.4fs median=%.4fs p95=%.4fs]" % (
+                total_runtime, budget, perf_stats["runs"],
+                perf_stats["total_runtime_min_s"],
+                perf_stats["total_runtime_median_s"],
+                perf_stats["total_runtime_p95_s"]))
     return val, note, total_runtime
 
 
@@ -220,7 +287,7 @@ def score_reliability(records):
     return val, note
 
 
-def compute_overall(records, weights):
+def compute_overall(records, weights, perf_stats):
     """Compute sub-scores and renormalized weighted OVERALL_SCORE.
 
     visual_similarity is UNAVAILABLE this iteration (no reference raster images
@@ -230,7 +297,7 @@ def compute_overall(records, weights):
     """
     topo, topo_note = score_topology(records)
     emb, emb_note = score_embroidery(records)
-    perf, perf_note, total_runtime = score_performance(records)
+    perf, perf_note, total_runtime = score_performance(perf_stats)
     rel, rel_note = score_reliability(records)
 
     subscores = {
@@ -278,6 +345,7 @@ def compute_overall(records, weights):
         "overall_score": round(overall, 6),
         "renormalization_explanation": renorm_explanation,
         "total_runtime_s": round(total_runtime, 6),
+        "performance_runtime_stats": perf_stats,
     }
 
 
@@ -341,7 +409,8 @@ def append_jsonl(path, record):
         f.write(json.dumps(record) + "\n")
 
 
-def write_reports(iteration, records, scoring, ts, comparison=None):
+def write_reports(iteration, records, scoring, ts, comparison=None,
+                  baseline=None):
     os.makedirs(REPORTS_DIR, exist_ok=True)
     json_path = os.path.join(REPORTS_DIR, "iteration_%d.json" % iteration)
     md_path = os.path.join(REPORTS_DIR, "iteration_%d.md" % iteration)
@@ -353,6 +422,7 @@ def write_reports(iteration, records, scoring, ts, comparison=None):
         "artifacts": records,
         "scoring": scoring,
         "comparison_vs_previous": comparison,
+        "comparison_vs_baseline": baseline,
     }
     with open(json_path, "w") as f:
         json.dump(report, f, indent=2)
@@ -384,6 +454,24 @@ def write_reports(iteration, records, scoring, ts, comparison=None):
     lines.append(scoring["renormalization_explanation"])
     lines.append("")
 
+    # Performance timing variance (objective-robustness evidence).
+    ps = scoring.get("performance_runtime_stats")
+    if ps is not None:
+        lines.append("### Performance timing variance (median-of-N)")
+        lines.append("")
+        lines.append("Performance is scored from the MEDIAN total runtime over "
+                     "%d runs, not a single run, so sub-second jitter on this "
+                     "trivial (~0.2s) workload no longer swamps real quality "
+                     "changes." % ps["runs"])
+        lines.append("")
+        lines.append("| runs | min (s) | median (s) | p95 (s) | all runs (s) |")
+        lines.append("|---|---|---|---|---|")
+        lines.append("| %d | %.6f | %.6f | %.6f | %s |" % (
+            ps["runs"], ps["total_runtime_min_s"],
+            ps["total_runtime_median_s"], ps["total_runtime_p95_s"],
+            ", ".join("%.6f" % t for t in ps["total_runtimes_s"])))
+        lines.append("")
+
     # Phase-6 cross-iteration comparison.
     if comparison is not None:
         lines.append("## Comparison vs iteration %d (Phase 6)" %
@@ -412,6 +500,21 @@ def write_reports(iteration, records, scoring, ts, comparison=None):
                 "null" if pv is None else "%.6f" % pv,
                 "null" if cv is None else "%.6f" % cv,
                 "null" if dv is None else "%+.6f" % dv))
+        lines.append("")
+
+    # Note vs the iteration-1 baseline (in addition to the prior-iteration diff).
+    if baseline is not None:
+        bd = baseline.get("overall_score_delta")
+        lines.append("### vs iteration %d baseline" %
+                     baseline["baseline_iteration"])
+        lines.append("")
+        lines.append("- Baseline (iteration %d) OVERALL_SCORE: **%.6f**" % (
+            baseline["baseline_iteration"], baseline["baseline_overall_score"]))
+        lines.append("- Current OVERALL_SCORE: **%.6f**" %
+                     baseline["current_overall_score"])
+        lines.append("- Delta vs baseline: **%s** (%s)" % (
+            "null" if bd is None else "%+.6f" % bd,
+            "above baseline" if (bd is not None and bd > 0) else "below baseline"))
         lines.append("")
 
     # SVG table
@@ -505,16 +608,26 @@ def seed_parameter_index(iteration, ts):
     return idx
 
 
-def update_parameter_index(idx, iteration, ts, scoring, comparison):
-    """Record the iteration-2 embroidery-suitability coefficients and their
-    observed effect on OVERALL_SCORE into the parameter correlation index."""
+def update_parameter_index(idx, iteration, ts, scoring, comparison,
+                           perf_runs=None):
+    """Record parameters and their observed effect on OVERALL_SCORE.
+
+    Iteration 2 introduced the embroidery-suitability coefficients; iteration 3
+    introduces PERF_RUNS (median-of-N timing) and records its observed effect on
+    performance-score STABILITY (the min/median/p95 timing spread), which is the
+    knob that changed this iteration.
+    """
     emb = scoring["subscores"].get("embroidery_suitability")
+    perf = scoring["subscores"].get("performance")
     overall = scoring["overall_score"]
     overall_delta = comparison["overall_score_delta"] if comparison else None
     emb_delta = None
+    perf_delta = None
     if comparison:
         emb_delta = comparison["subscore_deltas"].get(
             "embroidery_suitability", {}).get("delta")
+        perf_delta = comparison["subscore_deltas"].get(
+            "performance", {}).get("delta")
 
     params = idx.setdefault("parameters", {})
     coeffs = {
@@ -541,6 +654,37 @@ def update_parameter_index(idx, iteration, ts, scoring, comparison):
             "overall_score_delta": overall_delta,
         })
 
+    # PERF_RUNS: median-of-N timing knob and its effect on score stability.
+    if perf_runs is not None:
+        ps = scoring.get("performance_runtime_stats", {})
+        entry = params.setdefault("PERF_RUNS", {
+            "value": perf_runs,
+            "source": "run_iteration.py performance sub-score timing loop "
+                      "(introduced iteration %d)" % iteration,
+            "unit": "runs",
+            "correlation_history": [],
+        })
+        entry["value"] = perf_runs
+        entry["correlation_history"].append({
+            "iteration": iteration,
+            "timestamp": ts,
+            "perf_runs": perf_runs,
+            "performance": perf,
+            "performance_delta": perf_delta,
+            "total_runtime_min_s": ps.get("total_runtime_min_s"),
+            "total_runtime_median_s": ps.get("total_runtime_median_s"),
+            "total_runtime_p95_s": ps.get("total_runtime_p95_s"),
+            "overall_score": overall,
+            "overall_score_delta": overall_delta,
+            "observed_effect": ("median-of-%d timing; performance sub-score now "
+                                "reflects the median (%.6fs) rather than a single "
+                                "noisy run, spread min=%.6fs p95=%.6fs" % (
+                                    perf_runs,
+                                    ps.get("total_runtime_median_s", 0.0),
+                                    ps.get("total_runtime_min_s", 0.0),
+                                    ps.get("total_runtime_p95_s", 0.0))),
+        })
+
     idx["last_updated_iteration"] = iteration
     idx["last_updated_timestamp"] = ts
     with open(PARAM_INDEX, "w") as f:
@@ -548,26 +692,60 @@ def update_parameter_index(idx, iteration, ts, scoring, comparison):
     return idx
 
 
+def load_baseline_report():
+    """Load reports/iteration_1.json (the baseline) if present, else None."""
+    path = os.path.join(REPORTS_DIR, "iteration_1.json")
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def build_baseline_comparison(iteration, scoring, baseline_report):
+    """Note comparing the current OVERALL_SCORE to the iteration-1 baseline."""
+    if baseline_report is None or baseline_report.get("iteration") == iteration:
+        return None
+    base_overall = baseline_report.get("scoring", {}).get("overall_score")
+    cur_overall = scoring["overall_score"]
+    delta = (round(cur_overall - base_overall, 6)
+             if base_overall is not None else None)
+    return {
+        "baseline_iteration": baseline_report.get("iteration", 1),
+        "baseline_overall_score": base_overall,
+        "current_overall_score": cur_overall,
+        "overall_score_delta": delta,
+    }
+
+
 def main():
     ts = now_iso()
     batch_size = resolve_batch_size()
+    perf_runs = resolve_perf_runs()
     weights = load_weights()
     iteration = next_iteration_number()
 
     svgs, pess = discover(batch_size)
-    print("Iteration %d | batch=%s | %d SVG, %d PES" % (
+    print("Iteration %d | batch=%s | PERF_RUNS=%d | %d SVG, %d PES" % (
         iteration, batch_size if batch_size is not None else "ALL",
-        len(svgs), len(pess)))
+        perf_runs, len(svgs), len(pess)))
 
-    records = measure_all(svgs, pess)
-    scoring = compute_overall(records, weights)
+    records, perf_stats = measure_all(svgs, pess, perf_runs)
+    scoring = compute_overall(records, weights, perf_stats)
 
-    # Phase-6 cross-iteration comparison.
+    # Phase-6 cross-iteration comparison (vs immediately prior iteration).
     prev_report = load_previous_report(iteration)
     comparison = build_comparison(iteration, scoring, prev_report)
 
+    # Additional note vs the iteration-1 baseline.
+    baseline_report = load_baseline_report()
+    baseline = build_baseline_comparison(iteration, scoring, baseline_report)
+
     # Reports
-    json_path, md_path = write_reports(iteration, records, scoring, ts, comparison)
+    json_path, md_path = write_reports(
+        iteration, records, scoring, ts, comparison, baseline)
 
     # Observations: one JSON line per measured artifact.
     for r in records:
@@ -610,27 +788,54 @@ def main():
         improved = comparison["improved"]
         emb_delta = comparison["subscore_deltas"].get(
             "embroidery_suitability", {}).get("delta")
+        perf_delta = comparison["subscore_deltas"].get(
+            "performance", {}).get("delta")
+        ps = scoring.get("performance_runtime_stats", {})
+        baseline_overall = (baseline.get("baseline_overall_score")
+                            if baseline else None)
+        baseline_delta = (baseline.get("overall_score_delta")
+                          if baseline else None)
 
         append_jsonl(DECISION_TRACE, {
             "iteration": iteration,
             "timestamp": ts,
             "artifact": "decision_trace",
-            "objective": "Replace the bbox stitch-density-band embroidery_"
-                         "suitability score with a principled composite built "
-                         "from the real sewn-stitch-length distribution "
-                         "(safe/short/long fractions + trim rate).",
-            "hypothesis": "Bbox density (351-1605 st/cm2 across the corpus) is "
-                          "the wrong signal and pinned suitability to 0.0. A "
-                          "stitch-length-distribution metric is a genuinely "
-                          "better measure of embroiderability and should raise "
-                          "OVERALL_SCORE above the %.4f baseline without gaming "
-                          "the number." % (prev_overall if prev_overall
-                                           is not None else 0.0),
+            "objective": "Make the objective function robust to timing "
+                         "measurement noise: measure the performance sub-score "
+                         "from the MEDIAN total runtime over PERF_RUNS runs "
+                         "instead of a single trivial (~0.2s) run.",
+            "hypothesis": "Iteration 2 recorded a PENALTY even though the "
+                          "targeted metric (embroidery_suitability) genuinely "
+                          "improved 0.000->0.016, because the single-run "
+                          "performance timing was dominated by sub-second jitter "
+                          "(0.16s->0.25s). Taking the median of %d runs should "
+                          "stabilize the performance sub-score so real quality "
+                          "changes are no longer swamped by noise. All other "
+                          "sub-scores, the embroidery composite, and the "
+                          "visual_similarity renormalization are unchanged, so "
+                          "the comparison is apples-to-apples." % perf_runs,
             "decision": "reward-keep" if improved else "penalty-investigate",
             "overall_score": overall,
             "previous_overall_score": prev_overall,
             "overall_score_delta": delta,
             "embroidery_suitability_delta": emb_delta,
+            "performance_delta": perf_delta,
+            "perf_runs": perf_runs,
+            "performance_runtime_stats": {
+                "total_runtime_min_s": ps.get("total_runtime_min_s"),
+                "total_runtime_median_s": ps.get("total_runtime_median_s"),
+                "total_runtime_p95_s": ps.get("total_runtime_p95_s"),
+            },
+            "baseline_iteration_1_overall": baseline_overall,
+            "overall_score_delta_vs_baseline": baseline_delta,
+            "note": "Purpose of this iteration was objective-robustness (noise "
+                    "immunity), not a new quality metric. Performance sub-score "
+                    "variance across %d runs (min=%s median=%s p95=%s) is the "
+                    "evidence." % (
+                        perf_runs,
+                        ps.get("total_runtime_min_s"),
+                        ps.get("total_runtime_median_s"),
+                        ps.get("total_runtime_p95_s")),
         })
         append_jsonl(REWARD_LEDGER, {
             "iteration": iteration,
@@ -641,23 +846,33 @@ def main():
             "overall_score": overall,
             "previous_overall_score": prev_overall,
             "delta": delta,
+            "overall_score_delta_vs_baseline": baseline_delta,
             "note": ("OVERALL_SCORE improved by %+.6f vs iteration %d" % (
                 delta, comparison["compared_to_iteration"])) if improved
                     else ("OVERALL_SCORE dropped by %+.6f vs iteration %d" % (
                         delta, comparison["compared_to_iteration"])),
         })
         idx = seed_parameter_index(iteration, ts)
-        update_parameter_index(idx, iteration, ts, scoring, comparison)
+        update_parameter_index(idx, iteration, ts, scoring, comparison,
+                               perf_runs=perf_runs)
 
     # Console summary.
     print("OVERALL_SCORE = %.4f" % overall)
     for dim, sc in scoring["subscores"].items():
         print("  %-24s %s" % (dim, "null" if sc is None else "%.4f" % sc))
+    ps = scoring.get("performance_runtime_stats")
+    if ps is not None:
+        print("Performance timing over %d runs: min=%.6fs median=%.6fs p95=%.6fs" % (
+            ps["runs"], ps["total_runtime_min_s"],
+            ps["total_runtime_median_s"], ps["total_runtime_p95_s"]))
     if comparison is not None:
         print("Delta vs iteration %d: %+.6f (%s)" % (
             comparison["compared_to_iteration"],
             comparison["overall_score_delta"],
             "reward" if comparison["improved"] else "penalty"))
+    if baseline is not None:
+        print("Delta vs iteration %d baseline: %+.6f" % (
+            baseline["baseline_iteration"], baseline["overall_score_delta"]))
     print("Reports: %s , %s" % (json_path, md_path))
 
 

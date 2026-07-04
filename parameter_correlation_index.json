@@ -33,6 +33,14 @@
           "embroidery_suitability_delta": 0.015998,
           "overall_score": 0.512292,
           "overall_score_delta": -0.00214
+        },
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043
         }
       ]
     },
@@ -48,6 +56,14 @@
           "embroidery_suitability_delta": 0.015998,
           "overall_score": 0.512292,
           "overall_score_delta": -0.00214
+        },
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043
         }
       ]
     },
@@ -63,6 +79,14 @@
           "embroidery_suitability_delta": 0.015998,
           "overall_score": 0.512292,
           "overall_score_delta": -0.00214
+        },
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043
         }
       ]
     },
@@ -78,10 +102,38 @@
           "embroidery_suitability_delta": 0.015998,
           "overall_score": 0.512292,
           "overall_score_delta": -0.00214
+        },
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "embroidery_suitability": 0.015998400000000013,
+          "embroidery_suitability_delta": 0.0,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043
+        }
+      ]
+    },
+    "PERF_RUNS": {
+      "value": 5,
+      "source": "run_iteration.py performance sub-score timing loop (introduced iteration 3)",
+      "unit": "runs",
+      "correlation_history": [
+        {
+          "iteration": 3,
+          "timestamp": "2026-07-04T05:28:53.062077+00:00",
+          "perf_runs": 5,
+          "performance": 0.877671,
+          "performance_delta": 0.002582,
+          "total_runtime_min_s": 0.237356,
+          "total_runtime_median_s": 0.244658,
+          "total_runtime_p95_s": 0.421615,
+          "overall_score": 0.512722,
+          "overall_score_delta": 0.00043,
+          "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.244658s) rather than a single noisy run, spread min=0.237356s p95=0.421615s"
         }
       ]
     }
   },
-  "last_updated_iteration": 2,
-  "last_updated_timestamp": "2026-07-04T05:22:02.397401+00:00"
+  "last_updated_iteration": 3,
+  "last_updated_timestamp": "2026-07-04T05:28:53.062077+00:00"
 }
