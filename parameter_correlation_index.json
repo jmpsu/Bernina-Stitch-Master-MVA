@@ -291,6 +291,56 @@
           "overall_score_delta": 0.06829
         }
       ]
+    },
+    "target_h_mm": {
+      "value": 76.2,
+      "source": "digitizer.py TARGET_H_MM (3 inch object height, introduced iteration 5)",
+      "unit": "mm",
+      "correlation_history": [
+        {
+          "iteration": 5,
+          "timestamp": "2026-07-04T13:29:31.238235+00:00",
+          "objects_digitized": 11,
+          "objects_height_ok": 11,
+          "note": "all 11 objects scaled to 76.2mm tall (within +-1mm)"
+        }
+      ]
+    },
+    "row_spacing_mm": {
+      "value": 0.4,
+      "source": "digitizer.py ROW_SPACING_MM (boustrophedon fill row spacing, introduced iteration 5)",
+      "unit": "mm",
+      "correlation_history": [
+        {
+          "iteration": 5,
+          "timestamp": "2026-07-04T13:29:31.238235+00:00",
+          "note": "scanline fill row spacing for solid regions"
+        }
+      ]
+    },
+    "max_stitch_mm": {
+      "value": 3.0,
+      "source": "digitizer.py MAX_STITCH_MM (max fill stitch length, introduced iteration 5)",
+      "unit": "mm",
+      "correlation_history": [
+        {
+          "iteration": 5,
+          "timestamp": "2026-07-04T13:29:31.238235+00:00",
+          "note": "max fill stitch length; also jump/trim threshold basis"
+        }
+      ]
+    },
+    "running_stitch_mm": {
+      "value": 2.0,
+      "source": "digitizer.py RUNNING_STITCH_MM (contour running-stitch spacing, introduced iteration 5)",
+      "unit": "mm",
+      "correlation_history": [
+        {
+          "iteration": 5,
+          "timestamp": "2026-07-04T13:29:31.238235+00:00",
+          "note": "running-stitch spacing along contours for thin/line shapes"
+        }
+      ]
     }
   },
   "last_updated_iteration": 4,

@@ -1,0 +1,31 @@
+{
+  "object": "cocktail",
+  "name": "cocktail",
+  "width_mm": 62.9,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 791,
+  "jump_count": 29,
+  "trim_count": 23,
+  "color_count": 2,
+  "thread_rgb": [
+    [
+      171,
+      150,
+      118
+    ],
+    [
+      186,
+      180,
+      163
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "seafood_strip_cocktail.exp",
+    "pes": "seafood_strip_cocktail.pes",
+    "preview": "seafood_strip_cocktail_preview.png"
+  }
+}

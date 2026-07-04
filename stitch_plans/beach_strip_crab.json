@@ -1,0 +1,31 @@
+{
+  "object": "crab",
+  "name": "crab",
+  "width_mm": 59.2,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 2707,
+  "jump_count": 353,
+  "trim_count": 237,
+  "color_count": 2,
+  "thread_rgb": [
+    [
+      167,
+      136,
+      137
+    ],
+    [
+      135,
+      105,
+      105
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "beach_strip_crab.exp",
+    "pes": "beach_strip_crab.pes",
+    "preview": "beach_strip_crab_preview.png"
+  }
+}
