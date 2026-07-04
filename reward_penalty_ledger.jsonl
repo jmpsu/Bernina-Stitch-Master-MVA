@@ -1,1 +1,2 @@
 {"iteration": 1, "timestamp": "2026-06-29T07:14:43.890048+00:00", "artifact": "reward_penalty_ledger", "reward": 0, "penalty": 0, "overall_score": 0.514432, "previous_overall_score": null, "note": "baseline, no prior to compare"}
+{"iteration": 2, "timestamp": "2026-07-04T05:22:02.397401+00:00", "artifact": "reward_penalty_ledger", "reward": 0, "penalty": 1, "overall_score": 0.512292, "previous_overall_score": 0.514432, "delta": -0.00214, "note": "OVERALL_SCORE dropped by -0.002140 vs iteration 1"}

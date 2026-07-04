@@ -102,6 +102,25 @@ def _command_of(stitch):
     return cmd
 
 
+def _percentile(sorted_vals, pct):
+    """Linear-interpolation percentile of an already-sorted list.
+
+    pct in [0, 100]. Returns 0.0 for an empty list. Never raises.
+    """
+    n = len(sorted_vals)
+    if n == 0:
+        return 0.0
+    if n == 1:
+        return float(sorted_vals[0])
+    rank = (pct / 100.0) * (n - 1)
+    lo = int(math.floor(rank))
+    hi = int(math.ceil(rank))
+    if lo == hi:
+        return float(sorted_vals[lo])
+    frac = rank - lo
+    return float(sorted_vals[lo] + (sorted_vals[hi] - sorted_vals[lo]) * frac)
+
+
 def pes_metrics(path):
     """Read a PES file with pyembroidery and return embroidery metrics.
 
@@ -150,6 +169,13 @@ def pes_metrics(path):
         ys = []
         total_travel = 0.0
         prev = None
+        prev_cmd = None
+        # Real sewn-stitch segment lengths (mm). A segment counts only when both
+        # its endpoints are STITCH commands, i.e. the machine actually sewed a
+        # thread from the previous needle-down to this one. Segments that start
+        # or end on a JUMP/TRIM/COLOR_CHANGE are travel/thread-cut moves, not
+        # stitches, so they are excluded from the length distribution.
+        stitch_lengths_mm = []
 
         for s in stitches:
             x, y = s[0], s[1]
@@ -168,8 +194,12 @@ def pes_metrics(path):
             if prev is not None:
                 dx = x - prev[0]
                 dy = y - prev[1]
-                total_travel += math.hypot(dx, dy)
+                seg = math.hypot(dx, dy)
+                total_travel += seg
+                if cmd == STITCH and prev_cmd == STITCH:
+                    stitch_lengths_mm.append(seg / 10.0)
             prev = (x, y)
+            prev_cmd = cmd
 
         # Color count: prefer threadlist, fall back to color changes + 1.
         try:
@@ -190,7 +220,31 @@ def pes_metrics(path):
         avg_stitch_length_mm = (total_travel_mm / stitch_count) if stitch_count else 0.0
 
         area_cm2 = (width_mm / 10.0) * (height_mm / 10.0)
+        # INFORMATIONAL ONLY as of iteration 2: bbox stitch density is a poor
+        # proxy for embroiderability on small, densely-filled designs. It is
+        # still reported for reference but no longer feeds embroidery_suitability.
         stitch_density_per_cm2 = (stitch_count / area_cm2) if area_cm2 > 0 else 0.0
+
+        # Stitch-length distribution stats (mm) over real sewn segments only.
+        # These drive the iteration-2 embroidery_suitability score: they capture
+        # thread-nesting risk (very short stitches), snag/loose-stitch risk (very
+        # long stitches), and the comfortable machine-embroidery range.
+        n_seg = len(stitch_lengths_mm)
+        if n_seg > 0:
+            sorted_lengths = sorted(stitch_lengths_mm)
+            stitch_len_p50_mm = _percentile(sorted_lengths, 50)
+            stitch_len_p95_mm = _percentile(sorted_lengths, 95)
+            short_stitch_frac = sum(1 for L in sorted_lengths if L < 0.5) / n_seg
+            long_stitch_frac = sum(1 for L in sorted_lengths if L > 7.0) / n_seg
+            safe_len_frac = sum(1 for L in sorted_lengths if 0.5 <= L <= 4.0) / n_seg
+        else:
+            stitch_len_p50_mm = 0.0
+            stitch_len_p95_mm = 0.0
+            short_stitch_frac = 0.0
+            long_stitch_frac = 0.0
+            safe_len_frac = 0.0
+
+        trims_per_1000 = (trim_count / stitch_count * 1000.0) if stitch_count else 0.0
 
         result.update({
             "valid": True,
@@ -204,6 +258,13 @@ def pes_metrics(path):
             "total_travel_mm": round(total_travel_mm, 3),
             "avg_stitch_length_mm": round(avg_stitch_length_mm, 4),
             "stitch_density_per_cm2": round(stitch_density_per_cm2, 3),
+            "stitch_segment_count": n_seg,
+            "stitch_len_p50_mm": round(stitch_len_p50_mm, 4),
+            "stitch_len_p95_mm": round(stitch_len_p95_mm, 4),
+            "short_stitch_frac": round(short_stitch_frac, 4),
+            "long_stitch_frac": round(long_stitch_frac, 4),
+            "safe_len_frac": round(safe_len_frac, 4),
+            "trims_per_1000": round(trims_per_1000, 4),
         })
         return result
     except Exception as e:  # defensive: never throw
