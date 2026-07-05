@@ -1,0 +1,5 @@
+Group B (part 3) — how we watch and record everything
+
+• Observability & instrumentation, plus AgentsView's analytics approach — every attempt the tracer makes is written to running log files, so we can always see what was tried and why.
+• Restic's snapshot/backup thinking — those logs are append-only (never overwritten), and we commit to git after each piece of work, so nothing is lost and we can roll back.
+• Mattermost — its reporting/messaging pattern is what this very Slack update is modeled on, along with the dashboards-style summaries.

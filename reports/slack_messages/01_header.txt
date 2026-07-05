@@ -1,0 +1,3 @@
+Embroidery pipeline — library utilization report
+
+Here's a plain-English rundown of how our reference library is actually being used in the artwork-to-stitch pipeline. For each source we looked at what it teaches and where that knowledge shows up in the real system. We split everything two ways: (A) things that change how we turn a picture into stitches, and (B) things that shaped how we built, tested, and ran the software itself. Where a source genuinely isn't used, we say so honestly instead of pretending.
