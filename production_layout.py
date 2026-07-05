@@ -15,21 +15,20 @@ background, anchored at the ruler origin, so the artwork visibly spans the
 correct number of grid units / ruler inches and the three images are directly
 comparable.
 
-Ruler-template calibration (measured from assets/ruler_grid_background.png,
-the clean IMG_0931 template, 704x1527 px):
-  * The white background is a square grid; one grid square == 0.25 in and
-    measures ~70.8 px (grid lines detected at 70-71 px spacing in both axes).
-    => 4 grid squares per inch.
-  * The transparent L-ruler on the left/bottom is an INCH scale. Its bold
-    number labels 0/1/2 sit at y == 1226/945/666 px (center), i.e. 2 inches
-    span 560 px => 280 px/in, agreeing with the grid (4 * 70.8 = 283).
-  * We adopt PIXELS_PER_INCH = 283.0 (grid-derived; 0.25 in per square).
-    A 3 in subject therefore spans 3 * 283 = 849 px == 12 grid squares.
-  * The L-ruler ORIGIN (the 0/0 corner) is the bottom-left anchor at
-    approx (x=155, y=1230): x just right of the vertical ruler's measuring
-    edge, y on the 0-inch line. Subjects are placed bottom-left at the origin
-    and grow up-and-to-the-right, exactly like the sample patches in
-    IMG_0928/IMG_0929, so their height reads directly against the inch ticks.
+Ruler-template calibration (assets/ruler_grid_5x5.png, a synthesized clean
+square 5 in x 5 in template, 1415x1415 px):
+  * PIXELS_PER_INCH = 283 (kept consistent with the original photographed
+    template's grid calibration). Canvas = 5 * 283 = 1415 px per side.
+  * The white background is a square grid; one grid square == 0.25 in ==
+    ~70.75 px => 4 grid squares per inch, 20x20 squares. Light gray thin lines
+    every 0.25 in; heavier/darker lines every 1 in (every 4th line).
+  * An L-shaped inch ruler runs along the LEFT and BOTTOM edges with tick marks
+    and numeric labels 0..5. A 3 in subject spans 3 * 283 = 849 px == 12 grid
+    squares, leaving ~2 in of headroom in width and height so even wide 3 in
+    designs (crest, caddie) fit fully inside the grid.
+  * The ORIGIN (the 0/0 corner) is the bottom-left anchor at (x=60, y=1355):
+    the drawn ruler inset. Subjects are placed bottom-left at the origin and
+    grow up-and-to-the-right, so their size reads directly against both arms.
 
 Every renderer is defensive: any failure returns None / is logged and skipped
 so visual generation never crashes stitch-plan generation.
@@ -46,12 +45,12 @@ from PIL import Image
 import digitizer  # remove_background(), render_preview() (color PES renderer)
 
 ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
-RULER_BG_PATH = os.path.join(ASSETS_DIR, "ruler_grid_background.png")
+RULER_BG_PATH = os.path.join(ASSETS_DIR, "ruler_grid_5x5.png")
 
 # --- Calibrated ruler-template constants (see module docstring) -------------
-PIXELS_PER_INCH = 283.0          # grid: 0.25 in per ~70.8 px square
+PIXELS_PER_INCH = 283.0          # grid: 0.25 in per ~70.75 px square
 GRID_INCH_PER_SQUARE = 0.25      # 4 grid squares == 1 inch
-RULER_ORIGIN = (155, 1230)       # (x, y) bottom-left 0/0 corner, in bg pixels
+RULER_ORIGIN = (60, 1355)        # (x, y) bottom-left 0/0 corner, in bg pixels
 
 MM_PER_INCH = 25.4
 
