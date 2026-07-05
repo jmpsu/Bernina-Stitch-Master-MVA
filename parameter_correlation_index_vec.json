@@ -1,7 +1,5 @@
 {
   "line_art|c1|e0": {
-    "collapsed": false,
-    "color_fidelity": 0.969505,
     "composite": 0.95038,
     "features": {
       "aspect": 0.9193,
@@ -25,12 +23,10 @@
       "splice_threshold": 45
     },
     "ssim_color": 0.981036,
-    "updated": "2026-07-05T03:59:49Z"
+    "updated": "2026-07-05T21:24:23Z"
   },
   "multicolor|c3|e0": {
-    "collapsed": false,
-    "color_fidelity": 0.757225,
-    "composite": 0.567537,
+    "composite": 0.568202,
     "features": {
       "aspect": 1.0427,
       "distinct_colors": 13,
@@ -43,22 +39,20 @@
     "params": {
       "color_precision": 6,
       "colormode": "color",
-      "corner_threshold": 50,
-      "filter_speckle": 8,
-      "hierarchical": "stacked",
-      "layer_difference": 16,
+      "corner_threshold": 40,
+      "filter_speckle": 1,
+      "hierarchical": "cutout",
+      "layer_difference": 48,
       "length_threshold": 4.0,
       "mode": "polygon",
       "path_precision": 8,
-      "splice_threshold": 45
+      "splice_threshold": 30
     },
-    "ssim_color": 0.627954,
-    "updated": "2026-07-05T03:59:49Z"
+    "ssim_color": 0.627187,
+    "updated": "2026-07-05T21:27:33Z"
   },
   "multicolor|c4|e0": {
-    "collapsed": false,
-    "color_fidelity": 0.977028,
-    "composite": 0.951454,
+    "composite": 0.951835,
     "features": {
       "aspect": 0.8753,
       "distinct_colors": 16,
@@ -71,16 +65,16 @@
     "params": {
       "color_precision": 7,
       "colormode": "color",
-      "corner_threshold": 60,
-      "filter_speckle": 2,
+      "corner_threshold": 40,
+      "filter_speckle": 1,
       "hierarchical": "stacked",
       "layer_difference": 16,
       "length_threshold": 4.0,
-      "mode": "spline",
+      "mode": "polygon",
       "path_precision": 8,
-      "splice_threshold": 45
+      "splice_threshold": 30
     },
-    "ssim_color": 0.980401,
-    "updated": "2026-07-05T03:59:49Z"
+    "ssim_color": 0.980599,
+    "updated": "2026-07-05T21:24:44Z"
   }
 }

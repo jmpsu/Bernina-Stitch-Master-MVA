@@ -119,15 +119,39 @@ STALL_LIMIT = 40                 # stop a hill-climb after N consecutive non-imp
 DOCTRINE_SEED = {
     # source: vtracer defaults blended with potrace default preset (turdsize 2,
     # alphamax 1.0, opttolerance 0.2) and inkscape 15-color cap.
+    #
+    # v5 PROMOTION: four Stage-2-VALIDATED library artifacts are baked into this
+    # seed (see reports/knowledge_experiments.md + reports/vectorizer_v5_promotion.md).
+    # "validated" = consistent positive composite direction across the 5-image set;
+    # magnitudes are honestly small (sub-0.01) because this seed was already near
+    # optimal. hierarchical below is a SAFE STATIC fallback ("stacked", never the
+    # crest regression); at runtime optimize()/_seed_from_index override it per-image
+    # via promoted_hierarchical(feat) (cutout was only WEAK/per-artwork, so gated).
     "default": {
         "colormode": "color",
-        "hierarchical": "stacked",
-        "mode": "spline",
+        "hierarchical": "stacked",  # v5: runtime-overridden by promoted_hierarchical(feat)
+        # v5-promoted: curve_agent + edge_agent, `mode=polygon`
+        #   concept: opticurve Bezier-vs-polygon / turnpolicy turn resolution
+        #   source_document: potrace_SOURCE_BUNDLE.md (potracelib.h)
+        #   Stage-2 evidence: mean Delta-composite +0.0010, 5/5 images improved (validated)
+        "mode": "polygon",
         "color_precision": 6,     # ~ up to 2^? quantization; capped low for <=15 colors
-        "filter_speckle": 4,      # <- potrace turdsize (noise); default region ~2-5
-        "corner_threshold": 60,   # <- potrace alphamax 1.0 -> mid corner sharpness
+        # v5-promoted: noise_agent, `filter_speckle=1` (was 4)
+        #   concept: turdsize -- suppress paths below an area (speckle removal)
+        #   source_document: potrace_SOURCE_BUNDLE.md (potracelib.h)
+        #   Stage-2 evidence: mean Delta-composite +0.0007, 4/5 images improved (validated)
+        "filter_speckle": 1,
+        # v5-promoted: curve_agent, `corner_threshold=40` (was 60)
+        #   concept: alphamax corner threshold (curve-vs-corner decision, smoother bias)
+        #   source_document: potrace_SOURCE_BUNDLE.md (potracelib.h)
+        #   Stage-2 evidence: mean Delta-composite +0.0004, 5/5 images improved (validated)
+        "corner_threshold": 40,
         "length_threshold": 4.0,  # <- opttolerance-ish min segment length
-        "splice_threshold": 45,   # curve joining
+        # v5-promoted: curve_agent, `splice_threshold=30` (was 45)
+        #   concept: curve segment joining / splice length (secondary opttolerance analogue)
+        #   source_document: potrace_EMBIZ_ADAPTED_DOCTRINE.md
+        #   Stage-2 evidence: mean Delta-composite +0.0002, 5/5 images improved (validated)
+        "splice_threshold": 30,
         "path_precision": 8,      # coordinate precision (higher = more faithful)
         "layer_difference": 16,   # <- inkscape deltaE color-merge tolerance
     },
@@ -251,6 +275,39 @@ def seed_preset_for(feat):
     if feat["distinct_colors"] >= 8:
         return "logo"
     return "default"
+
+
+# v5 PROMOTION: distinct-color threshold above which hierarchical=cutout is NOT
+# used (the seed falls back to stacked). Set at the inkscape max_thread_colors=15
+# budget cited in the color doctrine -- see promoted_hierarchical().
+CUTOUT_MAX_DISTINCT_COLORS = 15
+
+
+def promoted_hierarchical(feat):
+    """v5 gated promotion of the WEAK/per-artwork `hierarchical=cutout` artifact.
+
+    Artifact: color_agent, concept "Stacked vs cutout color layering topology"
+    (source_document: inkscape_EMBIZ_ADAPTED_DOCTRINE.md). Stage-2 evidence:
+    mean Delta-composite +0.0001 +- 0.0073, only 3/5 images improved
+    (weak/positive, NOT validated) -- per-artwork:
+      flags +0.0086, house +0.0025, squirrel +0.0027  (cutout HELPED)
+      caddie -0.0001 (flat),  crest -0.0134 (cutout HURT badly).
+
+    Because the win is per-artwork, cutout is gated by `image_features` rather
+    than baked in. The one big regression (crest) is the highest-distinct-color
+    source in the set (16 colors, at/above the inkscape 15-thread-color budget):
+    with that many overlapping color layers, cutout's per-layer boundary slivers
+    cost more fidelity than they save. house (13 colors) still benefits. So:
+      distinct_colors <  15  -> "cutout"  (flags/caddie/house/squirrel class)
+      distinct_colors >= 15  -> "stacked" (crest-like high-palette multicolor)
+
+    Honest caveat: the soft-shaded split rests on 2 samples (house helped, crest
+    hurt); the threshold is calibrated to the observed crest failure and tied to
+    the doctrine's 15-color budget rather than being a broadly validated cutoff.
+    """
+    if feat["distinct_colors"] >= CUTOUT_MAX_DISTINCT_COLORS:
+        return "stacked"
+    return "cutout"
 
 
 # High-color multi-start seed (v2): a rich-palette / low-speckle starting point so
@@ -615,12 +672,18 @@ def _seed_from_index(feat):
 
     # Accept a prior only if reasonably close.
     if best_entry is not None and best_dist is not None and best_dist < 3.0:
-        params = dict(DOCTRINE_SEED[seed_preset_for(feat)])
+        preset = seed_preset_for(feat)
+        params = dict(DOCTRINE_SEED[preset])
+        if preset == "default":  # v5: gated cutout promotion (see promoted_hierarchical)
+            params["hierarchical"] = promoted_hierarchical(feat)
         params.update(best_entry.get("params", {}))
         return params, f"param_index[{best_key}] dist={best_dist:.2f}"
 
     preset = seed_preset_for(feat)
-    return dict(DOCTRINE_SEED[preset]), f"DOCTRINE_SEED[{preset}]"
+    params = dict(DOCTRINE_SEED[preset])
+    if preset == "default":  # v5: gated cutout promotion (see promoted_hierarchical)
+        params["hierarchical"] = promoted_hierarchical(feat)
+    return params, f"DOCTRINE_SEED[{preset}]"
 
 
 def _update_param_index(feat, params, best_scores):
@@ -732,8 +795,11 @@ def optimize(path, max_iters=DEFAULT_MAX_ITERS, target_ssim=0.98,
 
     # --- assemble the multi-start seed list ---
     idx_params, idx_src = _seed_from_index(feat)
+    # v5: default start adopts the gated cutout promotion (promoted_hierarchical).
+    _default_seed = dict(DOCTRINE_SEED["default"])
+    _default_seed["hierarchical"] = promoted_hierarchical(feat)
     starts = [
-        ("default", _clamp_seed(DOCTRINE_SEED["default"])),
+        ("default", _clamp_seed(_default_seed)),
         ("logo", _clamp_seed(DOCTRINE_SEED["logo"])),
         ("line_art", _clamp_seed(DOCTRINE_SEED["line_art"])),
         ("high_color", _clamp_seed(HIGH_COLOR_SEED)),
