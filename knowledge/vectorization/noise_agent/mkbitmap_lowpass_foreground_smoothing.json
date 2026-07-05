@@ -1,0 +1,15 @@
+{
+  "concept": "mkbitmap lowpass filter: smoothing foreground detail before tracing",
+  "element": "noise",
+  "source_document": "potrace_SOURCE_BUNDLE.md",
+  "source_excerpt": "mkbitmap.c: a standalone program for converting greymaps to bitmaps while optionally applying the following enhancements: highpass filter (evening out background gradients), lowpass filter (smoothing foreground details) ... apply lowpass filter (an approximate Gaussian blur) to greymap. Lambda is the standard deviation of the kernel",
+  "implication": "Potrace's companion mkbitmap pre-processes the raster with a lowpass (approximate Gaussian) blur to smooth foreground detail and anti-alias noise BEFORE thresholding, so the tracer forms cleaner regions from anti-aliased edges. This is a pre-tracer source-denoise step, not a tracer parameter.",
+  "param_mapping": {
+    "vtracer_param": "source_presmooth",
+    "direction": "set",
+    "candidate_values": ["median3", "gaussian", "none"],
+    "rationale": "There is NO vtracer parameter for input blur. This maps onto the vectorizer's existing _presmoothed_source() step (currently a size-3 median filter applied to soft-shaded sources only). mkbitmap's lowpass supports extending/tuning that pre-smoothing (Gaussian sigma, or applying it to noisy scans, not just soft-shaded art) as an isolated pre-tracer factor. This is a pipeline knob, not a vtracer kwarg."
+  },
+  "hypothesis": "Applying a light lowpass/median presmooth to noisy or anti-aliased sources before vtracer (as mkbitmap does) will let filter_speckle stay low while still producing clean regions, raising color_fidelity/ssim, because the noise is removed in raster space instead of being over-filtered in vector space.",
+  "relevance": "vectorizer"
+}

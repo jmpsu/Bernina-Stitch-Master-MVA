@@ -1,0 +1,15 @@
+{
+  "concept": "max path deviation <= 0.5mm (geometric edge fidelity target)",
+  "element": "edge",
+  "source_document": "inkscape_EMBIZ_ADAPTED_DOCTRINE.md",
+  "source_excerpt": "if deviation > 0.5:  # 0.5mm tolerance ... path_deviation_gt_0_5mm ... max_path_deviation_mm: 0.5",
+  "implication": "The pipeline treats a traced path as faithful only when it stays within 0.5mm of the source edge. A tracer that rounds or simplifies edges beyond this tolerance triggers human review. This is a hard geometric-fidelity bound on how coarsely edges may be approximated.",
+  "param_mapping": {
+    "vtracer_param": "path_precision",
+    "direction": "increase",
+    "candidate_values": [6, 7, 8],
+    "rationale": "path_precision sets the decimal precision of emitted path coordinates; higher precision keeps traced edges closer to the source, directly serving the <=0.5mm deviation bound. To honor a tight geometric tolerance the search should bias path_precision toward the top of its ladder (7-8) rather than the coarse end (3-4). The 0.5mm figure is a downstream target, not a vtracer unit, so this couples the doctrine bound to path_precision as the fidelity lever (inferred coupling, directly-stated target)."
+  },
+  "hypothesis": "Increasing path_precision toward 8 reduces traced-edge deviation from the source, raising edge_iou and helping meet the doctrine's <=0.5mm deviation gate, because coordinate precision is what bounds how far the vector edge can drift from the raster edge.",
+  "relevance": "vectorizer"
+}

@@ -1,0 +1,15 @@
+{
+  "concept": "turnpolicy: resolving ambiguous turns in path decomposition",
+  "element": "edge",
+  "source_document": "potrace_SOURCE_BUNDLE.md",
+  "source_excerpt": "int turnpolicy;      /* resolves ambiguous turns in path decomposition */   ...   POTRACE_TURNPOLICY_MINORITY,   /* turnpolicy */   {\"black\",\"white\",\"left\",\"right\",\"minority\",\"majority\",\"random\"}",
+  "implication": "At pixels where the boundary could turn either way (diagonal touch points), turnpolicy decides the connection, which changes path TOPOLOGY: whether two shapes touch or separate at a diagonal pinch. Default 'minority' tends to keep the visually-dominant connectivity. Wrong resolution merges or splits regions that should not be, distorting edges.",
+  "param_mapping": {
+    "vtracer_param": "mode",
+    "direction": "set",
+    "candidate_values": ["spline", "polygon"],
+    "rationale": "vtracer exposes NO turnpolicy equivalent; its diagonal-connectivity decisions are internal and not user-tunable. The closest lever affecting boundary topology is mode (spline vs polygon), which changes how boundary pixels are chained. INFERRED/weak mapping: this artifact documents that the turnpolicy concept exists in potrace but has NO direct vtracer control, so the only actionable knob is mode, and topology should instead be validated by a node/region-count check."
+  },
+  "hypothesis": "Because vtracer has no turnpolicy control, boundary-topology errors at diagonal pinch points cannot be tuned directly; switching mode may shift them, but the reliable mitigation is a post-trace node/region-count topology check rather than a parameter change. (Honest: this mapping is weak/inferred; library offers no vtracer analogue.)",
+  "relevance": "vectorizer"
+}

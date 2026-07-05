@@ -1,0 +1,15 @@
+{
+  "concept": "Corner detection threshold for edge/corner fidelity",
+  "element": "edge",
+  "source_document": "potrace_EMBIZ_ADAPTED_DOCTRINE.md",
+  "source_excerpt": "alphamax     default 1.0, logo 0.8, text 1.2   (range 0-1.3334) corner sharpness ... alphamax (corner sharpness) -> corner_threshold (higher potrace alphamax = smoother/rounder -> lower vtracer corner_threshold)",
+  "implication": "Edge/corner fidelity hinges on whether the tracer preserves sharp corners or rounds them. For hard-edged art (text, geometric logos) corners must stay crisp to keep edge_iou high; over-smoothing rounds corners and blurs the edge map. This is the same alphamax knob the curve agent owns, but here it is framed as protecting corner/edge topology rather than curve smoothness.",
+  "param_mapping": {
+    "vtracer_param": "corner_threshold",
+    "direction": "increase",
+    "candidate_values": [60, 70, 80, 90],
+    "rationale": "For edge/corner FIDELITY on angular art, bias corner_threshold higher (keep more corners crisp; analogue of potrace text preset alphamax 1.2). This is the opposite bias from the curve agent's smoothing goal, which is exactly why it is a distinct isolated factor: the same param optimizes different metrics (edge_iou here vs ssim-on-curves there) depending on artwork class."
+  },
+  "hypothesis": "Raising corner_threshold on angular/geometric/text art preserves sharp corners and raises edge_iou, whereas the curve agent's lower setting would round them; the optimal value is artwork-class dependent, so edge_iou and curve-ssim must be traded off explicitly.",
+  "relevance": "vectorizer"
+}

@@ -1,0 +1,15 @@
+{
+  "concept": "Bounded color palette (max 15 thread colors)",
+  "element": "color",
+  "source_document": "inkscape_EMBIZ_ADAPTED_DOCTRINE.md",
+  "source_excerpt": "Thread color count (max 15 per design) ... quality_thresholds: max_thread_colors: 15",
+  "implication": "The downstream embroidery target can only render <=15 distinct thread colors, so quantizing the trace to a palette at or below ~15 colors both matches production reality and prevents the tracer from wasting layers on colors that will be merged anyway. Over-quantizing (too few colors) causes the gray-plate collapse the vectorizer already guards against.",
+  "param_mapping": {
+    "vtracer_param": "color_precision",
+    "direction": "set",
+    "candidate_values": [4, 5, 6, 7],
+    "rationale": "color_precision controls the number of significant bits kept per channel during quantization; higher = more retained colors. To land near a <=15-color budget for logos/crests while staying above the source's distinct-color floor (color_precision_floor() in vectorizer.py), values in the 4-7 band are the operating range. 6-7 for multicolor crests, 4-5 for simpler logos/line art."
+  },
+  "hypothesis": "Choosing color_precision so the rendered distinct-color count lands near (but not below) the source's needs and <=~15 will maximize color_fidelity while avoiding the collapse penalty, because it matches the palette the source actually carries without paying for invisible extra colors.",
+  "relevance": "vectorizer"
+}

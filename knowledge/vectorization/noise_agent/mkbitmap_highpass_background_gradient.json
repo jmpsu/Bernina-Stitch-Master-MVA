@@ -1,0 +1,15 @@
+{
+  "concept": "mkbitmap highpass filter: evening out background gradients",
+  "element": "noise",
+  "source_document": "potrace_SOURCE_BUNDLE.md",
+  "source_excerpt": "highpass filter (evening out background gradients) ... int highpass;       /* use highpass filter? */   double lambda;      /* highpass filter radius */",
+  "implication": "A highpass filter flattens slow background lightness gradients (uneven scan lighting, paper shading) so a single threshold cleanly separates foreground from background across the whole image. Without it, a gradient background gets partially traced as spurious regions/speckle, especially near the light/dark crossover.",
+  "param_mapping": {
+    "vtracer_param": "source_background_flatten",
+    "direction": "set",
+    "candidate_values": ["highpass", "none"],
+    "rationale": "No vtracer parameter exists for background flattening. INFERRED pipeline step: optionally apply a highpass/background-subtract to the source before tracing (a new pre-tracer stage alongside _presmoothed_source). Reduces spurious low-contrast regions that would otherwise inflate layer/region count. Pipeline knob, not a vtracer kwarg; only relevant when source has an uneven background."
+  },
+  "hypothesis": "Highpass-flattening the background of sources with uneven lighting before tracing will reduce spurious background regions and let filter_speckle/color_precision stay lower, improving color_fidelity and reducing junk layers; effect is null on already-flat-background art.",
+  "relevance": "vectorizer"
+}
