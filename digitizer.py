@@ -52,6 +52,8 @@ AGGLO_GAP_FRAC = 0.08       # merge components whose bbox gap < this * img_width
 
 OUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "stitch_plans")
 REF_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reference_images")
+VEC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vectorized_svg")
+PROD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "production_runs")
 
 
 # ----------------------------------------------------------------------------
@@ -603,6 +605,26 @@ def write_outputs(pattern, stats, stem, obj_label, method):
     return exp_path, pes_path, png_path, json_path
 
 
+def generate_production_visuals(original_path, pes_path, stem, label, n_objects):
+    """Render the 3 ruler-review JPEGs for a just-written stitch plan into
+    production_runs/<stem>/ (original bg-removed / SVG / stitch-out, all at true
+    3 in). The matching SVG is looked up in vectorized_svg/<original-stem>.svg.
+
+    Fully guarded: a failure here logs and returns without disturbing the
+    stitch-generation pipeline."""
+    try:
+        import production_layout  # lazy: avoids import cost / circular import
+        base = os.path.splitext(os.path.basename(original_path))[0]
+        svg_path = os.path.join(VEC_DIR, base + ".svg")
+        folder = stem if n_objects == 1 else f"{stem}_{label}"
+        out_dir = os.path.join(PROD_DIR, folder)
+        written = production_layout.make_production_visuals(
+            original_path, svg_path, pes_path, out_dir)
+        print(f"  [visuals] {folder}: {len(written)} JPEG(s)")
+    except Exception as e:
+        print(f"  [visuals error] {stem}/{label}: {e}")
+
+
 # ----------------------------------------------------------------------------
 # CLI orchestration
 # ----------------------------------------------------------------------------
@@ -683,7 +705,8 @@ def process_images(paths, target_h_mm=TARGET_H_MM):
             if pattern is None:
                 print(f"  [skip] {label}: degenerate/empty")
                 continue
-            write_outputs(pattern, stats, stem, label, method)
+            _exp_p, pes_p, _png_p, _js_p = write_outputs(pattern, stats, stem, label, method)
+            generate_production_visuals(path, pes_p, stem, label, n)
             rows.append((stem, label, stats))
             print(f"  {label:8s} {stats['width_mm']:6.1f} x {stats['height_mm']:6.1f} mm "
                   f"stitches={stats['stitch_count']:6d} jumps={stats['jump_count']:4d} "
@@ -718,6 +741,7 @@ def process_all():
             if stats["stitch_count"] > MAX_STITCHES_WARN:
                 print(f"  [warn] {label}: {stats['stitch_count']} stitches > cap")
             exp_p, pes_p, png_p, js_p = write_outputs(pattern, stats, stem, label, method)
+            generate_production_visuals(img_path, pes_p, stem, label, len(objects))
             rows.append((stem, label, stats))
             print(f"  {label:10s} {stats['width_mm']:6.1f} x {stats['height_mm']:6.1f} mm "
                   f"stitches={stats['stitch_count']:6d} jumps={stats['jump_count']:4d} "
