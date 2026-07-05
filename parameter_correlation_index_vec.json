@@ -1,0 +1,80 @@
+{
+  "line_art|c1|e0": {
+    "composite": 0.945524,
+    "features": {
+      "aspect": 0.4619,
+      "distinct_colors": 6,
+      "edge_density": 0.02407,
+      "foreground_fraction": 0.11529,
+      "height": 853,
+      "is_line_art": true,
+      "width": 394
+    },
+    "params": {
+      "color_precision": 6,
+      "colormode": "color",
+      "corner_threshold": 60,
+      "filter_speckle": 2,
+      "hierarchical": "stacked",
+      "layer_difference": 8,
+      "length_threshold": 4.0,
+      "mode": "polygon",
+      "path_precision": 8,
+      "splice_threshold": 45
+    },
+    "ssim_color": 0.984378,
+    "updated": "2026-07-05T03:46:05Z"
+  },
+  "multicolor|c3|e0": {
+    "composite": 0.644659,
+    "features": {
+      "aspect": 1.0427,
+      "distinct_colors": 13,
+      "edge_density": 0.03299,
+      "foreground_fraction": 0.51902,
+      "height": 351,
+      "is_line_art": false,
+      "width": 366
+    },
+    "params": {
+      "color_precision": 3,
+      "colormode": "color",
+      "corner_threshold": 50,
+      "filter_speckle": 4,
+      "hierarchical": "stacked",
+      "layer_difference": 8,
+      "length_threshold": 5.0,
+      "mode": "spline",
+      "path_precision": 8,
+      "splice_threshold": 60
+    },
+    "ssim_color": 0.765918,
+    "updated": "2026-07-05T03:46:12Z"
+  },
+  "multicolor|c4|e0": {
+    "composite": 0.951018,
+    "features": {
+      "aspect": 0.8753,
+      "distinct_colors": 16,
+      "edge_density": 0.01913,
+      "foreground_fraction": 0.51206,
+      "height": 1347,
+      "is_line_art": false,
+      "width": 1179
+    },
+    "params": {
+      "color_precision": 6,
+      "colormode": "color",
+      "corner_threshold": 60,
+      "filter_speckle": 2,
+      "hierarchical": "stacked",
+      "layer_difference": 8,
+      "length_threshold": 4.0,
+      "mode": "polygon",
+      "path_precision": 8,
+      "splice_threshold": 45
+    },
+    "ssim_color": 0.980447,
+    "updated": "2026-07-05T03:46:04Z"
+  }
+}
