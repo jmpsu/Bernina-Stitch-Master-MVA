@@ -504,19 +504,17 @@ def _collapse_guard(orig_rgb, rendered_rgb):
     return (COLLAPSE_PENALTY if collapsed else 1.0), collapsed, detail
 
 
-def score(orig_rgb, rendered_rgb, crop_size=RENDER_SIZE):
-    """Fidelity metrics between two RGB uint8 arrays.
+def score(orig_rgb, rendered_rgb):
+    """Fidelity metrics between two RGB uint8 arrays (resized to common size).
 
-    v3 registration fix: BOTH the source and the render are first cropped to
-    their non-white content bounding box (`_crop_to_content`), THEN re-fit into a
-    common `crop_size` square canvas with aspect preserved+centered (same
-    convention as `_fit_rgb_to_canvas`), THEN scored. This removes the
-    whitespace-margin misregistration (source has margins, SVG render tightens to
-    content bbox and fills more of the canvas) that unfairly penalized SSIM even
-    for faithful traces. Aspect is preserved on both sides so no shape distortion
-    is introduced. An image scored against itself still yields ssim_color ~= 1.0.
+    v4 REVERT: the v3 content-crop-before-scoring step is removed. It hurt clean
+    art (crest 0.98->0.94, caddie 0.984->0.968) by introducing a sub-pixel
+    crop-then-recenter shift, and never closed the house gap (registration was
+    never the house's problem). Both arrays already arrive framed identically by
+    `_fit_rgb_to_canvas` (via load_image_rgb / render_svg_rgb), so scoring is done
+    directly. `_crop_to_content` / CROP_CONTENT_THRESH remain defined but UNUSED.
 
-    v2 composite (unchanged):
+    v2 composite (restored, unchanged):
       base = W_SSIM*ssim_color + W_EDGE*edge_iou + W_RMSE*(1-rmse_norm)
              + W_COLORFID*color_fidelity
       composite = base * collapse_guard   (guard is 1.0 or COLLAPSE_PENALTY)
@@ -532,12 +530,15 @@ def score(orig_rgb, rendered_rgb, crop_size=RENDER_SIZE):
     if orig_rgb is None or rendered_rgb is None:
         return None
 
-    # v3: content-crop BOTH, then re-fit BOTH into a common square canvas with
-    # aspect preserved+centered (like-for-like framing, no shape distortion).
-    orig_c = _crop_to_content(orig_rgb, CROP_CONTENT_THRESH)
-    rend_c = _crop_to_content(rendered_rgb, CROP_CONTENT_THRESH)
-    orig_rgb = _fit_rgb_to_canvas(Image.fromarray(orig_c), crop_size)
-    rendered_rgb = _fit_rgb_to_canvas(Image.fromarray(rend_c), crop_size)
+    # v2 framing: both arrays already share the RENDER_SIZE canvas; only resize
+    # if shapes somehow differ. No content-crop, no re-centering.
+    if orig_rgb.shape != rendered_rgb.shape:
+        h = min(orig_rgb.shape[0], rendered_rgb.shape[0])
+        w = min(orig_rgb.shape[1], rendered_rgb.shape[1])
+        orig_rgb = np.asarray(
+            Image.fromarray(orig_rgb).resize((w, h), Image.LANCZOS))
+        rendered_rgb = np.asarray(
+            Image.fromarray(rendered_rgb).resize((w, h), Image.LANCZOS))
 
     a = orig_rgb.astype(np.float64)
     b = rendered_rgb.astype(np.float64)
