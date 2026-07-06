@@ -76,6 +76,31 @@ OUT_DIR = os.path.join(_HERE, "vectorized_svg")
 RENDER_SIZE = 512  # square canvas for scoring
 
 # -----------------------------------------------------------------------------
+# v2 anti-collapse guardrail + color-fidelity constants (see reports/vectorizer_v2.md)
+# A degenerate candidate that flattens the image (e.g. a flat gray plate) can score
+# HIGH composite on a mostly-light source (low RMSE + ok SSIM). These constants let
+# score() detect that collapse and multiplicatively penalize it so it can never win.
+# -----------------------------------------------------------------------------
+COLLAPSE_QUANT_COLORS = 32       # PIL quantize palette size for distinct-color count
+COLLAPSE_MIN_BIN_FRAC = 0.005    # palette bin must cover >=0.5% of pixels to count
+COLLAPSE_COLOR_FRAC = 0.60       # rendered distinct colors must be >=60% of source
+COLLAPSE_STD_FRAC = 0.60         # rendered global std must be >=60% of source std
+COLLAPSE_FG_FRAC = 0.50          # rendered foreground fraction must be >=50% of source
+COLLAPSE_PENALTY = 0.30          # multiplicative composite penalty when collapsed
+
+COLOR_HIST_BINS = 4              # 4x4x4 RGB histogram for the color_fidelity term
+
+# Composite weights (v2). Sums to 1.0 before the anti-collapse guard multiplier.
+W_SSIM = 0.55
+W_EDGE = 0.15
+W_RMSE = 0.10
+W_COLORFID = 0.20
+
+# Search robustness (v2)
+DEFAULT_MAX_ITERS = 300          # global iteration budget across all multi-starts
+STALL_LIMIT = 40                 # stop a hill-climb after N consecutive non-improving iters
+
+# -----------------------------------------------------------------------------
 # DOCTRINE_SEED: seed presets derived from the doctrine (see module docstring).
 # Values live in vtracer's parameter space. `default` is the generic starting
 # point; `logo`/`line_art` mirror the potrace logo/text presets.
@@ -217,6 +242,65 @@ def seed_preset_for(feat):
     return "default"
 
 
+# High-color multi-start seed (v2): a rich-palette / low-speckle starting point so
+# the search can explore faithful traces of shaded art before considering low-color
+# candidates (which the anti-collapse guard now blocks when they flatten the image).
+HIGH_COLOR_SEED = {
+    "colormode": "color",
+    "hierarchical": "stacked",
+    "mode": "spline",
+    "color_precision": 8,     # max palette: keep source color richness
+    "filter_speckle": 1,      # keep fine detail / small regions
+    "corner_threshold": 60,
+    "length_threshold": 4.0,
+    "splice_threshold": 45,
+    "path_precision": 8,
+    "layer_difference": 8,    # finer color separation -> more layers
+}
+
+
+def is_soft_shaded(feat):
+    """Soft-shaded / anti-aliased illustration: many distinct colors, not line
+    art, appreciable foreground. These resist flat-color region tracing and need
+    a higher color budget + light source pre-smoothing."""
+    return bool((not feat["is_line_art"])
+                and feat["distinct_colors"] >= 10
+                and feat["foreground_fraction"] >= 0.30)
+
+
+def color_precision_floor(feat):
+    """Lower bound on color_precision derived from the source's distinct-color
+    count, so the hill-climb never quantizes below what the source needs (this is
+    the root cause of the v1 gray-plate collapse)."""
+    dc = feat["distinct_colors"]
+    if dc >= 12:
+        return 6
+    if dc >= 8:
+        return 5
+    if dc >= 5:
+        return 4
+    return 3
+
+
+def _presmoothed_source(path, feat):
+    """For soft-shaded sources ONLY, write a lightly median-smoothed copy of the
+    raster to a temp file and return its path (helps vtracer form clean regions
+    from anti-aliased gradients). Returns (trace_path, cleanup_path_or_None).
+    Scoring always uses the TRUE original, never this smoothed copy."""
+    if not is_soft_shaded(feat):
+        return path, None
+    import tempfile
+    from PIL import Image, ImageFilter
+    img = Image.open(path).convert("RGB")
+    # light median smoothing: edge-preserving, collapses anti-alias noise into
+    # flatter regions without destroying structure.
+    sm = img.filter(ImageFilter.MedianFilter(size=3))
+    fd, out_path = tempfile.mkstemp(suffix=".png")
+    os.close(fd)
+    sm.save(out_path)
+    return out_path, out_path
+
+
 # =============================================================================
 # 2. trace
 # =============================================================================
@@ -309,11 +393,69 @@ def _edge_map(gray01):
     return e > thr
 
 
+def _distinct_std_fg(rgb):
+    """Return (distinct_color_count, global_std, foreground_fraction) for an RGB
+    uint8 array. distinct = PIL quantize to COLLAPSE_QUANT_COLORS, count palette
+    bins covering >= COLLAPSE_MIN_BIN_FRAC of pixels (ignores quantization dust).
+    global_std = std over all channels/pixels. foreground = fraction of pixels
+    that are notably darker/more saturated than near-white paper."""
+    from PIL import Image
+    img = Image.fromarray(rgb)
+    q = img.quantize(colors=COLLAPSE_QUANT_COLORS, method=Image.FASTOCTREE)
+    counts = q.getcolors(maxcolors=COLLAPSE_QUANT_COLORS * 8) or []
+    total = float(sum(c for c, _ in counts)) or 1.0
+    distinct = sum(1 for c, _ in counts if c / total >= COLLAPSE_MIN_BIN_FRAC)
+
+    arr = rgb.astype(np.float64)
+    global_std = float(arr.std())
+    lum = arr.mean(axis=2)
+    sat = arr.max(axis=2) - arr.min(axis=2)
+    fg = float(((lum < 240) | (sat > 25)).mean())
+    return distinct, global_std, fg
+
+
+def _color_hist(rgb, bins=COLOR_HIST_BINS):
+    """Normalized bins^3 RGB histogram (sums to 1.0) for color_fidelity."""
+    idx = (rgb.astype(np.int64) * bins) // 256
+    idx = np.clip(idx, 0, bins - 1)
+    flat = (idx[..., 0] * bins + idx[..., 1]) * bins + idx[..., 2]
+    h = np.bincount(flat.ravel(), minlength=bins ** 3).astype(np.float64)
+    s = h.sum()
+    return h / s if s > 0 else h
+
+
+def _collapse_guard(orig_rgb, rendered_rgb):
+    """Detect a degenerate/flattened render relative to the source. Returns
+    (guard_factor, collapsed_bool, detail_dict). guard_factor is 1.0 when the
+    render preserves the source's color richness/contrast/foreground, else
+    COLLAPSE_PENALTY so such candidates can never win the composite."""
+    od, os_std, ofg = _distinct_std_fg(orig_rgb)
+    rd, rs_std, rfg = _distinct_std_fg(rendered_rgb)
+    color_ok = rd >= COLLAPSE_COLOR_FRAC * max(od, 1)
+    std_ok = rs_std >= COLLAPSE_STD_FRAC * max(os_std, 1e-6)
+    fg_ok = rfg >= COLLAPSE_FG_FRAC * max(ofg, 1e-6)
+    collapsed = not (color_ok and std_ok and fg_ok)
+    detail = {
+        "src_colors": int(od), "rnd_colors": int(rd),
+        "src_std": round(os_std, 3), "rnd_std": round(rs_std, 3),
+        "src_fg": round(ofg, 4), "rnd_fg": round(rfg, 4),
+        "color_ok": color_ok, "std_ok": std_ok, "fg_ok": fg_ok,
+    }
+    return (COLLAPSE_PENALTY if collapsed else 1.0), collapsed, detail
+
+
 def score(orig_rgb, rendered_rgb):
     """Fidelity metrics between two RGB uint8 arrays (resized to common size).
 
-    Returns dict: ssim_color, rmse_norm, edge_iou, composite where
-      composite = 0.7*ssim_color + 0.15*edge_iou + 0.15*(1 - rmse_norm)
+    v2 composite:
+      base = W_SSIM*ssim_color + W_EDGE*edge_iou + W_RMSE*(1-rmse_norm)
+             + W_COLORFID*color_fidelity
+      composite = base * collapse_guard   (guard is 1.0 or COLLAPSE_PENALTY)
+
+    color_fidelity = histogram-intersection similarity over a reduced 4x4x4 RGB
+    palette. The collapse guard hard-penalizes flattened/degenerate renders so a
+    flat gray plate can never out-score a faithful trace. ssim_color is reported
+    separately and unmodified.
     """
     from PIL import Image
     from skimage.metrics import structural_similarity as ssim_fn
@@ -344,11 +486,23 @@ def score(orig_rgb, rendered_rgb):
     union = float(np.logical_or(ea, eb).sum())
     edge_iou = (inter / union) if union > 0 else 1.0
 
-    composite = 0.7 * ssim_color + 0.15 * edge_iou + 0.15 * (1.0 - rmse_norm)
+    # color fidelity: histogram-intersection over reduced RGB palette.
+    ha = _color_hist(orig_rgb)
+    hb = _color_hist(rendered_rgb)
+    color_fidelity = float(np.minimum(ha, hb).sum())
+
+    guard, collapsed, detail = _collapse_guard(orig_rgb, rendered_rgb)
+
+    base = (W_SSIM * ssim_color + W_EDGE * edge_iou
+            + W_RMSE * (1.0 - rmse_norm) + W_COLORFID * color_fidelity)
+    composite = base * guard
     return {
         "ssim_color": round(ssim_color, 6),
         "rmse_norm": round(rmse_norm, 6),
         "edge_iou": round(edge_iou, 6),
+        "color_fidelity": round(color_fidelity, 6),
+        "collapsed": bool(collapsed),
+        "collapse_detail": detail,
         "composite": round(composite, 6),
     }
 
@@ -426,111 +580,174 @@ def _log_attempt(record):
 # =============================================================================
 # 5. optimize  --  coordinate-descent hill-climb
 # =============================================================================
-def optimize(path, max_iters=200, target_ssim=0.98, stall_k=None, verbose=True):
-    """Iteratively improve vtracer params for `path` by hill-climbing the
-    composite score. Logs every attempt; saves best SVG + compare PNG; updates
-    the cross-image param index. Returns a result dict."""
+def _neighbor_candidates(factor, cur, cp_floor):
+    """Candidate values for a factor: numeric ladders -> immediate up/down
+    neighbours; categorical -> all others. color_precision is clamped to its
+    floor so the search never quantizes below what the source needs."""
+    ladder = PARAM_GRID[factor]
+    candidates = []
+    if cur in ladder:
+        i = ladder.index(cur)
+        for j in (i - 1, i + 1):
+            if 0 <= j < len(ladder):
+                candidates.append(ladder[j])
+    else:
+        candidates = list(ladder)
+    if factor == "color_precision":
+        candidates = [c for c in candidates if c >= cp_floor]
+    seen = set()
+    return [c for c in candidates
+            if c != cur and not (c in seen or seen.add(c))]
+
+
+def optimize(path, max_iters=DEFAULT_MAX_ITERS, target_ssim=0.98,
+             stall_k=STALL_LIMIT, verbose=True):
+    """Iteratively improve vtracer params for `path` by MULTI-START
+    coordinate-descent hill-climbing of the (guarded) composite score.
+
+    v2 search robustness:
+      - seeds from each DOCTRINE_SEED preset (default/logo/line_art), a high-color
+        start, and the nearest prior in the param index; hill-climb from each and
+        keep the GLOBAL best.
+      - `max_iters` is a global iteration budget across all starts (default 300).
+      - each hill-climb stops after `stall_k` (=40) consecutive non-improving
+        iterations ("no further improvement possible").
+      - color_precision is floored by the source's distinct-color count.
+      - soft-shaded sources are traced from a lightly pre-smoothed copy, but ALWAYS
+        scored against the true original.
+
+    Logs every attempt; saves best SVG + compare PNG; updates the param index."""
     stem = os.path.splitext(os.path.basename(path))[0]
     os.makedirs(OUT_DIR, exist_ok=True)
 
     feat = image_features(path)
-    orig_rgb = load_image_rgb(path)
+    orig_rgb = load_image_rgb(path)              # TRUE original, used for scoring
+    cp_floor = color_precision_floor(feat)
+    trace_path, cleanup = _presmoothed_source(path, feat)  # vtracer input only
 
-    params, seed_src = _seed_from_index(feat)
-    if stall_k is None:
-        stall_k = max(len(SEARCH_ORDER) + 2, 10)
-
-    trajectory = []
     iteration = 0
 
     def evaluate(p, note):
         nonlocal iteration
         iteration += 1
         try:
-            svg = trace(path, p)
+            svg = trace(trace_path, p)
             rendered = render_svg_rgb(svg)
-            sc = score(orig_rgb, rendered)
+            sc = score(orig_rgb, rendered)       # scored vs TRUE original
         except Exception as exc:  # tracer/render failure -> worst score
             sc = None
             svg = None
             note = f"{note} ERROR:{type(exc).__name__}"
         if sc is None:
-            sc = {"ssim_color": -1.0, "rmse_norm": 1.0,
-                  "edge_iou": 0.0, "composite": -1.0}
+            sc = {"ssim_color": -1.0, "rmse_norm": 1.0, "edge_iou": 0.0,
+                  "color_fidelity": 0.0, "collapsed": True, "composite": -1.0}
         return svg, sc, note
 
-    # --- seed evaluation (iteration 1) ---
-    best_svg, best_sc, _ = evaluate(params, "seed")
-    best_params = dict(params)
-    _log_attempt({
-        "image": stem, "iteration": iteration, "params": dict(params),
-        "ssim_color": best_sc["ssim_color"], "edge_iou": best_sc["edge_iou"],
-        "rmse_norm": best_sc["rmse_norm"], "composite": best_sc["composite"],
-        "accepted": True, "note": f"seed<-{seed_src}",
-        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-    })
-    trajectory.append(best_sc["composite"])
-    start_ssim = best_sc["ssim_color"]
-    start_composite = best_sc["composite"]
-    if verbose:
-        print(f"[{stem}] seed ({seed_src}) ssim={start_ssim:.4f} "
-              f"composite={start_composite:.4f}")
+    def _clamp_seed(p):
+        p = dict(p)
+        if "color_precision" in p:
+            p["color_precision"] = max(int(p["color_precision"]), cp_floor)
+        return p
 
-    stall = 0
-    order_pos = 0
-    # coordinate descent: cycle through factors, try neighbours on the ladder
-    while iteration < max_iters and best_sc["ssim_color"] < target_ssim:
-        factor = SEARCH_ORDER[order_pos % len(SEARCH_ORDER)]
-        order_pos += 1
-        ladder = PARAM_GRID[factor]
-        cur = best_params.get(factor)
+    def log(trial, sc, accepted, note, start_label):
+        _log_attempt({
+            "image": stem, "version": "v2", "start": start_label,
+            "iteration": iteration, "params": dict(trial),
+            "ssim_color": sc["ssim_color"], "edge_iou": sc["edge_iou"],
+            "rmse_norm": sc["rmse_norm"],
+            "color_fidelity": sc.get("color_fidelity"),
+            "collapsed": sc.get("collapsed"),
+            "composite": sc["composite"], "accepted": accepted, "note": note,
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        })
 
-        # candidate neighbours: for numeric ladders, the immediate up/down
-        # neighbours plus ladder ends; for categorical, all others.
-        candidates = []
-        if cur in ladder:
-            i = ladder.index(cur)
-            for j in (i - 1, i + 1):
-                if 0 <= j < len(ladder):
-                    candidates.append(ladder[j])
-        else:
-            candidates = list(ladder)
-        # de-dupe, drop current value
-        seen = set()
-        candidates = [c for c in candidates
-                      if c != cur and not (c in seen or seen.add(c))]
+    # --- assemble the multi-start seed list ---
+    idx_params, idx_src = _seed_from_index(feat)
+    starts = [
+        ("default", _clamp_seed(DOCTRINE_SEED["default"])),
+        ("logo", _clamp_seed(DOCTRINE_SEED["logo"])),
+        ("line_art", _clamp_seed(DOCTRINE_SEED["line_art"])),
+        ("high_color", _clamp_seed(HIGH_COLOR_SEED)),
+        (f"index({idx_src})", _clamp_seed(idx_params)),
+    ]
 
-        improved_here = False
-        for cand in candidates:
-            if iteration >= max_iters or best_sc["ssim_color"] >= target_ssim:
+    trajectory = []
+    g_best_svg, g_best_sc, g_best_params, g_best_start = None, None, None, None
+
+    def _hillclimb(start_label, seed_params):
+        """One coordinate-descent hill-climb from seed_params. Returns
+        (best_svg, best_sc, best_params). `max_iters` is the PER-START budget;
+        the climb also stops after stall_k consecutive non-improving iters
+        ('no further improvement possible') or on reaching target_ssim."""
+        nonlocal iteration
+        li = 0  # per-start iteration count (budget is per start)
+        b_svg, b_sc, note = evaluate(seed_params, f"seed<-{start_label}")
+        li += 1
+        b_params = dict(seed_params)
+        log(seed_params, b_sc, True, f"seed<-{start_label}", start_label)
+        if verbose:
+            print(f"[{stem}] start={start_label} seed "
+                  f"ssim={b_sc['ssim_color']:.4f} "
+                  f"cfid={b_sc.get('color_fidelity', -1):.4f} "
+                  f"collapsed={b_sc.get('collapsed')} "
+                  f"composite={b_sc['composite']:.4f}")
+
+        stall = 0
+        order_pos = 0
+        while (li < max_iters and stall < stall_k
+               and b_sc["ssim_color"] < target_ssim):
+            factor = SEARCH_ORDER[order_pos % len(SEARCH_ORDER)]
+            order_pos += 1
+            candidates = _neighbor_candidates(factor, b_params.get(factor),
+                                              cp_floor)
+            improved = False
+            for cand in candidates:
+                if li >= max_iters or b_sc["ssim_color"] >= target_ssim:
+                    break
+                li += 1
+                trial = dict(b_params)
+                trial[factor] = cand
+                svg, sc, note = evaluate(trial, f"{factor}:{b_params.get(factor)}->{cand}")
+                accepted = sc["composite"] > b_sc["composite"] + 1e-6
+                log(trial, sc, accepted, note, start_label)
+                if accepted:
+                    b_sc, b_params, b_svg = sc, trial, svg
+                    improved = True
+                    if verbose:
+                        print(f"[{stem}] {start_label} it{iteration} {note} "
+                              f"ACCEPT ssim={sc['ssim_color']:.4f} "
+                              f"cfid={sc.get('color_fidelity', -1):.4f} "
+                              f"composite={sc['composite']:.4f}")
+                    break  # greedy restart of factor cycle
+            stall = 0 if improved else stall + 1
+        return b_svg, b_sc, b_params
+
+    try:
+        for start_label, seed_params in starts:
+            # Once a start has already reached target, skip the rest (they would
+            # only re-confirm); otherwise try every seed and keep the best.
+            if g_best_sc is not None and g_best_sc["ssim_color"] >= target_ssim:
                 break
-            trial = dict(best_params)
-            trial[factor] = cand
-            svg, sc, note = evaluate(trial, f"{factor}:{cur}->{cand}")
-            accepted = sc["composite"] > best_sc["composite"] + 1e-6
-            _log_attempt({
-                "image": stem, "iteration": iteration, "params": dict(trial),
-                "ssim_color": sc["ssim_color"], "edge_iou": sc["edge_iou"],
-                "rmse_norm": sc["rmse_norm"], "composite": sc["composite"],
-                "accepted": accepted, "note": note,
-                "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            })
-            if accepted:
-                best_sc, best_params, best_svg = sc, trial, svg
-                improved_here = True
-                trajectory.append(best_sc["composite"])
+            b_svg, b_sc, b_params = _hillclimb(start_label, seed_params)
+            if b_sc is None:
+                continue
+            if g_best_sc is None or b_sc["composite"] > g_best_sc["composite"]:
+                g_best_svg, g_best_sc = b_svg, b_sc
+                g_best_params, g_best_start = b_params, start_label
+                trajectory.append(g_best_sc["composite"])
                 if verbose:
-                    print(f"[{stem}] it{iteration} {note} ACCEPT "
-                          f"ssim={sc['ssim_color']:.4f} "
-                          f"composite={sc['composite']:.4f}")
-                break  # greedy: re-start factor cycle from the improved point
+                    print(f"[{stem}] NEW GLOBAL BEST from {start_label}: "
+                          f"ssim={b_sc['ssim_color']:.4f} "
+                          f"composite={b_sc['composite']:.4f}")
+    finally:
+        if cleanup:
+            try:
+                os.remove(cleanup)
+            except OSError:
+                pass
 
-        stall = 0 if improved_here else stall + 1
-        if stall >= stall_k:
-            if verbose:
-                print(f"[{stem}] stalled after {stall} factors with no "
-                      f"improvement -> stop")
-            break
+    best_svg, best_sc, best_params = g_best_svg, g_best_sc, g_best_params
+    start_composite = trajectory[0] if trajectory else best_sc["composite"]
 
     # --- persist best result ---
     svg_path = os.path.join(OUT_DIR, f"{stem}.svg")
@@ -548,12 +765,15 @@ def optimize(path, max_iters=200, target_ssim=0.98, stall_k=None, verbose=True):
         "path": path,
         "features": feat,
         "feature_bucket": feature_bucket(feat),
-        "seed_source": seed_src,
+        "soft_shaded": is_soft_shaded(feat),
+        "color_precision_floor": cp_floor,
+        "best_start": g_best_start,
         "iterations": iteration,
-        "start_ssim": round(start_ssim, 6),
         "best_ssim": round(best_sc["ssim_color"], 6),
-        "start_composite": round(start_composite, 6),
         "best_composite": round(best_sc["composite"], 6),
+        "best_color_fidelity": best_sc.get("color_fidelity"),
+        "best_collapsed": best_sc.get("collapsed"),
+        "start_composite": round(start_composite, 6),
         "best_params": best_params,
         "best_scores": best_sc,
         "reached_target": reached,
@@ -562,9 +782,10 @@ def optimize(path, max_iters=200, target_ssim=0.98, stall_k=None, verbose=True):
         "trajectory": trajectory,
     }
     if verbose:
-        print(f"[{stem}] DONE iters={iteration} ssim {start_ssim:.4f}->"
-              f"{best_sc['ssim_color']:.4f} target>={target_ssim} "
-              f"reached={reached}")
+        print(f"[{stem}] DONE iters={iteration} best_start={g_best_start} "
+              f"ssim={best_sc['ssim_color']:.4f} "
+              f"collapsed={best_sc.get('collapsed')} "
+              f"target>={target_ssim} reached={reached}")
     return result
 
 
@@ -589,7 +810,7 @@ def main(argv):
     import argparse
     ap = argparse.ArgumentParser(description="Model-free iterative vectorizer")
     ap.add_argument("images", nargs="+", help="raster image paths")
-    ap.add_argument("--max-iters", type=int, default=200)
+    ap.add_argument("--max-iters", type=int, default=DEFAULT_MAX_ITERS)
     ap.add_argument("--target-ssim", type=float, default=0.98)
     ap.add_argument("--json", action="store_true", help="print result JSON")
     args = ap.parse_args(argv)
@@ -601,12 +822,13 @@ def main(argv):
         results.append(res)
 
     print("\n=== convergence summary ===")
-    print(f"{'image':<28} {'start_ssim':>10} {'best_ssim':>10} "
-          f"{'iters':>6} {'>=0.98':>7}")
+    print(f"{'image':<28} {'best_ssim':>10} {'cfid':>7} {'collapse':>8} "
+          f"{'iters':>6} {'best_start':>14} {'>=0.98':>7}")
     for r in results:
-        print(f"{r['image']:<28} {r['start_ssim']:>10.4f} "
-              f"{r['best_ssim']:>10.4f} {r['iterations']:>6} "
-              f"{str(r['reached_target']):>7}")
+        print(f"{r['image']:<28} {r['best_ssim']:>10.4f} "
+              f"{(r['best_color_fidelity'] or 0):>7.4f} "
+              f"{str(r['best_collapsed']):>8} {r['iterations']:>6} "
+              f"{str(r['best_start']):>14} {str(r['reached_target']):>7}")
     if args.json:
         print(json.dumps(results, indent=2))
     return results
