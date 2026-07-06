@@ -1,0 +1,331 @@
+{
+  "generated": "2026-07-05T21:31:33Z",
+  "source_branch": "origin/mila/embiz-agent-system",
+  "legend": {
+    "A": "applied to the VECTORIZATION / STITCH-PLAN transform (tracer/stitch params)",
+    "B": "applied to PIPELINE ENGINEERING (how the system is built/verified/logged)",
+    "-": "no current application"
+  },
+  "summary": {
+    "sources_total": 39,
+    "class_A_transform": 3,
+    "class_B_pipeline": 33,
+    "unused": 3,
+    "doctrine_files": 15,
+    "skill_packs": 24
+  },
+  "sources": [
+    {
+      "source": "potrace",
+      "kind": "doctrine",
+      "artifact": "turdsize->filter_speckle, alphamax->corner_threshold, opticurve->mode, opttolerance->splice/path_precision (potracelib.h params)",
+      "application_point": "vectorizer.DOCTRINE_SEED['default'] (v5-promoted: filter_speckle=1, corner_threshold=40, mode=polygon, splice_threshold=30) via knowledge_agents curve_agent + noise_agent",
+      "class": "A",
+      "status": "applied"
+    },
+    {
+      "source": "inkscape",
+      "kind": "doctrine",
+      "artifact": "max_thread_colors<=15, delta_e<=5.0 color-merge, HSL matching, <=0.5mm path deviation",
+      "application_point": "vectorizer color params: color_precision cap, layer_difference<-deltaE, promoted_hierarchical() gate (cutout<15 colors), colormode=color; via knowledge_agents color_agent",
+      "class": "A",
+      "status": "applied"
+    },
+    {
+      "source": "inkstitch",
+      "kind": "doctrine",
+      "artifact": "SVG path -> stitch element pipeline (Fill/Satin/Stroke), node/element-count as a topology quality target",
+      "application_point": "digitizer.py stitch-plan transform (_fill_runs boustrophedon fill, _contour_runs outline, ROW_SPACING_MM/MAX_STITCH_MM) + knowledge_agents edge_agent node-count -> path_precision budget (thin)",
+      "class": "A",
+      "status": "applied"
+    },
+    {
+      "source": "00_MASTER_REPO_SYNTHESIS",
+      "kind": "doctrine",
+      "artifact": "cross-source synthesis / index-of-sources pattern",
+      "application_point": "knowledge/vectorization/INDEX.md (source-mining index) + this reports/library_utilization_coverage.md matrix",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "addyosmani-agent-skills",
+      "kind": "doctrine",
+      "artifact": "SDLC skills lifecycle (spec->plan->build->verify->review->ship), Prove-It / evidence-based assertions",
+      "application_point": "parent source of skills/embiz-agent-skills (24 packs); governs how this pipeline is built, reviewed and shipped",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "agentsview",
+      "kind": "doctrine",
+      "artifact": "local-first session analytics; FTS/append-only event capture; token/cost tracking; observability of multi-agent runs",
+      "application_point": "the append-only JSONL ledgers: vectorization_attempts.jsonl, knowledge_experiments.jsonl, decision_trace.jsonl, observations.jsonl",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "crm-ai-analysis",
+      "kind": "doctrine",
+      "artifact": "SQL-injection detection / input-validation agent (RAG text-to-SQL, CLTV/RFM analytics not relevant to imaging)",
+      "application_point": "weak analogue only: the _ALLOWED param whitelist + int/float coercion in vectorizer.trace() (defensive input validation); no CRM/DB/RAG surface exists here",
+      "class": "B",
+      "status": "applied-weak"
+    },
+    {
+      "source": "hexo-ai-sia",
+      "kind": "doctrine",
+      "artifact": "self-improving loop: generate -> execute -> feedback -> improve (meta-learning across generations)",
+      "application_point": "the coordinate-descent hill-climb evaluate/accept loop in vectorizer.optimize() + the Stage-1 extract -> Stage-2 validate improvement cycle (knowledge_agents -> experiment_harness.py)",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "masterdnsvpn",
+      "kind": "doctrine",
+      "artifact": "DNS-tunneling VPN, ARQ retransmit, multi-path failover, censorship resistance",
+      "application_point": "no current application: a network-transport/censorship tool with no touchpoint in a deterministic raster->SVG->stitch pipeline",
+      "class": "-",
+      "status": "unused"
+    },
+    {
+      "source": "mattermost",
+      "kind": "doctrine",
+      "artifact": "CI automation, observability dashboards (agents/tokens/perf), team messaging/outbound reporting, config-as-code",
+      "application_point": "outbound reporting pattern -> reports/slack_utilization_report.md + Slack drafts (sub-task C); observability -> the JSONL ledgers",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "nvidia-skillspector",
+      "kind": "doctrine",
+      "artifact": "pre-deployment security scanner for agent skills; prompt-injection & data-exfil / secret detection",
+      "application_point": "security-review discipline + honoring config/slack.json secret_rule ('never print webhook') in sub-task C detection; pairs with security-and-hardening skill",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "obra-superpowers",
+      "kind": "doctrine",
+      "artifact": "skills workflow: git-worktree isolation, subagent-driven development, session hooks",
+      "application_point": "the read-only git worktree pattern used to enumerate sources in sub-task B (git worktree add /tmp/embiz_cov origin/mila/embiz-agent-system)",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "phuryn-pm-skills",
+      "kind": "doctrine",
+      "artifact": "PM workflow discipline: skills-vs-commands, progressive disclosure, manifest validation tooling",
+      "application_point": "reports/*.md structure + knowledge/vectorization/INDEX.md progressive disclosure + machine-readable knowledge_agents JSON / library_coverage.json validation artifacts",
+      "class": "B",
+      "status": "applied-weak"
+    },
+    {
+      "source": "restic",
+      "kind": "doctrine",
+      "artifact": "snapshots, append-only repository, data-integrity verification, forget/prune lifecycle",
+      "application_point": "append-only JSONL ledgers as immutable event snapshots + per-sub-task git commits as rollback-friendly snapshots (integrity via deterministic re-run)",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "tolaria",
+      "kind": "doctrine",
+      "artifact": ".chunk/config.json CI gate commands (lint/typecheck/build/coverage/smoke) + QA fixture manifest",
+      "application_point": "deterministic reproducibility gates + the 5 fixed test-image fixtures (experiment_harness.IMAGES) driving Stage-2 regression",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "api-and-interface-design",
+      "kind": "skill",
+      "artifact": "api and interface design (engineering methodology)",
+      "application_point": "the module API contracts: trace(path,params)/score(orig,rendered)/optimize() signatures in vectorizer.py",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "browser-testing-with-devtools",
+      "kind": "skill",
+      "artifact": "browser testing with devtools (engineering methodology)",
+      "application_point": "no current application: no browser/web UI in this CLI raster/stitch pipeline",
+      "class": "-",
+      "status": "unused"
+    },
+    {
+      "source": "ci-cd-and-automation",
+      "kind": "skill",
+      "artifact": "ci cd and automation (engineering methodology)",
+      "application_point": "automated, reproducible experiment runs via experiment_harness.py",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "code-review-and-quality",
+      "kind": "skill",
+      "artifact": "code review and quality (engineering methodology)",
+      "application_point": "five-axis review discipline applied to this PR's diffs",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "code-simplification",
+      "kind": "skill",
+      "artifact": "code simplification (engineering methodology)",
+      "application_point": "refactors such as the v4 revert removing the content-crop scoring step",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "context-engineering",
+      "kind": "skill",
+      "artifact": "context engineering (engineering methodology)",
+      "application_point": "curated context: DOCTRINE_SEED docstring + knowledge-object JSON schema in knowledge/vectorization",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "debugging-and-error-recovery",
+      "kind": "skill",
+      "artifact": "debugging and error recovery (engineering methodology)",
+      "application_point": "guarded tracer/render failure -> worst-score fallback in vectorizer.optimize().evaluate()",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "deprecation-and-migration",
+      "kind": "skill",
+      "artifact": "deprecation and migration (engineering methodology)",
+      "application_point": "documented v3->v4 migration: CROP_CONTENT_THRESH/_crop_to_content kept-but-UNUSED with rationale in score() docstring",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "documentation-and-adrs",
+      "kind": "skill",
+      "artifact": "documentation and adrs (engineering methodology)",
+      "application_point": "reports/vectorizer_v*.md and knowledge/vectorization/INDEX.md as decision records",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "doubt-driven-development",
+      "kind": "skill",
+      "artifact": "doubt driven development (engineering methodology)",
+      "application_point": "explicit honesty caveats ('weak', 'no current application') + the anti-collapse guard in score()",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "frontend-ui-engineering",
+      "kind": "skill",
+      "artifact": "frontend ui engineering (engineering methodology)",
+      "application_point": "weak: the only visual output is _save_compare()'s side-by-side original|render diff PNG; no real UI surface",
+      "class": "B",
+      "status": "applied-weak"
+    },
+    {
+      "source": "git-workflow-and-versioning",
+      "kind": "skill",
+      "artifact": "git workflow and versioning (engineering methodology)",
+      "application_point": "per-sub-task commits + branch/PR #2 discipline on claude/slack-session-su21xh",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "idea-refine",
+      "kind": "skill",
+      "artifact": "idea refine (engineering methodology)",
+      "application_point": "Stage-1 hypothesis refinement of library concepts into candidate experiments in knowledge_agents",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "incremental-implementation",
+      "kind": "skill",
+      "artifact": "incremental implementation (engineering methodology)",
+      "application_point": "v1->v5 incremental vectorizer versions with per-step commits",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "interview-me",
+      "kind": "skill",
+      "artifact": "interview me (engineering methodology)",
+      "application_point": "no current application: no interactive human-elicitation step in a deterministic model-free pipeline",
+      "class": "-",
+      "status": "unused"
+    },
+    {
+      "source": "observability-and-instrumentation",
+      "kind": "skill",
+      "artifact": "observability and instrumentation (engineering methodology)",
+      "application_point": "vectorizer._log_attempt() -> vectorization_attempts.jsonl and the other JSONL ledgers",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "performance-optimization",
+      "kind": "skill",
+      "artifact": "performance optimization (engineering methodology)",
+      "application_point": "bounded search: DEFAULT_MAX_ITERS=300, STALL_LIMIT=40, per-start budget in vectorizer.optimize()",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "planning-and-task-breakdown",
+      "kind": "skill",
+      "artifact": "planning and task breakdown (engineering methodology)",
+      "application_point": "SEARCH_ORDER factor prioritization + multi-sub-task decomposition of this work",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "security-and-hardening",
+      "kind": "skill",
+      "artifact": "security and hardening (engineering methodology)",
+      "application_point": "honored config/slack.json secret_rule (never print webhook) + _ALLOWED param whitelist in trace()",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "shipping-and-launch",
+      "kind": "skill",
+      "artifact": "shipping and launch (engineering methodology)",
+      "application_point": "production_runs/ artifacts + production_layout.py final layout stage",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "source-driven-development",
+      "kind": "skill",
+      "artifact": "source driven development (engineering methodology)",
+      "application_point": "knowledge_agents mining potrace/inkscape SOURCE_BUNDLE.md into cited knowledge objects (produced the Class-A seed)",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "spec-driven-development",
+      "kind": "skill",
+      "artifact": "spec driven development (engineering methodology)",
+      "application_point": "knowledge/vectorization/INDEX.md as the param-mapping spec before implementation",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "test-driven-development",
+      "kind": "skill",
+      "artifact": "test driven development (engineering methodology)",
+      "application_point": "experiment_harness.py isolated-factor regression tests (Stage-2 validation)",
+      "class": "B",
+      "status": "applied"
+    },
+    {
+      "source": "using-agent-skills",
+      "kind": "skill",
+      "artifact": "using agent skills (engineering methodology)",
+      "application_point": "meta: the skill-usage discipline recorded in EMBIZ_SKILLS_RUNTIME_INDEX.md",
+      "class": "B",
+      "status": "applied"
+    }
+  ]
+}
