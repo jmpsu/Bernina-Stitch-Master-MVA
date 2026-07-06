@@ -1,0 +1,8 @@
+Group B (part 4) — how we review, keep it safe, and ship
+
+• Code review & simplification — changes get reviewed for correctness and trimmed of dead weight (for example, we removed an old scoring step that hurt quality).
+• Security & hardening, plus NVIDIA Skillspector's scanning mindset — we honor the rule to never print secrets (we checked for a Slack webhook without ever revealing it) and we only let known-safe settings through to the tracer.
+• Performance optimization — the setting search is time-bounded so it never runs away.
+• Git workflow, incremental delivery, documentation/ADRs, deprecation notes — small reviewable commits, written-up decisions, and clear records when we retire an approach.
+• Obra Superpowers — its isolated git-worktree technique is exactly how we safely inspected the library sources for this report.
+• Shipping & launch, planning, API design, doubt-driven development — round out how the pipeline is organized, planned, and kept honest about uncertainty.

@@ -1,0 +1,8 @@
+Group B (part 1) — how we build the system and learn from the library
+
+These sources didn't change any stitching setting; they shaped how we work.
+
+• Source-driven & spec-driven development, idea-refine — we read the original tracing tools' source material and turned it into small, cited "what we learned" notes before touching any code. That's exactly how the tracer's settings were derived.
+• Addyosmani agent skills (and the master synthesis) — the parent playbook for our whole build-test-review-ship routine, and the index that ties all the sources together.
+• Context engineering — keeping the important reference notes tidy and close to the code that uses them.
+• Self-improving-AI (hexo-ai-sia) — the "try a setting, measure it, keep what's better, repeat" loop is exactly how the tracer searches for good settings and how we validated the library's advice.
