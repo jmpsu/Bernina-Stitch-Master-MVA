@@ -90,6 +90,17 @@ COLLAPSE_PENALTY = 0.30          # multiplicative composite penalty when collaps
 
 COLOR_HIST_BINS = 4              # 4x4x4 RGB histogram for the color_fidelity term
 
+# v3 content-crop scoring threshold. score() crops BOTH source and render to their
+# non-white content bbox before re-fitting to a common canvas (removes the
+# whitespace-margin misregistration described in reports/vectorizer_v3.md). The
+# threshold must treat cairosvg's ANTI-ALIAS HALO (edge pixels ~245-249, visually
+# white) as background: at thresh=250 the render's halo asymmetrically enlarges its
+# bbox vs the sharp source jpeg, mis-scaling the two and CRASHING SSIM on clean art
+# (measured: crest 0.98->0.62, flags 0.98->0.94). At 240 both bboxes match exactly
+# and every passing image holds >=0.98 (identity stays 1.0). 230 starts eating real
+# near-white content (crest 0.93). 240 is the robust operating point.
+CROP_CONTENT_THRESH = 240
+
 # Composite weights (v2). Sums to 1.0 before the anti-collapse guard multiplier.
 W_SSIM = 0.55
 W_EDGE = 0.15
@@ -158,7 +169,7 @@ PARAM_GRID = {
     "length_threshold": [3.5, 4.0, 5.0, 7.0, 10.0],
     "splice_threshold": [15, 30, 45, 60, 75],
     "path_precision": [3, 4, 5, 6, 7, 8],
-    "layer_difference": [8, 16, 24, 32, 48],
+    "layer_difference": [4, 8, 16, 24, 32, 48],
     "mode": ["spline", "polygon"],
 }
 
@@ -256,6 +267,27 @@ HIGH_COLOR_SEED = {
     "splice_threshold": 45,
     "path_precision": 8,
     "layer_difference": 8,    # finer color separation -> more layers
+}
+
+
+# Soft-shade tracing push (v3): for gradient/anti-aliased illustrations (the
+# house), give the search extra high-fidelity starts -- max color budget, many
+# layers (very low layer_difference), and BOTH spline and polygon region modes.
+# Flat region-tracing can only approximate gradients, so we let it use as many
+# solid layers as possible before conceding a real ceiling.
+SOFT_SHADE_STARTS = {
+    "soft_spline_max": {
+        "colormode": "color", "hierarchical": "stacked", "mode": "spline",
+        "color_precision": 8, "filter_speckle": 1, "corner_threshold": 60,
+        "length_threshold": 4.0, "splice_threshold": 45, "path_precision": 8,
+        "layer_difference": 4,
+    },
+    "soft_polygon_max": {
+        "colormode": "color", "hierarchical": "stacked", "mode": "polygon",
+        "color_precision": 8, "filter_speckle": 1, "corner_threshold": 60,
+        "length_threshold": 4.0, "splice_threshold": 45, "path_precision": 8,
+        "layer_difference": 4,
+    },
 }
 
 
@@ -380,6 +412,34 @@ def load_image_rgb(path, size=RENDER_SIZE):
 # =============================================================================
 # 4. score
 # =============================================================================
+def _crop_to_content(rgb, thresh=250):
+    """Crop an RGB uint8 array to the bounding box of its non-white content.
+
+    Non-white = pixels whose MINIMUM channel value is < `thresh` (a pixel is
+    "white" only when all three channels are near 255). Returns the cropped
+    array. If the image is entirely white (no content), returns it unchanged.
+
+    v3: this removes whitespace-margin misregistration before scoring. The
+    source raster typically has wide white margins while the SVG render tightens
+    to its content bbox and fills more of the canvas; cropping BOTH to content
+    before resizing to a common size makes the comparison like-for-like.
+
+    NOTE on `thresh`: score() calls this with CROP_CONTENT_THRESH (240), NOT the
+    250 default, so cairosvg's anti-alias halo (~245-249, visually white) is
+    treated as background and does not asymmetrically enlarge the render bbox.
+    See CROP_CONTENT_THRESH for the measurements behind that choice.
+    """
+    if rgb is None:
+        return rgb
+    mask = rgb.min(axis=2) < thresh
+    ys_xs = np.argwhere(mask)
+    if ys_xs.size == 0:
+        return rgb  # all white -> nothing to crop
+    y0, x0 = ys_xs.min(axis=0)
+    y1, x1 = ys_xs.max(axis=0)
+    return rgb[y0:y1 + 1, x0:x1 + 1]
+
+
 def _edge_map(gray01):
     """Binary Sobel edge map thresholded at mean+std (mirrors metrics._edge_map)."""
     from skimage.filters import sobel
@@ -444,10 +504,19 @@ def _collapse_guard(orig_rgb, rendered_rgb):
     return (COLLAPSE_PENALTY if collapsed else 1.0), collapsed, detail
 
 
-def score(orig_rgb, rendered_rgb):
-    """Fidelity metrics between two RGB uint8 arrays (resized to common size).
+def score(orig_rgb, rendered_rgb, crop_size=RENDER_SIZE):
+    """Fidelity metrics between two RGB uint8 arrays.
 
-    v2 composite:
+    v3 registration fix: BOTH the source and the render are first cropped to
+    their non-white content bounding box (`_crop_to_content`), THEN re-fit into a
+    common `crop_size` square canvas with aspect preserved+centered (same
+    convention as `_fit_rgb_to_canvas`), THEN scored. This removes the
+    whitespace-margin misregistration (source has margins, SVG render tightens to
+    content bbox and fills more of the canvas) that unfairly penalized SSIM even
+    for faithful traces. Aspect is preserved on both sides so no shape distortion
+    is introduced. An image scored against itself still yields ssim_color ~= 1.0.
+
+    v2 composite (unchanged):
       base = W_SSIM*ssim_color + W_EDGE*edge_iou + W_RMSE*(1-rmse_norm)
              + W_COLORFID*color_fidelity
       composite = base * collapse_guard   (guard is 1.0 or COLLAPSE_PENALTY)
@@ -463,13 +532,12 @@ def score(orig_rgb, rendered_rgb):
     if orig_rgb is None or rendered_rgb is None:
         return None
 
-    if orig_rgb.shape != rendered_rgb.shape:
-        h = min(orig_rgb.shape[0], rendered_rgb.shape[0])
-        w = min(orig_rgb.shape[1], rendered_rgb.shape[1])
-        orig_rgb = np.asarray(
-            Image.fromarray(orig_rgb).resize((w, h), Image.LANCZOS))
-        rendered_rgb = np.asarray(
-            Image.fromarray(rendered_rgb).resize((w, h), Image.LANCZOS))
+    # v3: content-crop BOTH, then re-fit BOTH into a common square canvas with
+    # aspect preserved+centered (like-for-like framing, no shape distortion).
+    orig_c = _crop_to_content(orig_rgb, CROP_CONTENT_THRESH)
+    rend_c = _crop_to_content(rendered_rgb, CROP_CONTENT_THRESH)
+    orig_rgb = _fit_rgb_to_canvas(Image.fromarray(orig_c), crop_size)
+    rendered_rgb = _fit_rgb_to_canvas(Image.fromarray(rend_c), crop_size)
 
     a = orig_rgb.astype(np.float64)
     b = rendered_rgb.astype(np.float64)
@@ -651,7 +719,7 @@ def optimize(path, max_iters=DEFAULT_MAX_ITERS, target_ssim=0.98,
 
     def log(trial, sc, accepted, note, start_label):
         _log_attempt({
-            "image": stem, "version": "v2", "start": start_label,
+            "image": stem, "version": "v3", "start": start_label,
             "iteration": iteration, "params": dict(trial),
             "ssim_color": sc["ssim_color"], "edge_iou": sc["edge_iou"],
             "rmse_norm": sc["rmse_norm"],
@@ -670,6 +738,10 @@ def optimize(path, max_iters=DEFAULT_MAX_ITERS, target_ssim=0.98,
         ("high_color", _clamp_seed(HIGH_COLOR_SEED)),
         (f"index({idx_src})", _clamp_seed(idx_params)),
     ]
+    # v3: soft-shaded sources get extra max-fidelity spline+polygon starts.
+    if is_soft_shaded(feat):
+        for lbl, seed in SOFT_SHADE_STARTS.items():
+            starts.append((lbl, _clamp_seed(seed)))
 
     trajectory = []
     g_best_svg, g_best_sc, g_best_params, g_best_start = None, None, None, None
