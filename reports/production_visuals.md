@@ -15,27 +15,27 @@ All three subjects are scaled to the **same true size — 3 in / 76.2 mm tall** 
 and composited over the same transparent L-ruler + square-grid template, so the
 three images are directly comparable and the height reads against the ruler.
 
-## Ruler-template calibration (derived)
+## Ruler-template calibration (synthesized 5 in × 5 in)
 
-Measured from the clean template `assets/ruler_grid_background.png`
-(IMG_0931, 704 x 1527 px, portrait):
+Template `assets/ruler_grid_5x5.png` is **synthesized** (PIL, deterministic /
+model-free) as a clean square **5 in × 5 in** measurement sheet, replacing the
+earlier portrait photographed template so wide 3 in designs fit fully:
 
-- **Grid unit:** one white grid square = **0.25 in** (4 squares per inch).
-  Grid lines were detected at **70–71 px** spacing in both axes.
-- **L-ruler:** an **inch** scale on the left/bottom. Its bold number labels
-  `0`/`1`/`2` sit at y = 1226 / 945 / 666 px (centres), i.e. 2 inches span
-  560 px = **280 px/in**, in agreement with the grid (4 × 70.8 = 283).
-- **Adopted `PIXELS_PER_INCH = 283.0`** (grid-derived; 0.25 in per square).
-  A **3 in** subject therefore spans **3 × 283 = 849 px = 12 grid squares** —
-  the verification target when viewing the sheets.
-- **Origin (0/0 corner):** bottom-left anchor at approx **(x=155, y=1230)** —
-  x just right of the vertical ruler's measuring edge, y on the 0-inch line.
-
-The two other attached templates (IMG_0928, IMG_0929) already carry sample
-patches; IMG_0931 is the clean template and is the canonical background.
-The bottom-of-image *separate* horizontal ruler photographs at a different
-scale (~248 px/in) and is **not** used for calibration — the grid and the
-vertical L-ruler (which the grid aligns to) are authoritative.
+- **`PIXELS_PER_INCH = 283`** (kept consistent with the original photographed
+  template's grid calibration). Canvas = 5 × 283 = **1415 × 1415 px**, white
+  background.
+- **Grid unit:** one square = **0.25 in** = ~70.75 px (4 squares per inch),
+  a **20 × 20** grid. Light gray thin lines every 0.25 in; heavier/darker
+  lines every **1 in** (every 4th line).
+- **L-ruler:** an **inch** scale along the LEFT and BOTTOM edges (semi-
+  transparent print-like band over the grid) with tick marks (inch + quarter-
+  inch) and numeric labels **0..5** up the left and along the bottom.
+- **Origin (0/0 corner):** bottom-left anchor at **(x=60, y=1355)** — the
+  drawn ruler inset. Subjects are placed bottom-left at the origin and grow
+  up-and-to-the-right, so both dimensions read against both ruler arms.
+- A **3 in** subject spans **3 × 283 = 849 px = 12 grid squares**, leaving
+  ~2 in of headroom in both width and height so even wide 3 in designs
+  (crest, caddie) sit fully inside the grid.
 
 ## Layout logic (`production_layout.py`)
 
@@ -60,12 +60,12 @@ Subject builders reuse the existing pipeline:
 
 ### Note on width
 
-The template is portrait (only ~1.9 in of grid to the right of the origin).
-Since the digitizer scales every design to **3 in tall**, designs wider than
-~1.9 in at that height (e.g. the crest and caddie) extend past the right edge.
-The **height** (the production-critical dimension) always reads exactly against
-the ruler, and all three JPEGs for a design are cropped identically, so the
-side-by-side fidelity comparison remains valid.
+The template is now a square **5 in × 5 in** canvas, so there is ~5 in of grid
+in both axes from the origin. Since the digitizer scales every design to **3 in
+tall**, even the widest designs (the crest and caddie, which are wider than
+tall) now fit **fully** inside the grid with ~2 in of margin, reading correctly
+against both ruler arms. Both dimensions read exactly against the ruler, and
+all three JPEGs for a design register at the same scale/anchor.
 
 ## Integration
 
@@ -90,10 +90,12 @@ Generated for the five vectorizer test designs that have a complete triple
 | `production_runs/house/`    | 61c7ce08-IMG_0293.jpeg | 61c7ce08-IMG_0293.svg | img_0293_logo.pes |
 | `production_runs/squirrel/` | 8b4ed770-IMG_0263.jpeg | 8b4ed770-IMG_0263.svg | img_0263_logo.pes |
 
-Each folder contains all three JPEGs. Visually confirmed (crest, caddie,
-squirrel, flags): backgrounds are replaced/keyed cleanly, each subject is
-anchored at the 0/0 corner and spans 0 → ~3 in (≈12 grid squares) against the
-vertical ruler, and all three renders per design register at the same scale.
+Each folder contains all three JPEGs, regenerated on the 5 in × 5 in template.
+Visually confirmed (crest, caddie, flags): backgrounds are replaced/keyed
+cleanly, each subject is anchored at the 0/0 corner, sits **fully inside** the
+5 in × 5 in grid at true 3 in tall (≈12 grid squares), and reads correctly
+against both ruler arms; all three renders per design register at the same
+scale. The previously-clipped wide designs (crest, caddie) now fit entirely.
 
 > Customer originals are **not** committed — only the generic measurement
 > template (`assets/`) and the generated review JPEGs (`production_runs/`).
