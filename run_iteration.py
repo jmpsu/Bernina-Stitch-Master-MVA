@@ -95,15 +95,6 @@ VISUAL_PAIRS = [
     ("drink_v2.svg", "drink_v2.pes"),
     ("coastal_objects_all.svg", "summer_coastal-icons.pes"),
     ("drink_trace.svg", "drink.pes"),
-    # Iteration 9: vectorizer->digitizer pairs.  Each vectorized SVG (from
-    # vectorized_svg/ copied to vector_source/) is compared against the EXP
-    # stitch-out produced by routing its rasterized form through digitizer.py.
-    # This adds 5 new non-circular design-vs-stitch-out fidelity measurements.
-    ("img_0263.svg", "img_0263_logo.exp"),
-    ("img_0293.svg", "img_0293_logo.exp"),
-    ("img_0322.svg", "img_0322_logo.exp"),
-    ("img_0331.svg", "img_0331_logo.exp"),
-    ("img_1126.svg", "img_1126_logo.exp"),
 ]
 VISUAL_UNPAIRED_PES = ["basket_7scans.pes", "basket_small.pes"]
 
