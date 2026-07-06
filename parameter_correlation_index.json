@@ -73,6 +73,14 @@
           "embroidery_suitability_delta": 0.0,
           "overall_score": 0.580817,
           "overall_score_delta": 0.0642
+        },
+        {
+          "iteration": 8,
+          "timestamp": "2026-07-06T05:15:59.568001+00:00",
+          "embroidery_suitability": 0.6339116619718312,
+          "embroidery_suitability_delta": 0.617913,
+          "overall_score": 0.693855,
+          "overall_score_delta": 0.113038
         }
       ]
     },
@@ -128,6 +136,14 @@
           "embroidery_suitability_delta": 0.0,
           "overall_score": 0.580817,
           "overall_score_delta": 0.0642
+        },
+        {
+          "iteration": 8,
+          "timestamp": "2026-07-06T05:15:59.568001+00:00",
+          "embroidery_suitability": 0.6339116619718312,
+          "embroidery_suitability_delta": 0.617913,
+          "overall_score": 0.693855,
+          "overall_score_delta": 0.113038
         }
       ]
     },
@@ -183,6 +199,14 @@
           "embroidery_suitability_delta": 0.0,
           "overall_score": 0.580817,
           "overall_score_delta": 0.0642
+        },
+        {
+          "iteration": 8,
+          "timestamp": "2026-07-06T05:15:59.568001+00:00",
+          "embroidery_suitability": 0.6339116619718312,
+          "embroidery_suitability_delta": 0.617913,
+          "overall_score": 0.693855,
+          "overall_score_delta": 0.113038
         }
       ]
     },
@@ -238,6 +262,14 @@
           "embroidery_suitability_delta": 0.0,
           "overall_score": 0.580817,
           "overall_score_delta": 0.0642
+        },
+        {
+          "iteration": 8,
+          "timestamp": "2026-07-06T05:15:59.568001+00:00",
+          "embroidery_suitability": 0.6339116619718312,
+          "embroidery_suitability_delta": 0.617913,
+          "overall_score": 0.693855,
+          "overall_score_delta": 0.113038
         }
       ]
     },
@@ -310,6 +342,19 @@
           "overall_score": 0.580817,
           "overall_score_delta": 0.0642,
           "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.204040s) rather than a single noisy run, spread min=0.199895s p95=0.207484s"
+        },
+        {
+          "iteration": 8,
+          "timestamp": "2026-07-06T05:15:59.568001+00:00",
+          "perf_runs": 5,
+          "performance": 0.7925305,
+          "performance_delta": -0.105449,
+          "total_runtime_min_s": 0.401745,
+          "total_runtime_median_s": 0.414939,
+          "total_runtime_p95_s": 0.437284,
+          "overall_score": 0.693855,
+          "overall_score_delta": 0.113038,
+          "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.414939s) rather than a single noisy run, spread min=0.401745s p95=0.437284s"
         }
       ]
     },
@@ -441,6 +486,37 @@
           "overall_score_full_weight": 0.580817,
           "overall_score_continuity_4metric": 0.516107,
           "overall_score_delta": 0.0642
+        },
+        {
+          "iteration": 8,
+          "timestamp": "2026-07-06T05:15:59.568001+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": 0.0,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.693855,
+          "overall_score_continuity_4metric": 0.704503,
+          "overall_score_delta": 0.113038
         }
       ]
     },
@@ -572,6 +648,37 @@
           "overall_score_full_weight": 0.580817,
           "overall_score_continuity_4metric": 0.516107,
           "overall_score_delta": 0.0642
+        },
+        {
+          "iteration": 8,
+          "timestamp": "2026-07-06T05:15:59.568001+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": 0.0,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.693855,
+          "overall_score_continuity_4metric": 0.704503,
+          "overall_score_delta": 0.113038
         }
       ]
     },
@@ -703,6 +810,37 @@
           "overall_score_full_weight": 0.580817,
           "overall_score_continuity_4metric": 0.516107,
           "overall_score_delta": 0.0642
+        },
+        {
+          "iteration": 8,
+          "timestamp": "2026-07-06T05:15:59.568001+00:00",
+          "visual_similarity": 0.677882,
+          "visual_similarity_delta": 0.0,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.693855,
+          "overall_score_continuity_4metric": 0.704503,
+          "overall_score_delta": 0.113038
         }
       ]
     },
@@ -757,6 +895,6 @@
       ]
     }
   },
-  "last_updated_iteration": 7,
-  "last_updated_timestamp": "2026-07-06T05:12:03.787385+00:00"
+  "last_updated_iteration": 8,
+  "last_updated_timestamp": "2026-07-06T05:15:59.568001+00:00"
 }
