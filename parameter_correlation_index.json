@@ -81,6 +81,14 @@
           "embroidery_suitability_delta": 0.617913,
           "overall_score": 0.693855,
           "overall_score_delta": 0.113038
+        },
+        {
+          "iteration": 9,
+          "timestamp": "2026-07-06T06:43:24.474992+00:00",
+          "embroidery_suitability": 0.6348295555555559,
+          "embroidery_suitability_delta": 0.000918,
+          "overall_score": 0.694753,
+          "overall_score_delta": 0.000898
         }
       ]
     },
@@ -144,6 +152,14 @@
           "embroidery_suitability_delta": 0.617913,
           "overall_score": 0.693855,
           "overall_score_delta": 0.113038
+        },
+        {
+          "iteration": 9,
+          "timestamp": "2026-07-06T06:43:24.474992+00:00",
+          "embroidery_suitability": 0.6348295555555559,
+          "embroidery_suitability_delta": 0.000918,
+          "overall_score": 0.694753,
+          "overall_score_delta": 0.000898
         }
       ]
     },
@@ -207,6 +223,14 @@
           "embroidery_suitability_delta": 0.617913,
           "overall_score": 0.693855,
           "overall_score_delta": 0.113038
+        },
+        {
+          "iteration": 9,
+          "timestamp": "2026-07-06T06:43:24.474992+00:00",
+          "embroidery_suitability": 0.6348295555555559,
+          "embroidery_suitability_delta": 0.000918,
+          "overall_score": 0.694753,
+          "overall_score_delta": 0.000898
         }
       ]
     },
@@ -270,6 +294,14 @@
           "embroidery_suitability_delta": 0.617913,
           "overall_score": 0.693855,
           "overall_score_delta": 0.113038
+        },
+        {
+          "iteration": 9,
+          "timestamp": "2026-07-06T06:43:24.474992+00:00",
+          "embroidery_suitability": 0.6348295555555559,
+          "embroidery_suitability_delta": 0.000918,
+          "overall_score": 0.694753,
+          "overall_score_delta": 0.000898
         }
       ]
     },
@@ -355,6 +387,19 @@
           "overall_score": 0.693855,
           "overall_score_delta": 0.113038,
           "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.414939s) rather than a single noisy run, spread min=0.401745s p95=0.437284s"
+        },
+        {
+          "iteration": 9,
+          "timestamp": "2026-07-06T06:43:24.474992+00:00",
+          "perf_runs": 5,
+          "performance": 0.7838015,
+          "performance_delta": -0.008729,
+          "total_runtime_min_s": 0.431018,
+          "total_runtime_median_s": 0.432397,
+          "total_runtime_p95_s": 0.50545,
+          "overall_score": 0.694753,
+          "overall_score_delta": 0.000898,
+          "observed_effect": "median-of-5 timing; performance sub-score now reflects the median (0.432397s) rather than a single noisy run, spread min=0.431018s p95=0.505450s"
         }
       ]
     },
@@ -517,6 +562,62 @@
           "overall_score_full_weight": 0.693855,
           "overall_score_continuity_4metric": 0.704503,
           "overall_score_delta": 0.113038
+        },
+        {
+          "iteration": 9,
+          "timestamp": "2026-07-06T06:43:24.474992+00:00",
+          "visual_similarity": 0.581811875,
+          "visual_similarity_delta": -0.09607,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0263.svg",
+              "pes": "img_0263_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0293.svg",
+              "pes": "img_0293_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0322.svg",
+              "pes": "img_0322_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0331.svg",
+              "pes": "img_0331_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_1126.svg",
+              "pes": "img_1126_logo.exp",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.694753,
+          "overall_score_continuity_4metric": 0.770046,
+          "overall_score_delta": 0.000898
         }
       ]
     },
@@ -679,6 +780,62 @@
           "overall_score_full_weight": 0.693855,
           "overall_score_continuity_4metric": 0.704503,
           "overall_score_delta": 0.113038
+        },
+        {
+          "iteration": 9,
+          "timestamp": "2026-07-06T06:43:24.474992+00:00",
+          "visual_similarity": 0.581811875,
+          "visual_similarity_delta": -0.09607,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0263.svg",
+              "pes": "img_0263_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0293.svg",
+              "pes": "img_0293_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0322.svg",
+              "pes": "img_0322_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0331.svg",
+              "pes": "img_0331_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_1126.svg",
+              "pes": "img_1126_logo.exp",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.694753,
+          "overall_score_continuity_4metric": 0.770046,
+          "overall_score_delta": 0.000898
         }
       ]
     },
@@ -841,6 +998,62 @@
           "overall_score_full_weight": 0.693855,
           "overall_score_continuity_4metric": 0.704503,
           "overall_score_delta": 0.113038
+        },
+        {
+          "iteration": 9,
+          "timestamp": "2026-07-06T06:43:24.474992+00:00",
+          "visual_similarity": 0.581811875,
+          "visual_similarity_delta": -0.09607,
+          "self_test_passed": true,
+          "pairing_basis": [
+            {
+              "svg": "drink_v2.svg",
+              "pes": "drink_v2.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "coastal_objects_all.svg",
+              "pes": "summer_coastal-icons.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "drink_trace.svg",
+              "pes": "drink.pes",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0263.svg",
+              "pes": "img_0263_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0293.svg",
+              "pes": "img_0293_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0322.svg",
+              "pes": "img_0322_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_0331.svg",
+              "pes": "img_0331_logo.exp",
+              "basis": "svg_vs_pes"
+            },
+            {
+              "svg": "img_1126.svg",
+              "pes": "img_1126_logo.exp",
+              "basis": "svg_vs_pes"
+            }
+          ],
+          "excluded_pes_no_svg_pair": [
+            "basket_7scans.pes",
+            "basket_small.pes"
+          ],
+          "overall_score_full_weight": 0.694753,
+          "overall_score_continuity_4metric": 0.770046,
+          "overall_score_delta": 0.000898
         }
       ]
     },
@@ -895,6 +1108,6 @@
       ]
     }
   },
-  "last_updated_iteration": 8,
-  "last_updated_timestamp": "2026-07-06T05:15:59.568001+00:00"
+  "last_updated_iteration": 9,
+  "last_updated_timestamp": "2026-07-06T06:43:24.474992+00:00"
 }
