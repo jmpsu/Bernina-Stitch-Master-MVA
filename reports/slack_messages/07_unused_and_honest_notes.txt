@@ -1,0 +1,9 @@
+Being honest about what we're NOT using
+
+A few sources genuinely have no application in an image-to-stitch pipeline, and we'd rather say that than invent a use:
+
+• MasterDNS VPN — a network/censorship tool; nothing to apply here.
+• Browser testing with dev tools — no web page in this pipeline.
+• Interview-me — there's no interactive Q&A step in an automated, deterministic pipeline.
+
+One partial: CRM AI analysis is mostly about databases and customer analytics we don't have, but its input-validation instinct shows up faintly in how we screen tracer settings.

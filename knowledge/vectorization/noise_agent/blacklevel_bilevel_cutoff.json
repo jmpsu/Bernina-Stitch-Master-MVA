@@ -1,0 +1,15 @@
+{
+  "concept": "blacklevel / bilevel cutoff: threshold choice preserves silhouette",
+  "element": "noise",
+  "source_document": "potrace_SOURCE_BUNDLE.md",
+  "source_excerpt": "double blacklevel; /* 0 to 1: black/white cutoff in input file */   ...   int bilevel;        /* convert to bilevel? */   double level;       /* cutoff grey level */",
+  "implication": "The grey cutoff that decides which pixels become foreground directly controls how much of the silhouette survives. A too-high cutoff eats thin/light features (breaks silhouettes into speckle); a too-low cutoff floods the image with background. Choosing the cutoff at the foreground/background luminance valley preserves the silhouette while rejecting noise.",
+  "param_mapping": {
+    "vtracer_param": "source_threshold_level",
+    "direction": "set",
+    "candidate_values": [0.45, 0.5, 0.55],
+    "rationale": "vtracer in color mode has no exposed blacklevel; this is a pre-tracer binarization/threshold choice (analogue of potrace blacklevel/mkbitmap level, range 0-1, default 0.5). Relevant when a source is pre-binarized before tracing, or for a binary colormode path. INFERRED pipeline knob. The vectorizer's foreground detection (lum<240 | sat>25) is the current implicit cutoff; this records blacklevel as the tunable behind it."
+  },
+  "hypothesis": "Setting the pre-trace grey cutoff at the luminance histogram valley (near 0.5, source-dependent) rather than a fixed default will preserve thin silhouette features and reduce edge speckle, improving edge_iou, because it separates foreground from background where they actually divide.",
+  "relevance": "vectorizer"
+}

@@ -1,0 +1,15 @@
+{
+  "concept": "Node/element count as a path-topology quality target",
+  "element": "edge",
+  "source_document": "inkstitch_EMBIZ_ADAPTED_DOCTRINE.md",
+  "source_excerpt": "from lib.elements.utils.nodes import nodes_to_elements, iterate_nodes\\nelements = nodes_to_elements(iterate_nodes(svg.getroot()))",
+  "implication": "Downstream digitizing iterates the SVG node/element graph, so path topology (node count, element count, closure) is a first-class quality signal: too many nodes means a noisy over-fit trace that is slow and jittery to digitize; too few means an over-simplified edge. A node-count target bounds edge complexity independent of pixel-level metrics.",
+  "param_mapping": {
+    "vtracer_param": "path_precision",
+    "direction": "decrease",
+    "candidate_values": [4, 5, 6],
+    "rationale": "Node/segment count rises with path_precision, filter_speckle (low), and low splice/length thresholds. To hit a node-count target for clean topology, path_precision is the primary lever to pull DOWN once edge_iou is already satisfied, trading redundant nodes for a simpler path. Paired with a post-trace node-count check parsed from the SVG. Library states the node-iteration need directly; the numeric target is inferred (not a stated value)."
+  },
+  "hypothesis": "Once edge_iou/ssim targets are met, lowering path_precision (and/or raising splice_threshold) reduces SVG node count toward a topology budget with negligible fidelity loss, producing cleaner paths for digitizing; measured by a node-count check on the output SVG.",
+  "relevance": "vectorizer"
+}

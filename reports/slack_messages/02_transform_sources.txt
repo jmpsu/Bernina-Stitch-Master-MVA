@@ -1,0 +1,7 @@
+Group A — sources that directly shape the artwork-to-stitch conversion (3 of them)
+
+• Potrace — this is the big one for tracing. Its guidance on cleaning up speckles, deciding where curves become sharp corners, and how to fit smooth outlines is baked straight into the tracer's default settings. This week we promoted four of its proven settings into the starting point the tracer uses every run.
+
+• Inkscape — gives us the color rules: keep to a sensible thread-color budget, merge colors that are nearly identical, and decide how color layers stack. That drives the tracer's color settings and the new per-image rule for how layers are arranged.
+
+• Ink/Stitch — the actual stitching know-how: how a traced shape becomes fill stitches and outlines, and keeping the number of points sensible so the design sews cleanly. That lives in the stitch-plan step of the pipeline.

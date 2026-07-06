@@ -1,0 +1,15 @@
+{
+  "concept": "opttolerance curve-optimization tolerance (node count vs fit)",
+  "element": "curve",
+  "source_document": "potrace_SOURCE_BUNDLE.md",
+  "source_excerpt": "double opttolerance; /* curve optimization tolerance */   ...   0.2,   /* opttolerance */   (potracelib.h default; range 0.0-1.0 per doctrine)",
+  "implication": "opttolerance bounds how far the optimized Bezier may deviate from the original polygon while joining adjacent segments into a single curve. Higher tolerance => fewer, longer curves (fewer nodes, smoother, less faithful); lower => more nodes hugging the source. Potrace default 0.2; doctrine logo 0.3 (fewer points), text 0.1 (faithful).",
+  "param_mapping": {
+    "vtracer_param": "path_precision",
+    "direction": "set",
+    "candidate_values": [5, 6, 7, 8],
+    "rationale": "opttolerance's node-count/fidelity tradeoff maps most directly onto vtracer path_precision (coordinate precision: higher = more faithful, more nodes) and secondarily onto splice_threshold/length_threshold (segment joining). Low opttolerance (text 0.1, faithful) -> high path_precision (8); higher opttolerance (logo 0.3, fewer points) -> lower path_precision (6). Multi-param analogue, so path_precision is the primary isolated factor and splice/length are secondary."
+  },
+  "hypothesis": "Raising path_precision (analogue of lowering opttolerance) will increase ssim/edge_iou on detailed art at the cost of node count, while lowering it will reduce node count with small ssim loss on simple logos, because opttolerance is potrace's fit-vs-nodecount knob.",
+  "relevance": "vectorizer"
+}

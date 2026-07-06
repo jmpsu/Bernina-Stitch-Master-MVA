@@ -1,0 +1,15 @@
+{
+  "concept": "alphamax corner threshold (curve vs corner decision)",
+  "element": "curve",
+  "source_document": "potrace_SOURCE_BUNDLE.md",
+  "source_excerpt": "double alphamax;     /* corner threshold */   ...   1.0,   /* alphamax */   (potracelib.h defaults; range 0.0-1.3334 per man page / doctrine)",
+  "implication": "alphamax is the threshold above which a vertex is rendered as a smooth curve rather than a sharp corner. Higher alphamax (toward 1.3334) => more vertices smoothed => rounder output; lower (toward 0) => more corners kept => sharper, more angular output. Potrace defaults 1.0; the doctrine's logo preset uses 0.8 (smoother) and text preset 1.2 (sharper).",
+  "param_mapping": {
+    "vtracer_param": "corner_threshold",
+    "direction": "set",
+    "candidate_values": [40, 50, 60, 70, 80],
+    "rationale": "vtracer's corner_threshold (degrees) is the angular cutoff for treating a junction as a corner vs a smooth spline point. It is the direct analogue of potrace alphamax but with INVERTED sense scaled to degrees: a higher potrace alphamax (smoother) corresponds to a LOWER vtracer corner_threshold. So doctrine logo(alphamax 0.8, smoother)->lower corner_threshold ~50; text(alphamax 1.2, sharper)->higher ~70. This inversion is documented in vectorizer.py DOCTRINE_SEED and is a conceptual, not unit-exact, mapping."
+  },
+  "hypothesis": "Lowering corner_threshold (smoother, per potrace alphamax 0.8 logo preset) will raise ssim on rounded/organic logo art, while raising it (sharper, per alphamax 1.2 text preset) will raise ssim/edge_iou on angular line art, because it matches potrace's proven per-artwork corner presets.",
+  "relevance": "vectorizer"
+}

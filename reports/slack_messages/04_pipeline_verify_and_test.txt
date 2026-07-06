@@ -1,0 +1,6 @@
+Group B (part 2) — how we prove it works
+
+• Test-driven development — we run isolated, repeatable experiments that check each piece of library advice actually improves quality before trusting it.
+• CI/automation and Tolaria's gate-command idea — the experiments run the same way every time, against a fixed set of five test images so results are comparable.
+• Debugging and error recovery — if a trace fails, the system catches it and scores it as a worst-case rather than crashing, so a bad run never poisons the results.
+• (Browser testing with dev tools — noted but not used here; there's no web page to test in this pipeline.)

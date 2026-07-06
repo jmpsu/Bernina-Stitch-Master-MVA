@@ -1,0 +1,15 @@
+{
+  "concept": "Curve segment joining and splice length (secondary opttolerance analogue)",
+  "element": "curve",
+  "source_document": "potrace_EMBIZ_ADAPTED_DOCTRINE.md",
+  "source_excerpt": "opttolerance default 0.2, logo 0.3, text 0.1   (range 0-1.0) curve smoothness/points ... opttolerance (fewer points) -> path_precision / length_threshold / splice_threshold",
+  "implication": "The 'fewer points / smoother' end of opttolerance is also expressed by how aggressively short segments are absorbed and how curves are spliced together. Larger splice/length thresholds merge more micro-segments into single smooth curves (fewer nodes); smaller keep fine wiggle.",
+  "param_mapping": {
+    "vtracer_param": "splice_threshold",
+    "direction": "set",
+    "candidate_values": [30, 45, 60],
+    "rationale": "splice_threshold (degrees) gates joining adjacent curve segments; length_threshold sets the minimum segment length. Both are the secondary axis of the opttolerance mapping in vectorizer.py. Higher splice_threshold ~ higher opttolerance (fewer, smoother joined curves). Kept as a distinct isolated factor from path_precision so Stage 2 can separate coordinate precision from segment joining."
+  },
+  "hypothesis": "Raising splice_threshold (join more segments, per higher opttolerance) will smooth curves and cut node count with minimal ssim change on logos; lowering it preserves fine detail on text/line art, because splice_threshold is the segment-merging half of potrace's opttolerance behavior.",
+  "relevance": "vectorizer"
+}

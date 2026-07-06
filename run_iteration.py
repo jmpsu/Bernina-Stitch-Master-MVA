@@ -22,6 +22,7 @@ import metrics
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 VECTOR_DIR = os.path.join(REPO_ROOT, "vector_source")
 STITCH_DIR = os.path.join(REPO_ROOT, "stitch_files")
+STITCH_PLANS_DIR = os.path.join(REPO_ROOT, "stitch_plans")
 REPORTS_DIR = os.path.join(REPO_ROOT, "reports")
 RENDERS_DIR = os.path.join(REPO_ROOT, "renders")
 REFERENCE_DIR = os.path.join(REPO_ROOT, "reference_images")
@@ -149,9 +150,13 @@ def percentile(values, pct):
 def discover(batch_size):
     svgs = sorted(glob.glob(os.path.join(VECTOR_DIR, "*.svg")))
     pess = sorted(glob.glob(os.path.join(STITCH_DIR, "*.pes")))
+    exps = sorted(glob.glob(os.path.join(STITCH_PLANS_DIR, "*.exp")))
     if batch_size is not None:
         svgs = svgs[:batch_size]
         pess = pess[:batch_size]
+    # Include EXP files from stitch_plans/ in the embroidery suitability corpus.
+    # pyembroidery (and metrics.pes_metrics) reads EXP files identically to PES.
+    pess = pess + exps
     return svgs, pess
 
 

@@ -1,0 +1,15 @@
+{
+  "concept": "HSL-distance nearest-color matching for palette mapping",
+  "element": "color",
+  "source_document": "inkscape_EMBIZ_ADAPTED_DOCTRINE.md",
+  "source_excerpt": "hsl = rgb_to_hsl(rgb) ... # Find nearest thread color using HSL distance\\n        nearest = min(palette, key=lambda t: hsl_distance(hsl, t.hsl))",
+  "implication": "Color similarity for this pipeline is judged in a perceptual (HSL) space, not raw RGB. Layers that differ mainly in lightness/saturation but share hue are perceptually close and can share a thread. This argues for keeping full color mode (so hue is preserved) rather than collapsing to binary/grayscale, and for a layer-splitting distance that respects perceptual closeness.",
+  "param_mapping": {
+    "vtracer_param": "colormode",
+    "direction": "set",
+    "candidate_values": ["color"],
+    "rationale": "colormode must stay 'color' (not 'binary') so hue information survives to allow perceptual HSL matching downstream; a binary trace throws away exactly the information the doctrine's matcher needs. This confirms the vectorizer's existing default rather than proposing a change, but it is a directly-cited justification for holding colormode='color' on any colored source."
+  },
+  "hypothesis": "Holding colormode='color' (never binary) on colored sources preserves the hue channel the downstream HSL matcher relies on, protecting color_fidelity; switching to binary would collapse color_fidelity even if ssim on luminance stayed high.",
+  "relevance": "vectorizer"
+}

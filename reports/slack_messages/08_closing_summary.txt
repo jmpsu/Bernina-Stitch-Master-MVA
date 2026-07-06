@@ -1,0 +1,9 @@
+Coverage summary
+
+We reviewed 39 library sources in total (15 doctrine write-ups + 24 engineering skill packs).
+
+• 3 directly shape the artwork-to-stitch conversion (Potrace, Inkscape, Ink/Stitch).
+• 33 shaped how the system is built, tested, logged, reviewed, and shipped.
+• 3 have no current application and are marked as such honestly.
+
+Bottom line: the tracing/stitching knowledge comes almost entirely from three sources; everything else is solid engineering discipline that made the pipeline reliable and reproducible — valuable, but not the same thing as tracing know-how. Full details are in reports/library_utilization_coverage.md.

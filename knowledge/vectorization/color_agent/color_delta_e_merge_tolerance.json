@@ -1,0 +1,15 @@
+{
+  "concept": "Perceptual color-merge tolerance (delta_e <= 5.0)",
+  "element": "color",
+  "source_document": "inkscape_EMBIZ_ADAPTED_DOCTRINE.md",
+  "source_excerpt": "'requires_approval': calculate_delta_e(rgb, nearest.rgb) > 5.0  ...  max_color_delta_e: 5.0",
+  "implication": "Two colors within a CIE delta-E of 5.0 are perceptually the same to the embroidery pipeline and may be merged into one layer. A tracer that separates colors finer than this budget produces redundant near-duplicate layers that add nodes without adding visible fidelity; a tracer that merges too aggressively drops real colors.",
+  "param_mapping": {
+    "vtracer_param": "layer_difference",
+    "direction": "set",
+    "candidate_values": [4, 8, 16, 24],
+    "rationale": "vtracer's layer_difference is the color-distance gate for spawning a new stacked layer (analogous to delta-E merge tolerance). Lower values split more colors, higher values merge. The doctrine's delta_e<=5.0 argues for a moderate value (~8-16) rather than the very-fine 4, so near-identical colors collapse into one layer. Note: layer_difference is a vtracer RGB-ish distance, NOT a calibrated CIE delta-E, so this is a conceptual (inferred) mapping, not a direct unit match."
+  },
+  "hypothesis": "Setting layer_difference near the middle of its ladder (8-16) rather than the minimum (4) will improve color_fidelity-per-layer (fewer redundant near-duplicate layers) without measurably lowering ssim, because merges below delta_e~5 are perceptually invisible.",
+  "relevance": "vectorizer"
+}
