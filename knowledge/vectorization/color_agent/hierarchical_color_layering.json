@@ -1,0 +1,15 @@
+{
+  "concept": "Stacked vs cutout color layering topology",
+  "element": "color",
+  "source_document": "inkscape_EMBIZ_ADAPTED_DOCTRINE.md",
+  "source_excerpt": "Palette handling, color selector logic for thread color mapping ... Convert Bezier curves to linear stitch segments ... Validate path closure for fill stitches vs. running stitches",
+  "implication": "Embroidery fills are opaque, stacked color regions applied in sequence, not overlapping transparencies. A stacked layering model (each color a full region painted in order) matches how fills are digitized better than a cutout model (which carves holes). Choosing the layering topology that mirrors opaque stacked fills should reduce the number of thin sliver paths at color boundaries.",
+  "param_mapping": {
+    "vtracer_param": "hierarchical",
+    "direction": "set",
+    "candidate_values": ["stacked", "cutout"],
+    "rationale": "vtracer's hierarchical=stacked emits nested full color regions (matching opaque stacked fills); cutout emits non-overlapping cut regions. INFERRED mapping: the doctrine never names vtracer's hierarchical flag, but its 'stacked fill' fill-stitch model favors 'stacked'. The vectorizer already defaults to stacked; this artifact records the justification and flags cutout as the one alternative worth an isolated A/B."
+  },
+  "hypothesis": "Keeping hierarchical='stacked' (vs cutout) will hold or improve color_fidelity and reduce boundary-sliver node count because it mirrors the opaque stacked-fill model of embroidery; this is inferred, not directly stated, so it warrants one isolated A/B experiment.",
+  "relevance": "vectorizer"
+}

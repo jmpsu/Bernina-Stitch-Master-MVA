@@ -1,0 +1,15 @@
+{
+  "concept": "turdsize: suppress paths below an area (speckle removal)",
+  "element": "noise",
+  "source_document": "potrace_SOURCE_BUNDLE.md",
+  "source_excerpt": "int turdsize;        /* area of largest path to be ignored */   ...   2,   /* turdsize */   (potracelib.h default; range 2-100 per doctrine, logo 5, text 2)",
+  "implication": "turdsize discards any traced path whose enclosed pixel area is at or below the threshold, removing scanning speckle and dust while leaving larger shapes intact. Too high erases genuine small features (dots on i/j, small logo elements, thin serifs); too low keeps noise. Potrace default 2; doctrine logo 5, text 2 (keep fine detail).",
+  "param_mapping": {
+    "vtracer_param": "filter_speckle",
+    "direction": "set",
+    "candidate_values": [0, 1, 2, 4, 6, 8],
+    "rationale": "vtracer filter_speckle discards connected regions below a pixel-area threshold, the direct analogue of potrace turdsize. Direct mapping in vectorizer.py DOCTRINE_SEED. Low (0-2) for line art / fine detail (text preset), moderate (4-6) for noisy logos (logo preset 5). This is the primary noise isolated factor."
+  },
+  "hypothesis": "Raising filter_speckle removes speckle noise and can raise ssim/edge_iou on noisy scans by cleaning stray regions, but past the point where genuine small features are erased it will lower fidelity; the optimum sits near potrace's per-artwork values (2 for detailed, ~5 for logos).",
+  "relevance": "vectorizer"
+}

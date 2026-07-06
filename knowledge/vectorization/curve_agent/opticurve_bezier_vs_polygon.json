@@ -1,0 +1,15 @@
+{
+  "concept": "opticurve: true Bezier optimization vs raw polygon",
+  "element": "curve",
+  "source_document": "potrace_SOURCE_BUNDLE.md",
+  "source_excerpt": "int opticurve;       /* use curve optimization? */   ...   1,   /* opticurve */   ...   int opticurve;    /* opticurve capable (true Bezier curves?) */",
+  "implication": "opticurve toggles whether potrace fits true optimized Bezier curves (on, default) or leaves the un-optimized polygon (off). Bezier output is smoother and lighter; polygon output preserves every vertex faithfully but is heavier and more angular. This is a mode-level choice, not a scalar.",
+  "param_mapping": {
+    "vtracer_param": "mode",
+    "direction": "set",
+    "candidate_values": ["spline", "polygon"],
+    "rationale": "vtracer mode='spline' fits smooth Bezier splines (analogue of potrace opticurve ON); mode='polygon' emits straight-segment polygons (opticurve OFF). Direct conceptual match. Default spline for smooth art; polygon worth testing on hard-edged geometric/text art and soft-shaded sources (vectorizer already adds a soft_polygon_max start)."
+  },
+  "hypothesis": "mode='spline' (Bezier, opticurve on) will beat polygon on ssim for curved/organic art, while mode='polygon' may match or beat spline on angular/geometric art and gradient region tracing, because it mirrors potrace's opticurve Bezier-vs-polygon distinction.",
+  "relevance": "vectorizer"
+}
