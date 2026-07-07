@@ -296,6 +296,12 @@ def _meeting_reasoning(agenda: dict) -> tuple[str, str]:
         + json.dumps(agenda, default=str)[:4000]
     )
     try:
+        # Short-circuit: when Ollama is plainly unreachable (e.g. THIS
+        # container has no GPU/Ollama) skip the retry ladder instead of
+        # burning ~30s of connection retries per meeting.
+        from qwen_client import ollama_alive
+        if not ollama_alive():
+            raise RuntimeError("ollama unreachable (pre-check)")
         import model_router
         text = model_router.route("summarize", prompt)
         return text, "model_router(qwen3:8b ladder)"
