@@ -642,6 +642,12 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
         "thread_rgb": thread_rgbs,
         "line_art": bool(line_art),
         "regions": len(regions),
+        # Per-region border treatment: fill regions get SATIN border columns,
+        # thin/line-like regions get running stitch (a satin column would
+        # double-hit them). fill_regions == 0 => zero satin borders is the
+        # CORRECT treatment for the object, not a missing safety feature.
+        "fill_regions": sum(1 for r in regions if not r[2]),
+        "line_regions": sum(1 for r in regions if r[2]),
         "satin_borders": satin_runs_n,
         "satin_width_mm": round(min(max(satin_width_mm, SATIN_MIN_WIDTH_MM),
                                     SATIN_MAX_WIDTH_MM), 3),

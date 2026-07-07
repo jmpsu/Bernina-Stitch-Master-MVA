@@ -120,7 +120,9 @@ STALL_WINS_LOG = KNOWLEDGE_VEC_DIR / "stall_break_wins.jsonl"
 # A production run is FINALIZED only when ALL of:
 #   1. attempts   : >= FINALIZE_MIN_ATTEMPTS vectorizer attempts accumulated
 #                   across epochs with different method combinations (the
-#                   stall-break jitter/random starts provide the diversity),
+#                   stall-break jitter/random starts provide the diversity);
+#                   BYPASSED when the image reached the SSIM target — target
+#                   reached = perfection reached, no more attempts needed,
 #   2. convergence: the image is done — target reached or stalled out, i.e.
 #                   further improvement makes no visible difference,
 #   3. stitch     : the regenerated stitch plan uses SATIN FILL borders and
@@ -726,9 +728,16 @@ def finalize_production_run(state: dict, stem: str, rec: dict) -> bool:
         if h.get("best_start"):
             combos.add(h["best_start"])
         combos.update(h.get("injected_starts", []))
-    attempts_crit = {"met": total_attempts >= FINALIZE_MIN_ATTEMPTS,
+    # An image that REACHED the SSIM target has converged by definition —
+    # perfection reached means no more attempts are needed — so
+    # reached_target bypasses the minimum-attempts threshold (which exists to
+    # guarantee method diversity for images that merely stalled out).
+    attempts_met = (total_attempts >= FINALIZE_MIN_ATTEMPTS
+                    or bool(rec.get("reached_target")))
+    attempts_crit = {"met": attempts_met,
                      "total_attempts": total_attempts,
                      "min_required": FINALIZE_MIN_ATTEMPTS,
+                     "target_reached_bypass": bool(rec.get("reached_target")),
                      "method_combinations": len(combos)}
 
     # 2. convergence ----------------------------------------------------------
@@ -756,12 +765,21 @@ def finalize_production_run(state: dict, stem: str, rec: dict) -> bool:
             "satin_width_mm": s.get("satin_width_mm"),
             "satin_spacing_mm": s.get("satin_spacing_mm"),
             "line_art": s.get("line_art"),
+            "fill_regions": s.get("fill_regions"),
+            "line_regions": s.get("line_regions"),
             "density": s.get("density"),
         })
     density_ok = bool(rows) and all(
         (s.get("density") or {}).get("ok") for _, _, s in rows)
+    # Satin borders are the border treatment for FILL regions only; thin
+    # line-like regions correctly use running stitch (a satin column would
+    # double-hit them). An object is satin-compliant when it has satin
+    # borders, is line art, or contains no fill regions at all (region-level
+    # line art — zero satin borders is the correct treatment there).
     satin_used = bool(rows) and all(
-        s.get("satin_borders", 0) > 0 or s.get("line_art") for _, _, s in rows)
+        s.get("satin_borders", 0) > 0 or s.get("line_art")
+        or s.get("fill_regions", 1) == 0
+        for _, _, s in rows)
     if rows:
         max_d = max((s.get("density") or {}).get(
             "max_local_density_per_mm2", -1) for _, _, s in rows)
