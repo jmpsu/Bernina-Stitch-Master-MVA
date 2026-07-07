@@ -1,0 +1,31 @@
+# EMBIZ autonomous Slack daemon — systemd USER service (Linux Mint, user jmmint)
+#
+# Install:
+#   mkdir -p ~/.config/systemd/user
+#   cp local_agents/systemd/embiz-slack-daemon.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now embiz-slack-daemon.service
+#   loginctl enable-linger jmmint      # survive logout/reboot
+#
+# Secrets live ONLY in the environment file (mode 600), never in this unit.
+
+[Unit]
+Description=EMBIZ autonomous Slack agent daemon (Socket Mode, local qwen3:8b)
+Documentation=file:%h/Bernina-Stitch-Master-MVA/EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Bernina-Stitch-Master-MVA/local_agents
+EnvironmentFile=%h/.config/embiz/env
+ExecStart=%h/Bernina-Stitch-Master-MVA/.venv/bin/python %h/Bernina-Stitch-Master-MVA/local_agents/slack_daemon.py
+Restart=always
+RestartSec=10
+# Give Slack a clean goodbye message on stop.
+TimeoutStopSec=30
+# Modest hardening that keeps repo/state writable.
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target

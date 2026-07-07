@@ -1,0 +1,4 @@
+# Runtime state (queues, transcripts, audit logs, heartbeats) — durable on the
+# machine, never committed.
+state/
+__pycache__/
