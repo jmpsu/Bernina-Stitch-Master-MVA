@@ -78,30 +78,30 @@
     "updated": "2026-07-07T13:30:27Z"
   },
   "multicolor|c3|e0": {
-    "composite": 0.568202,
+    "composite": 0.928263,
     "features": {
-      "aspect": 1.0427,
-      "distinct_colors": 13,
-      "edge_density": 0.03299,
-      "foreground_fraction": 0.51902,
-      "height": 351,
+      "aspect": 0.8759,
+      "distinct_colors": 15,
+      "edge_density": 0.03351,
+      "foreground_fraction": 0.52257,
+      "height": 685,
       "is_line_art": false,
-      "width": 366
+      "width": 600
     },
     "params": {
-      "color_precision": 6,
+      "color_precision": 8,
       "colormode": "color",
-      "corner_threshold": 40,
-      "filter_speckle": 1,
-      "hierarchical": "cutout",
-      "layer_difference": 48,
-      "length_threshold": 4.0,
-      "mode": "polygon",
+      "corner_threshold": 30,
+      "filter_speckle": 0,
+      "hierarchical": "stacked",
+      "layer_difference": 4,
+      "length_threshold": 10.0,
+      "mode": "spline",
       "path_precision": 8,
       "splice_threshold": 30
     },
-    "ssim_color": 0.627187,
-    "updated": "2026-07-05T21:27:33Z"
+    "ssim_color": 0.967747,
+    "updated": "2026-07-07T14:25:14Z"
   },
   "multicolor|c4|e0": {
     "composite": 0.951835,
