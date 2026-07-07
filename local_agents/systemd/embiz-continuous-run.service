@@ -1,0 +1,35 @@
+# EMBIZ continuous perfection run — systemd USER service (Linux Mint)
+#
+# Runs local_agents/continuous_run.py UNBOUNDED: every raster in
+# input_images/ is refined over epochs (vectorize -> digitize -> QA ->
+# milestones/meetings) until target SSIM or stall, then the loop idles and
+# rescans input_images/ for new work. Restart=always means it truly runs
+# over and over continuously — state is checkpointed after every epoch to
+# local_agents/state/continuous_run_state.json so restarts resume exactly
+# where they stopped.
+#
+# Install:
+#   mkdir -p ~/.config/systemd/user
+#   cp local_agents/systemd/embiz-continuous-run.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now embiz-continuous-run.service
+#   loginctl enable-linger jmmint      # survive logout/reboot
+
+[Unit]
+Description=EMBIZ continuous perfection run (epoch orchestrator, M-agent personas)
+Documentation=file:%h/Bernina-Stitch-Master-MVA/OUTPUTS.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Bernina-Stitch-Master-MVA/local_agents
+EnvironmentFile=%h/.config/embiz/env
+ExecStart=%h/Bernina-Stitch-Master-MVA/.venv/bin/python %h/Bernina-Stitch-Master-MVA/local_agents/continuous_run.py
+Restart=always
+RestartSec=15
+TimeoutStopSec=60
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target
