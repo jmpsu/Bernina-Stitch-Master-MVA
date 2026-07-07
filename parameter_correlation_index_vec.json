@@ -1,4 +1,30 @@
 {
+  "line_art|c0|e0": {
+    "composite": 0.95036,
+    "features": {
+      "aspect": 0.9188,
+      "distinct_colors": 3,
+      "edge_density": 0.0072,
+      "foreground_fraction": 0.2086,
+      "height": 653,
+      "is_line_art": true,
+      "width": 600
+    },
+    "params": {
+      "color_precision": 8,
+      "colormode": "color",
+      "corner_threshold": 50,
+      "filter_speckle": 0,
+      "hierarchical": "stacked",
+      "layer_difference": 16,
+      "length_threshold": 4.0,
+      "mode": "spline",
+      "path_precision": 6,
+      "splice_threshold": 45
+    },
+    "ssim_color": 0.982416,
+    "updated": "2026-07-07T13:26:17Z"
+  },
   "line_art|c1|e0": {
     "composite": 0.95038,
     "features": {
