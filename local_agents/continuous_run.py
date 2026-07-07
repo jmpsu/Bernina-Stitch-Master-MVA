@@ -37,6 +37,11 @@ Milestones -> ``reports/milestones.jsonl`` (+ Slack #embiz-milestones):
   * target_reached         per image
   * all_images_pass        once all scanned images reach target
   * epoch_century          every 100 global epochs
+  * production_run_finalized  per image, once ALL finalization criteria hold:
+      hundreds of attempts w/ different method combos, convergence, satin-fill
+      borders passing the B700 density guardrails, and a knowledge-fetch pass.
+      Emits the FINAL Slack production message (Margo) with the three ruler
+      JPEGs attached as native image uploads (drafted locally when no Slack).
 
 Agent meetings -> ``reports/agent_meetings.jsonl`` (+ Slack #embiz-meetings):
 every ``--meeting-interval`` epochs (default 25) and at every milestone.
@@ -110,6 +115,29 @@ STALL_ESCALATE_AT = 3         # stall count at which exploration widens
 DEFAULT_STALL_EPOCHS = 10     # raised from 5: stalled epochs now differ
 KNOWLEDGE_VEC_DIR = REPO_ROOT / "knowledge" / "vectorization"
 STALL_WINS_LOG = KNOWLEDGE_VEC_DIR / "stall_break_wins.jsonl"
+
+# --- production-run finalization -------------------------------------------
+# A production run is FINALIZED only when ALL of:
+#   1. attempts   : >= FINALIZE_MIN_ATTEMPTS vectorizer attempts accumulated
+#                   across epochs with different method combinations (the
+#                   stall-break jitter/random starts provide the diversity),
+#   2. convergence: the image is done — target reached or stalled out, i.e.
+#                   further improvement makes no visible difference,
+#   3. stitch     : the regenerated stitch plan uses SATIN FILL borders and
+#                   passes the B700 density guardrails (digitizer's
+#                   _density_report: local density <= 1.2 stitches/mm^2,
+#                   satin width 1-7 mm, spacing floor 0.35 mm),
+#   4. knowledge  : Mabel loaded every knowledge modular object + the
+#                   correlation indexes and recorded what was consulted.
+# On finalization: `production_run_finalized` milestone + a FINAL Slack
+# message (Margo -> #embiz-production) with the three ruler JPEGs attached as
+# NATIVE image uploads (slack_sdk files_upload_v2, multi-file, one message).
+# Without Slack tokens the exact payload is drafted to the agent feed and
+# reports/slack_messages/.
+FINALIZE_MIN_ATTEMPTS = 200
+SLACK_DRAFTS_DIR = REPORTS_DIR / "slack_messages"
+RULER_JPEGS = ("1_original_on_ruler.jpg", "2_svg_on_ruler.jpg",
+               "3_stitchplan_on_ruler.jpg")
 
 MIRA = PERSONAS["mira"]
 MAYA = PERSONAS["maya"]
@@ -289,6 +317,7 @@ def emit_milestone(state: dict, kind: str, stem: str | None, detail: dict,
         "target_reached": f"TARGET REACHED for *{stem}*",
         "all_images_pass": "ALL IMAGES PASS — every input at target",
         "epoch_century": f"global epoch {state['global_epochs']} checkpoint",
+        "production_run_finalized": f"PRODUCTION RUN FINALIZED for *{stem}*",
     }.get(kind, kind)
     extras = []
     if "best_ssim" in detail:
@@ -537,6 +566,252 @@ def mabel_stall_break_note(stem: str, epoch: int, prev_best: float,
 
 
 # ---------------------------------------------------------------------------
+# Production-run finalization
+# ---------------------------------------------------------------------------
+def _ruler_jpegs(stem: str) -> list[str]:
+    """The three 5x5in ruler/grid review JPEGs for this stem, in order."""
+    out = []
+    for name in RULER_JPEGS:
+        hits = sorted(globmod.glob(str(PROD_DIR / f"{stem}*" / name)))
+        if hits:
+            out.append(hits[0])
+    return out
+
+
+def mabel_knowledge_pass(state: dict, stem: str, rec: dict) -> dict:
+    """Criterion 4: load ALL knowledge modular objects
+    (knowledge/vectorization/**/*.json[l]) + parameter_correlation_index*.json
+    and record which techniques were consulted/applied. Logged as a meeting
+    entry (Mabel reporting to Minerva's log)."""
+    consulted = []
+    if KNOWLEDGE_VEC_DIR.exists():
+        for p in sorted(KNOWLEDGE_VEC_DIR.rglob("*.json*")):
+            rel = str(p.relative_to(REPO_ROOT))
+            try:
+                txt = p.read_text(encoding="utf-8")
+                if p.suffix == ".jsonl":
+                    n = sum(1 for ln in txt.splitlines() if ln.strip())
+                    consulted.append({"source": rel, "objects": n})
+                else:
+                    obj = json.loads(txt)
+                    concept = (obj.get("concept") or obj.get("title")
+                               or obj.get("hypothesis") or p.stem)
+                    consulted.append({"source": rel, "concept": concept})
+            except (OSError, ValueError):
+                continue
+    for name in ("parameter_correlation_index_vec.json",
+                 "parameter_correlation_index.json"):
+        p = REPO_ROOT / name
+        if not p.exists():
+            continue
+        try:
+            idx = json.loads(p.read_text(encoding="utf-8"))
+            consulted.append({"source": name, "objects": len(idx),
+                              "buckets": sorted(idx)[:16]})
+        except (OSError, ValueError):
+            continue
+    applied = {
+        "winning_params": rec.get("best_params"),
+        "learnings": rec.get("learnings"),
+        "stall_break_epochs": sum(1 for h in rec.get("history", [])
+                                  if h.get("stall_break")),
+    }
+    summary = (f"{len(consulted)} knowledge object(s) consulted "
+               f"({sum(1 for c in consulted if 'concept' in c)} technique "
+               f"notes + correlation indexes); applied: bucket prior + "
+               f"{applied['stall_break_epochs']} stall-break epoch(s)")
+    _append_jsonl(MEETINGS_LOG, {
+        "timestamp": _utcnow(),
+        "facilitator": "Minerva",
+        "attendees": [MABEL.name, MINERVA.name],
+        "reason": f"knowledge_fetch:{stem}",
+        "image": stem,
+        "global_epoch": state["global_epochs"],
+        "decisions": [f"knowledge-fetch pass for {stem} finalization: "
+                      f"{summary}"],
+        "consulted": consulted,
+        "applied": applied,
+    })
+    post_as(MABEL, CHANNELS["reports"],
+            text=f"{stem} finalization knowledge pass: {summary}")
+    return {"met": bool(consulted), "objects_consulted": len(consulted),
+            "sources": [c["source"] for c in consulted],
+            "applied": applied, "summary": summary}
+
+
+def post_final_production_message(stem: str, rec: dict, criteria: dict,
+                                  jpegs: list[str]) -> None:
+    """The FINAL production-run Slack message (Margo -> #embiz-production):
+    stats + the three ruler JPEGs attached as NATIVE image uploads in ONE
+    message (slack_sdk files_upload_v2 with file_uploads=[...]) so they render
+    as tappable images on mobile. Without Slack tokens the exact payload is
+    drafted to the agent feed and reports/slack_messages/."""
+    from personas import _append_feed, _slack_client
+    sat = criteria["stitch_safety"]
+    text = (
+        f"FINAL PRODUCTION RUN — {stem}\n"
+        f"attempts: {criteria['attempts']['total_attempts']} across "
+        f"{rec['epochs']} epoch(s), "
+        f"{criteria['attempts']['method_combinations']} method combination(s)\n"
+        f"final quality: ssim {rec['best_ssim']:.4f} / composite "
+        f"{rec['best_composite']:.4f} ({rec.get('done_reason')})\n"
+        f"stitch safety: {sat['summary']}\n"
+        f"knowledge: {criteria['knowledge']['summary']}\n"
+        f"attached: original / SVG / stitch plan on the 5x5in ruler grid"
+    )
+    body = f"{MARGO.style} {text}"
+    channel = CHANNELS["production"]
+    files = [f for f in jpegs if f and os.path.exists(f)]
+
+    record = {
+        "timestamp": _utcnow(),
+        "persona": MARGO.key,
+        "username": MARGO.username,
+        "icon_emoji": MARGO.icon_emoji,
+        "channel": channel,
+        "text": body,
+        "files": files,
+        "final_production_message": True,
+        "delivered_to_slack": False,
+    }
+    client = _slack_client()
+    if client is not None:
+        try:
+            resp = client.files_upload_v2(
+                channel=channel,
+                initial_comment=body,
+                file_uploads=[{"file": f,
+                               "filename": os.path.basename(f),
+                               "title": f"{stem} {os.path.basename(f)}"}
+                              for f in files],
+            )
+            record["delivered_to_slack"] = True
+            record["slack_files"] = [
+                (f or {}).get("id") for f in (resp.get("files") or [])]
+        except Exception as exc:  # noqa: BLE001 — never kill the run
+            record["slack_error"] = str(exc)
+    _append_feed(record)
+
+    # Draft copy (exact payload + file list) for review/replay when Slack is
+    # not configured in this environment.
+    SLACK_DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
+    draft = SLACK_DRAFTS_DIR / f"{stem}_final_production_message.json"
+    draft.write_text(json.dumps({
+        "channel": channel,
+        "method": "files_upload_v2",
+        "initial_comment": body,
+        "file_uploads": [{"file": f, "filename": os.path.basename(f),
+                          "title": f"{stem} {os.path.basename(f)}"}
+                         for f in files],
+        "delivered_to_slack": record["delivered_to_slack"],
+        "criteria": criteria,
+        "timestamp": record["timestamp"],
+    }, indent=2), encoding="utf-8")
+
+
+def finalize_production_run(state: dict, stem: str, rec: dict) -> bool:
+    """Evaluate the four finalization criteria for a DONE image; when all are
+    met, regenerate the stitch plan with satin borders, mark the image
+    finalized, emit the `production_run_finalized` milestone and send the
+    final Slack production message. Returns True when finalized."""
+    if rec.get("finalized") or not rec.get("done"):
+        return False
+
+    # 1. attempts + method diversity ----------------------------------------
+    total_attempts = rec.get("total_attempts") or sum(
+        h.get("vectorizer_iterations", 0) for h in rec.get("history", []))
+    rec["total_attempts"] = total_attempts
+    combos = set()
+    for h in rec.get("history", []):
+        if h.get("best_start"):
+            combos.add(h["best_start"])
+        combos.update(h.get("injected_starts", []))
+    attempts_crit = {"met": total_attempts >= FINALIZE_MIN_ATTEMPTS,
+                     "total_attempts": total_attempts,
+                     "min_required": FINALIZE_MIN_ATTEMPTS,
+                     "method_combinations": len(combos)}
+
+    # 2. convergence ----------------------------------------------------------
+    convergence_crit = {"met": bool(rec.get("done")),
+                        "reason": rec.get("done_reason"),
+                        "best_ssim": rec.get("best_ssim"),
+                        "best_composite": rec.get("best_composite")}
+
+    # 3. satin fill + density guardrails (regenerate the plan) ---------------
+    rows: list = []
+    svg = REPO_ROOT / "vectorized_svg" / f"{stem}.svg"
+    if svg.exists():
+        raster = rasterize_best_svg(svg, stem)
+        if raster is not None:
+            try:
+                rows = digitize_epoch(raster, stem)
+            except Exception as exc:  # noqa: BLE001
+                post_as(MARNIE, CHANNELS["alerts"],
+                        text=f"finalization digitize failed for {stem}: {exc}")
+    objects = []
+    for _stem_r, label, s in rows:
+        objects.append({
+            "object": label,
+            "satin_borders": s.get("satin_borders", 0),
+            "satin_width_mm": s.get("satin_width_mm"),
+            "satin_spacing_mm": s.get("satin_spacing_mm"),
+            "line_art": s.get("line_art"),
+            "density": s.get("density"),
+        })
+    density_ok = bool(rows) and all(
+        (s.get("density") or {}).get("ok") for _, _, s in rows)
+    satin_used = bool(rows) and all(
+        s.get("satin_borders", 0) > 0 or s.get("line_art") for _, _, s in rows)
+    if rows:
+        max_d = max((s.get("density") or {}).get(
+            "max_local_density_per_mm2", -1) for _, _, s in rows)
+        n_satin = sum(s.get("satin_borders", 0) for _, _, s in rows)
+        sat_summary = (f"satin borders x{n_satin}, max local density "
+                       f"{max_d:.3f}/mm^2 (limit "
+                       f"{digitizer.MAX_LOCAL_DENSITY_PER_MM2}), "
+                       f"{'PASS' if density_ok else 'FAIL'}")
+    else:
+        sat_summary = "stitch plan regeneration failed"
+    stitch_crit = {"met": density_ok and satin_used, "objects": objects,
+                   "summary": sat_summary}
+
+    # 4. knowledge-fetch pass -------------------------------------------------
+    knowledge_crit = mabel_knowledge_pass(state, stem, rec)
+
+    criteria = {"attempts": attempts_crit, "convergence": convergence_crit,
+                "stitch_safety": stitch_crit, "knowledge": knowledge_crit}
+    rec["finalization"] = {"timestamp": _utcnow(), "criteria": criteria}
+
+    unmet = [k for k, c in criteria.items() if not c["met"]]
+    if unmet:
+        rec["finalization_blocked_by"] = unmet
+        post_as(MIRA, CHANNELS["jobs"],
+                text=(f"{stem}: finalization blocked by {', '.join(unmet)} "
+                      f"(attempts={total_attempts}, "
+                      f"stitch: {sat_summary})"))
+        save_state(state)
+        return False
+
+    rec.pop("finalization_blocked_by", None)
+    rec["finalized"] = True
+    rec["finalized_at"] = _utcnow()
+    jpegs = _ruler_jpegs(stem)
+    emit_milestone(state, "production_run_finalized", stem, {
+        "best_ssim": rec.get("best_ssim", -1.0),
+        "best_composite": rec.get("best_composite", -1.0),
+        "epoch": rec.get("epochs"),
+        "total_attempts": total_attempts,
+        "method_combinations": attempts_crit["method_combinations"],
+        "stitch_safety": sat_summary,
+        "knowledge_objects": knowledge_crit["objects_consulted"],
+        "ruler_jpegs": jpegs,
+    })
+    post_final_production_message(stem, rec, criteria, jpegs)
+    save_state(state)
+    return True
+
+
+# ---------------------------------------------------------------------------
 # One epoch for one image
 # ---------------------------------------------------------------------------
 def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
@@ -600,6 +875,10 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
     improved = vec["best_composite"] > rec["best_composite"] + IMPROVE_EPS
     first_epoch = (epoch == 1)
     rec["epochs"] = epoch
+    rec["total_attempts"] = (
+        (rec.get("total_attempts")
+         or sum(h.get("vectorizer_iterations", 0) for h in rec["history"]))
+        + int(vec.get("iterations", 0)))
     prev_best = rec["best_composite"]
     rec["stall"] = 0 if improved else rec["stall"] + 1
     if improved:
@@ -650,6 +929,10 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
                        {"images": sorted(state["images"])}, meeting_cb)
 
     save_state(state)  # checkpoint after EVERY epoch (resume anywhere)
+
+    # ---- production-run finalization (target reached OR stalled out) -------
+    if rec["done"] and not rec.get("finalized"):
+        finalize_production_run(state, stem, rec)
     return rec
 
 
@@ -710,6 +993,17 @@ def main(argv=None) -> int:
                     time.sleep(IDLE_RESCAN_S)
                     continue
                 break
+
+            # Finalization sweep: converged images that still need their
+            # production-run finalization (satin regeneration + density
+            # validation + knowledge pass + final Slack message). Attempted
+            # once; a blocked image is not retried until its state changes.
+            for path in images:
+                fstem = _stem(path)
+                frec = state["images"].get(fstem)
+                if (frec and frec.get("done") and not frec.get("finalized")
+                        and "finalization_blocked_by" not in frec):
+                    finalize_production_run(state, fstem, frec)
 
             pending = [p for p in images
                        if not state["images"].get(_stem(p), {}).get("done")]

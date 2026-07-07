@@ -47,6 +47,15 @@ UNITS_PER_MM = 10.0         # pyembroidery: 1 unit = 0.1 mm
 TRIM_JUMP_MM = 8.0          # insert a TRIM before jumps longer than this
 MAX_STITCHES_WARN = 60000
 
+# --- satin fill + density guardrails (Bernina B700 jam safety) --------------
+SATIN_MAX_WIDTH_MM = 7.0    # satin column width cap (B700 safe max ~7 mm)
+SATIN_MIN_WIDTH_MM = 1.0    # below this a satin column degenerates
+SATIN_BORDER_WIDTH_MM = 1.6 # default border column width (clamped to above)
+SATIN_DENSITY_FLOOR_MM = 0.35  # min along-path spacing between zigzag pairs
+MAX_LOCAL_DENSITY_PER_MM2 = 1.2  # local needle-penetration density limit
+DENSITY_CELL_MM = 3.0       # cell size for the local density measurement
+DENSITY_BACKOFF_TRIES = 4   # thin satin/fill up to N times to satisfy limit
+
 SPECK_FRAC = 0.002          # drop components smaller than 0.2% of image area
 AGGLO_GAP_FRAC = 0.08       # merge components whose bbox gap < this * img_width
 
@@ -389,6 +398,76 @@ def _fill_runs(region_mask, row_spacing_px, max_stitch_px):
     return runs
 
 
+def _satin_border_runs(region_mask, mm_per_px, width_mm, spacing_mm):
+    """SATIN border columns along region contours: zigzag stitch pairs laid
+    perpendicular to the path direction.
+
+    Guardrails (Bernina B700, cannot-jam): column width clamped to
+    [SATIN_MIN_WIDTH_MM, SATIN_MAX_WIDTH_MM]; along-path spacing between
+    zigzag pairs floored at SATIN_DENSITY_FLOOR_MM (denser would risk
+    thread build-up / needle jams). Returns list of (x, y) px polylines."""
+    width_mm = min(max(width_mm, SATIN_MIN_WIDTH_MM), SATIN_MAX_WIDTH_MM)
+    spacing_mm = max(spacing_mm, SATIN_DENSITY_FLOOR_MM)
+    step_px = max(1.0, spacing_mm / mm_per_px)
+    half_px = (width_mm / 2.0) / mm_per_px
+    runs = []
+    for contour in measure.find_contours(region_mask.astype(float), 0.5):
+        pts = np.column_stack([contour[:, 1], contour[:, 0]]).astype(np.float64)
+        if len(pts) < 3:
+            continue
+        rs = _resample_polyline(pts.copy(), step_px)
+        if len(rs) < 3:
+            continue
+        zig = []
+        side = 1.0
+        n = len(rs)
+        for i in range(n):
+            a, b = rs[max(0, i - 1)], rs[min(n - 1, i + 1)]
+            tx, ty = b[0] - a[0], b[1] - a[1]
+            norm = math.hypot(tx, ty)
+            if norm < 1e-9:
+                continue
+            nx, ny = -ty / norm, tx / norm  # unit normal (perp to path)
+            zig.append((rs[i][0] + side * nx * half_px,
+                        rs[i][1] + side * ny * half_px))
+            side = -side
+        if len(zig) >= 2:
+            runs.append(np.array(zig))
+    return runs
+
+
+def _density_report(pattern):
+    """Local stitch-density validator (B700 jam guard).
+
+    Bins needle penetrations (STITCH commands) into DENSITY_CELL_MM cells and
+    computes stitches-per-mm^2 per cell. A plan whose densest cell exceeds
+    MAX_LOCAL_DENSITY_PER_MM2 (or whose total exceeds MAX_STITCHES_WARN) is
+    flagged NOT ok."""
+    from collections import Counter
+    pts = [(s[0], s[1]) for s in pattern.stitches
+           if (s[2] & pe.COMMAND_MASK) == pe.STITCH]
+    area = DENSITY_CELL_MM * DENSITY_CELL_MM
+    if not pts:
+        return {"cell_mm": DENSITY_CELL_MM, "max_local_density_per_mm2": 0.0,
+                "limit_per_mm2": MAX_LOCAL_DENSITY_PER_MM2,
+                "cells_over_limit": 0, "cells_total": 0, "stitch_count": 0,
+                "stitch_count_ok": True, "density_ok": True, "ok": True}
+    cell_units = DENSITY_CELL_MM * UNITS_PER_MM
+    counts = Counter((int(x // cell_units), int(y // cell_units))
+                     for x, y in pts)
+    max_local = max(counts.values()) / area
+    over = sum(1 for v in counts.values() if v / area > MAX_LOCAL_DENSITY_PER_MM2)
+    density_ok = max_local <= MAX_LOCAL_DENSITY_PER_MM2
+    count_ok = len(pts) <= MAX_STITCHES_WARN
+    return {"cell_mm": DENSITY_CELL_MM,
+            "max_local_density_per_mm2": round(max_local, 3),
+            "limit_per_mm2": MAX_LOCAL_DENSITY_PER_MM2,
+            "cells_over_limit": over, "cells_total": len(counts),
+            "stitch_count": len(pts), "max_stitches_warn": MAX_STITCHES_WARN,
+            "stitch_count_ok": count_ok, "density_ok": density_ok,
+            "ok": density_ok and count_ok}
+
+
 def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object"):
     """Build an EmbPattern for one object. Returns (pattern, stats_dict)."""
     r0, c0, r1, c1 = bbox
@@ -447,55 +526,114 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
         yu = int(round((bbox_h_px - y_px) * units_per_px))  # flip y (embroidery up)
         return xu, yu
 
-    pattern = pe.EmbPattern()
-    thread_rgbs = []
-    last_xy = None
-    first = True
+    def _emit(satin_spacing_mm, satin_width_mm, row_sp_px):
+        """Build the pattern once at the given satin/fill densities. Border
+        treatment is SATIN FILL (zigzag columns) around solid regions; thin
+        line-art regions keep running stitch (a satin column would double-hit
+        them)."""
+        pattern = pe.EmbPattern()
+        thread_rgbs = []
+        last_xy = None
+        first = True
+        satin_runs_n = 0
 
-    for (mean_rgb, rmask, is_line, area) in regions:
-        # Thread for this colour block.
-        th = pe.EmbThread()
-        r, g, b = [int(v) for v in mean_rgb]
-        th.set_color(r, g, b)
-        pattern.add_thread(th)
-        thread_rgbs.append([r, g, b])
+        # Hard per-cell penetration cap (the actual cannot-jam guardrail):
+        # once a DENSITY_CELL_MM cell holds MAX_LOCAL_DENSITY_PER_MM2 * area
+        # penetrations, further intermediate points there are skipped (the
+        # polyline continues with a longer, safer stitch). Polyline start
+        # points are always kept to preserve topology.
+        cell_units = DENSITY_CELL_MM * UNITS_PER_MM
+        cell_cap = max(1, int(MAX_LOCAL_DENSITY_PER_MM2
+                              * DENSITY_CELL_MM * DENSITY_CELL_MM))
+        cell_counts = {}
 
-        if not first:
-            pattern.color_change()
-        first = False
+        def _cell_admit(xu, yu):
+            key = (int(xu // cell_units), int(yu // cell_units))
+            n = cell_counts.get(key, 0)
+            if n >= cell_cap:
+                return False
+            cell_counts[key] = n + 1
+            return True
 
-        runs = []
-        if is_line:
-            runs = _contour_runs(rmask, running_px)
-        else:
-            runs = _fill_runs(rmask, row_spacing_px, max_stitch_px)
-            # crisp outline around the filled region
-            runs += _contour_runs(rmask, running_px)
+        for (mean_rgb, rmask, is_line, area) in regions:
+            # Thread for this colour block.
+            th = pe.EmbThread()
+            r, g, b = [int(v) for v in mean_rgb]
+            th.set_color(r, g, b)
+            pattern.add_thread(th)
+            thread_rgbs.append([r, g, b])
 
-        for poly in runs:
-            if len(poly) < 2:
-                continue
-            sx, sy = to_units(poly[0][0], poly[0][1])
-            # decide jump vs continue
-            if last_xy is not None:
-                jd = math.hypot(sx - last_xy[0], sy - last_xy[1])
-                if jd > MAX_STITCH_MM * UNITS_PER_MM:
-                    if jd > TRIM_JUMP_MM * UNITS_PER_MM:
-                        pattern.add_command(pe.TRIM)
-                    pattern.add_stitch_absolute(pe.JUMP, sx, sy)
+            if not first:
+                pattern.color_change()
+            first = False
+
+            runs = []
+            if is_line:
+                runs = _contour_runs(rmask, running_px)
             else:
-                pattern.add_stitch_absolute(pe.JUMP, sx, sy)
-            prev = (sx, sy)
-            pattern.add_stitch_absolute(pe.STITCH, sx, sy)
-            for p in poly[1:]:
-                xu, yu = to_units(p[0], p[1])
-                if math.hypot(xu - prev[0], yu - prev[1]) < min_stitch_units:
-                    continue
-                pattern.add_stitch_absolute(pe.STITCH, xu, yu)
-                prev = (xu, yu)
-            last_xy = prev
+                runs = _fill_runs(rmask, row_sp_px, max_stitch_px)
+                # SATIN border columns around the filled region (replaces the
+                # old running-stitch outline as the border treatment).
+                sruns = _satin_border_runs(rmask, mm_per_px,
+                                           satin_width_mm, satin_spacing_mm)
+                satin_runs_n += len(sruns)
+                runs += sruns
 
-    pattern.end()
+            for poly in runs:
+                if len(poly) < 2:
+                    continue
+                # Start at the first density-admissible point; a polyline
+                # entirely inside saturated cells is dropped (redundant
+                # coverage that would only build thread up).
+                start_i = None
+                for i, p in enumerate(poly):
+                    xu, yu = to_units(p[0], p[1])
+                    if _cell_admit(xu, yu):
+                        start_i = i
+                        sx, sy = xu, yu
+                        break
+                if start_i is None:
+                    continue
+                # decide jump vs continue
+                if last_xy is not None:
+                    jd = math.hypot(sx - last_xy[0], sy - last_xy[1])
+                    if jd > MAX_STITCH_MM * UNITS_PER_MM:
+                        if jd > TRIM_JUMP_MM * UNITS_PER_MM:
+                            pattern.add_command(pe.TRIM)
+                        pattern.add_stitch_absolute(pe.JUMP, sx, sy)
+                else:
+                    pattern.add_stitch_absolute(pe.JUMP, sx, sy)
+                prev = (sx, sy)
+                pattern.add_stitch_absolute(pe.STITCH, sx, sy)
+                for p in poly[start_i + 1:]:
+                    xu, yu = to_units(p[0], p[1])
+                    if math.hypot(xu - prev[0], yu - prev[1]) < min_stitch_units:
+                        continue
+                    if not _cell_admit(xu, yu):
+                        continue  # cell at density cap -> longer, safer stitch
+                    pattern.add_stitch_absolute(pe.STITCH, xu, yu)
+                    prev = (xu, yu)
+                last_xy = prev
+
+        pattern.end()
+        return pattern, thread_rgbs, satin_runs_n
+
+    # Density-guarded emission: if the local penetration density exceeds the
+    # B700-safe limit, back off (wider spacing, slightly narrower satin) and
+    # re-emit — the guardrail that a plan cannot jam the machine.
+    satin_spacing_mm = SATIN_DENSITY_FLOOR_MM
+    satin_width_mm = SATIN_BORDER_WIDTH_MM
+    row_sp_px = row_spacing_px
+    for attempt in range(DENSITY_BACKOFF_TRIES):
+        pattern, thread_rgbs, satin_runs_n = _emit(
+            satin_spacing_mm, satin_width_mm, row_sp_px)
+        density = _density_report(pattern)
+        if density["ok"] or attempt == DENSITY_BACKOFF_TRIES - 1:
+            break
+        satin_spacing_mm *= 1.25
+        row_sp_px *= 1.25
+        satin_width_mm = max(SATIN_MIN_WIDTH_MM, satin_width_mm * 0.9)
+    density["backoff_attempts"] = attempt + 1
 
     stats = _pattern_stats(pattern)
     stats.update({
@@ -504,6 +642,12 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
         "thread_rgb": thread_rgbs,
         "line_art": bool(line_art),
         "regions": len(regions),
+        "satin_borders": satin_runs_n,
+        "satin_width_mm": round(min(max(satin_width_mm, SATIN_MIN_WIDTH_MM),
+                                    SATIN_MAX_WIDTH_MM), 3),
+        "satin_spacing_mm": round(max(satin_spacing_mm,
+                                      SATIN_DENSITY_FLOOR_MM), 3),
+        "density": density,
     })
     # Verify physical size.
     minx, miny, maxx, maxy = pattern.bounds()
@@ -595,6 +739,15 @@ def write_outputs(pattern, stats, stem, obj_label, method):
         "color_count": stats["color_count"],
         "thread_rgb": stats["thread_rgb"],
         "line_art": stats["line_art"],
+        "satin": {
+            "borders": stats.get("satin_borders", 0),
+            "width_mm": stats.get("satin_width_mm"),
+            "spacing_mm": stats.get("satin_spacing_mm"),
+            "width_cap_mm": SATIN_MAX_WIDTH_MM,
+            "width_floor_mm": SATIN_MIN_WIDTH_MM,
+            "density_floor_mm": SATIN_DENSITY_FLOOR_MM,
+        },
+        "density": stats.get("density"),
         "bg_removal_method": method,
         "files": {"exp": os.path.basename(exp_path),
                   "pes": os.path.basename(pes_path),
