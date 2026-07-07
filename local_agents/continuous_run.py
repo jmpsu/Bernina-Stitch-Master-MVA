@@ -19,8 +19,12 @@ loop over many EPOCHS. One epoch =
 
 Convergence policy per image: keep looping epochs (hundreds -> thousands of
 total vectorizer iterations) until ``target_ssim`` (default 0.98) is reached
-or the best composite has not improved for ``stall_epochs`` (default 5)
-consecutive epochs.
+or the best composite has not improved for ``stall_epochs`` (default 10)
+consecutive epochs. Epochs after a non-improving one are STALL-BREAK epochs:
+the deterministic preset starts are skipped and jittered + pure-random
+restarts (seeded per image+epoch, radius escalating with the stall count)
+are injected, so continued epochs actually explore new parameter regions
+instead of repeating byte-identical greedy descents.
 
 State is checkpointed to ``local_agents/state/continuous_run_state.json``
 after EVERY epoch, so the run can stop and resume anywhere — this container
@@ -43,7 +47,7 @@ and non-fatally — to a deterministic template meeting.
 CLI:
   python local_agents/continuous_run.py \
       [--epochs-budget N] [--time-budget-min M] [--images a.png b.png] \
-      [--target-ssim 0.98] [--stall-epochs 5] [--iters-per-epoch 300] \
+      [--target-ssim 0.98] [--stall-epochs 10] [--iters-per-epoch 300] \
       [--meeting-interval 25]
 
 With no budget flags the run is UNBOUNDED: when every image has converged it
@@ -59,6 +63,7 @@ import glob as globmod
 import io
 import json
 import os
+import random
 import sys
 import time
 from pathlib import Path
@@ -91,6 +96,21 @@ IMPROVE_EPS = 1e-4            # composite delta that counts as "improved"
 CENTURY = 100                 # global-epoch milestone interval
 IDLE_RESCAN_S = 60            # unbounded mode: rescan input_images this often
 
+# --- stall-breaking exploration -------------------------------------------
+# Without this, epochs are DETERMINISTIC: the vectorizer's multi-start list is
+# fixed (DOCTRINE_SEED presets + the correlation-index prior, which is the
+# image's OWN previous best), and coordinate descent is greedy, so a stalled
+# image repeats byte-identical epochs forever. When rec["stall"] >= 1 the next
+# epoch injects jittered + random restarts (RNG seeded from image+epoch, so
+# runs are reproducible but each epoch explores differently) and drops the
+# already-exhausted preset starts.
+STALL_JITTER_STARTS = 4       # jittered variants of the best-known params
+STALL_RANDOM_STARTS = 2       # pure random samples from PARAM_GRID
+STALL_ESCALATE_AT = 3         # stall count at which exploration widens
+DEFAULT_STALL_EPOCHS = 10     # raised from 5: stalled epochs now differ
+KNOWLEDGE_VEC_DIR = REPO_ROOT / "knowledge" / "vectorization"
+STALL_WINS_LOG = KNOWLEDGE_VEC_DIR / "stall_break_wins.jsonl"
+
 MIRA = PERSONAS["mira"]
 MAYA = PERSONAS["maya"]
 MARNIE = PERSONAS["marnie"]
@@ -121,6 +141,14 @@ def load_state(target_ssim: float, stall_epochs: int) -> dict:
             state.setdefault("global_epochs", 0)
             state["target_ssim"] = target_ssim
             state["stall_epochs"] = stall_epochs
+            # Re-activate images stalled out under a LOWER stall limit: with
+            # stall-breaking, continued epochs explore differently, so give
+            # them the (raised) allowance again.
+            for rec in state["images"].values():
+                if (rec.get("done") and not rec.get("reached_target")
+                        and rec.get("stall", 0) < stall_epochs):
+                    rec["done"] = False
+                    rec.pop("done_reason", None)
             return state
         except ValueError:
             pass  # corrupt checkpoint -> start fresh (old file overwritten)
@@ -388,6 +416,127 @@ def hold_meeting(state: dict, reason: str, focus_stem: str | None) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Stall-breaking exploration (jittered + random restarts)
+# ---------------------------------------------------------------------------
+def _jitter_params(base: dict, radius: int, rng: random.Random) -> dict:
+    """Perturb each PARAM_GRID factor of `base` by +/-1..radius grid steps
+    (categorical factors flip with probability proportional to radius)."""
+    p = dict(base)
+    for name, ladder in vectorizer.PARAM_GRID.items():
+        cur = p.get(name, ladder[len(ladder) // 2])
+        if isinstance(cur, str) or isinstance(ladder[0], str):
+            if rng.random() < 0.25 * radius:
+                others = [v for v in ladder if v != cur]
+                if others:
+                    p[name] = rng.choice(others)
+            continue
+        if cur in ladder:
+            i = ladder.index(cur)
+        else:  # off-grid value -> nearest rung
+            i = min(range(len(ladder)), key=lambda j: abs(ladder[j] - cur))
+        step = rng.choice([-1, 1]) * rng.randint(1, max(1, radius))
+        p[name] = ladder[max(0, min(len(ladder) - 1, i + step))]
+    return p
+
+
+def _random_params(base: dict, rng: random.Random) -> dict:
+    """Uniform random sample of every PARAM_GRID factor (non-grid keys such
+    as colormode/hierarchical are inherited from `base`)."""
+    p = dict(base)
+    for name, ladder in vectorizer.PARAM_GRID.items():
+        p[name] = rng.choice(ladder)
+    return p
+
+
+def _stall_base_params(rec: dict, path: Path) -> dict:
+    """Best-known params for this image: from state if recorded, else the
+    correlation-index bucket prior (the image's own previous winner)."""
+    if rec.get("best_params"):
+        return dict(rec["best_params"])
+    try:
+        feat = vectorizer.image_features(str(path))
+        params, _src = vectorizer._seed_from_index(feat)
+        return dict(params)
+    except Exception:  # noqa: BLE001
+        return dict(vectorizer.DOCTRINE_SEED["default"])
+
+
+def plan_stall_break(state: dict, rec: dict, stem: str, path: Path,
+                     epoch: int) -> list[tuple]:
+    """Build the injected start list for a stalled image's next epoch and
+    record the decision as a Minerva meeting entry. Escalates with stall:
+    stall < STALL_ESCALATE_AT -> radius 1; else radius 2 + more randoms."""
+    stall = rec.get("stall", 0)
+    radius = 1 if stall < STALL_ESCALATE_AT else 2
+    n_jitter = STALL_JITTER_STARTS
+    n_random = (STALL_RANDOM_STARTS if stall < STALL_ESCALATE_AT
+                else STALL_RANDOM_STARTS + 2)
+    # Seeded from image + epoch number: reproducible run-to-run, but every
+    # epoch explores a DIFFERENT region (this is what breaks determinism).
+    rng = random.Random(f"{stem}:epoch{epoch}")
+    base = _stall_base_params(rec, path)
+    extra = []
+    for i in range(n_jitter):
+        extra.append((f"stall{stall}_jitter{i}_r{radius}",
+                      _jitter_params(base, radius, rng)))
+    for i in range(n_random):
+        extra.append((f"stall{stall}_random{i}", _random_params(base, rng)))
+
+    decision = (f"stall {stall} on {stem}: injecting {n_jitter} jittered + "
+                f"{n_random} random starts, radius {radius}")
+    meeting = {
+        "timestamp": _utcnow(),
+        "facilitator": "Minerva",
+        "attendees": [MAYA.name, MABEL.name, MERCY.name, MINERVA.name],
+        "reason": f"stall_break:{stem}",
+        "global_epoch": state["global_epochs"],
+        "image": stem,
+        "epoch": epoch,
+        "stall": stall,
+        "decisions": [decision],
+        "action_items": [
+            {"owner": "Maya",
+             "item": f"run stall-break epoch {epoch} for {stem} with the "
+                     f"injected starts (preset starts skipped)"},
+            {"owner": "Mabel",
+             "item": "log a knowledge note if an injected start beats the "
+                     "previous best"},
+        ],
+        "injected_starts": [lbl for lbl, _ in extra],
+    }
+    _append_jsonl(MEETINGS_LOG, meeting)
+    post_as(MINERVA, CHANNELS["meetings"],
+            text=f"MEETING (stall-break) — {decision}")
+    return extra
+
+
+def mabel_stall_break_note(stem: str, epoch: int, prev_best: float,
+                           vec: dict) -> None:
+    """Knowledge note when a stall-break (jittered/random) start beats the
+    previous best: what start won, what the params were, score delta."""
+    KNOWLEDGE_VEC_DIR.mkdir(parents=True, exist_ok=True)
+    note = {
+        "timestamp": _utcnow(),
+        "event": "stall_break_improvement",
+        "image": stem,
+        "epoch": epoch,
+        "winning_start": vec.get("best_start"),
+        "prev_best_composite": prev_best,
+        "new_best_composite": vec.get("best_composite"),
+        "new_best_ssim": vec.get("best_ssim"),
+        "feature_bucket": vec.get("feature_bucket"),
+        "winning_params": vec.get("best_params"),
+    }
+    _append_jsonl(STALL_WINS_LOG, note)
+    post_as(MABEL, CHANNELS["reports"],
+            text=(f"{stem}: stall-break start {vec.get('best_start')} beat "
+                  f"the previous best (composite {prev_best:.4f} -> "
+                  f"{vec.get('best_composite'):.4f}); params recorded in "
+                  f"knowledge/vectorization/{STALL_WINS_LOG.name} and the "
+                  f"correlation index"))
+
+
+# ---------------------------------------------------------------------------
 # One epoch for one image
 # ---------------------------------------------------------------------------
 def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
@@ -401,11 +550,23 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
     epoch = rec["epochs"] + 1
     t0 = time.time()
 
+    # Stall-breaking: if the last epoch(s) did not improve, this epoch must
+    # explore differently — inject jittered + random restarts and skip the
+    # deterministic preset starts (only the index start, which reproduces the
+    # best-known score, is kept as a no-regression floor).
+    stall_break = rec.get("stall", 0) >= 1 and not rec.get("reached_target")
+    extra_starts = (plan_stall_break(state, rec, stem, path, epoch)
+                    if stall_break else None)
+
     post_as(MAYA, CHANNELS["jobs"],
-            text=f"epoch {epoch} for {stem}: vectorizer refinement "
-                 f"({iters_per_epoch} iters/start, target ssim {target})")
+            text=(f"epoch {epoch} for {stem}: vectorizer refinement "
+                  f"({iters_per_epoch} iters/start, target ssim {target}"
+                  + (f", stall-break with {len(extra_starts)} injected starts"
+                     if extra_starts else "") + ")"))
     vec = vectorizer.optimize(str(path), max_iters=iters_per_epoch,
-                              target_ssim=target, verbose=False)
+                              target_ssim=target, verbose=False,
+                              extra_starts=extra_starts,
+                              skip_preset_starts=stall_break)
 
     stitch_rows: list = []
     raster = rasterize_best_svg(Path(vec["svg_path"]), stem)
@@ -439,10 +600,14 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
     improved = vec["best_composite"] > rec["best_composite"] + IMPROVE_EPS
     first_epoch = (epoch == 1)
     rec["epochs"] = epoch
+    prev_best = rec["best_composite"]
     rec["stall"] = 0 if improved else rec["stall"] + 1
     if improved:
         rec["best_composite"] = vec["best_composite"]
         rec["best_ssim"] = max(rec["best_ssim"], vec["best_ssim"])
+        rec["best_params"] = vec.get("best_params")
+        if stall_break and str(vec.get("best_start", "")).startswith("stall"):
+            mabel_stall_break_note(stem, epoch, prev_best, vec)
     reached_now = (not rec["reached_target"]) and vec["reached_target"]
     rec["reached_target"] = rec["reached_target"] or vec["reached_target"]
     rec["done"] = rec["reached_target"] or rec["stall"] >= state["stall_epochs"]
@@ -456,6 +621,8 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
         "composite": vec["best_composite"], "ssim": vec["best_ssim"],
         "vectorizer_iterations": vec["iterations"],
         "best_start": vec.get("best_start"),
+        "stall_break": stall_break,
+        "injected_starts": [lbl for lbl, _ in (extra_starts or [])],
         "qa": verdict["grade"], "stitches": verdict["stitch_count"],
         "duration_s": round(time.time() - t0, 1),
         "production_jpeg": jpeg,
@@ -499,8 +666,10 @@ def main(argv=None) -> int:
     ap.add_argument("--images", nargs="*", default=None,
                     help="restrict to these input_images/ basenames")
     ap.add_argument("--target-ssim", type=float, default=0.98)
-    ap.add_argument("--stall-epochs", type=int, default=5,
-                    help="stop an image after N non-improving epochs")
+    ap.add_argument("--stall-epochs", type=int, default=DEFAULT_STALL_EPOCHS,
+                    help="stop an image after N non-improving epochs "
+                         "(raised from 5: stall-break epochs each explore "
+                         "a different region, so more attempts pay off)")
     ap.add_argument("--iters-per-epoch", type=int, default=300,
                     help="vectorizer hill-climb iteration budget per start "
                          "per epoch")
