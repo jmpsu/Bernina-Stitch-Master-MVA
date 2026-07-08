@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """continuous_run.py — EMBIZ continuous perfection orchestrator.
 
-The heart of the "run it over and over until it is perfect" request. For every
-raster image dropped into ``input_images/`` this orchestrator runs a perfection
-loop over many EPOCHS. One epoch =
+The heart of the "run it over and over until it is perfect" request. Every
+raster image dropped into ``input_images/`` is treated as ONE CUSTOMER ORDER:
+by default orders are worked SEQUENTIALLY, oldest first, each run to
+convergence + finalization before the next opens (``--round-robin`` restores
+the legacy one-epoch-per-image-per-pass scheduling). Mira announces each
+order's intake and completion in #embiz-jobs, and all agents speak in the
+first person, addressing each other by name. One epoch =
 
   1. Maya    : vectorizer refinement (vectorizer.optimize, ~300 hill-climb
                iterations per start per epoch; every attempt appended to
@@ -212,11 +216,13 @@ def save_state(state: dict) -> None:
 
 
 def scan_inputs(only: list[str] | None = None) -> list[Path]:
-    """Raster images in input_images/ (optionally restricted to --images)."""
+    """Raster images in input_images/, oldest first (arrival order — each
+    file is one customer's order), optionally restricted to --images."""
     if not INPUT_DIR.exists():
         return []
-    imgs = sorted(p for p in INPUT_DIR.iterdir()
-                  if p.suffix.lower() in RASTER_EXTS and p.is_file())
+    imgs = sorted((p for p in INPUT_DIR.iterdir()
+                   if p.suffix.lower() in RASTER_EXTS and p.is_file()),
+                  key=lambda p: (p.stat().st_mtime, p.name))
     if only:
         wanted = {os.path.basename(x) for x in only}
         imgs = [p for p in imgs if p.name in wanted]
@@ -283,11 +289,11 @@ def mabel_learnings(vec_result: dict) -> str:
             keys = ("mode", "color_precision", "filter_speckle",
                     "corner_threshold", "layer_difference", "hierarchical")
             brief = ", ".join(f"{k}={params[k]}" for k in keys if k in params)
-            return (f"bucket {bucket}: best composite "
-                    f"{entry.get('composite')} with {brief}")
+            return (f"my correlation index for bucket {bucket} holds best "
+                    f"composite {entry.get('composite')} with {brief}")
     except (OSError, ValueError):
         pass
-    return f"bucket {bucket}: no prior in correlation index yet"
+    return f"I have no prior for bucket {bucket} in my index yet"
 
 
 def mercy_verdict(vec_result: dict, stitch_rows: list, target: float) -> dict:
@@ -296,15 +302,21 @@ def mercy_verdict(vec_result: dict, stitch_rows: list, target: float) -> dict:
     collapsed = bool(vec_result.get("best_collapsed"))
     stitches = sum(s.get("stitch_count", 0) for _, _, s in stitch_rows)
     if collapsed:
-        grade, note = "FAIL", "collapse guard tripped (flattened render)"
+        grade, note = "FAIL", ("my collapse guard tripped (flattened render) "
+                               "— Maya, this winner flattened the design")
     elif ssim >= target:
-        grade, note = "PASS", f"ssim {ssim:.4f} >= target {target}"
+        grade, note = "PASS", (f"ssim {ssim:.4f} meets our {target} target — "
+                               f"beautiful work, Maya and Marnie")
     elif composite >= 0.90:
-        grade, note = "STRONG", f"composite {composite:.4f}, ssim {ssim:.4f}"
+        grade, note = "STRONG", (f"composite {composite:.4f}, ssim "
+                                 f"{ssim:.4f} — close, Maya; keep pushing "
+                                 f"toward {target}")
     elif composite >= 0.75:
-        grade, note = "OK", f"composite {composite:.4f}, ssim {ssim:.4f}"
+        grade, note = "OK", (f"composite {composite:.4f}, ssim {ssim:.4f} — "
+                             f"acceptable, but I'd like to see more")
     else:
-        grade, note = "WEAK", f"composite {composite:.4f} below 0.75 floor"
+        grade, note = "WEAK", (f"composite {composite:.4f} is below my 0.75 "
+                               f"floor — Maya, please take another pass")
     return {"grade": grade, "note": note, "ssim": ssim,
             "composite": composite, "collapsed": collapsed,
             "stitch_count": stitches, "objects": len(stitch_rows)}
@@ -325,12 +337,14 @@ def emit_milestone(state: dict, kind: str, stem: str | None, detail: dict,
     _append_jsonl(MILESTONES_LOG, record)
 
     text = {
-        "first_epoch_complete": f"first epoch complete for *{stem}*",
-        "new_best_score": f"new best score for *{stem}*",
-        "target_reached": f"TARGET REACHED for *{stem}*",
-        "all_images_pass": "ALL IMAGES PASS — every input at target",
-        "epoch_century": f"global epoch {state['global_epochs']} checkpoint",
-        "production_run_finalized": f"PRODUCTION RUN FINALIZED for *{stem}*",
+        "first_epoch_complete": f"we completed the first epoch for *{stem}*",
+        "new_best_score": f"we set a new best score for *{stem}*",
+        "target_reached": f"we REACHED TARGET for *{stem}*",
+        "all_images_pass": "ALL ORDERS PASS — every input is at target",
+        "epoch_century": f"we hit the global epoch "
+                         f"{state['global_epochs']} checkpoint",
+        "production_run_finalized": f"I've FINALIZED the production run "
+                                    f"for *{stem}*",
     }.get(kind, kind)
     extras = []
     if "best_ssim" in detail:
@@ -340,13 +354,13 @@ def emit_milestone(state: dict, kind: str, stem: str | None, detail: dict,
     if "epoch" in detail:
         extras.append(f"epoch={detail['epoch']}")
     post_as(MIRA, CHANNELS["milestones"],
-            text=f"MILESTONE [{kind}] {text} ({', '.join(extras)})")
+            text=f"MILESTONE [{kind}]: {text} ({', '.join(extras)})")
 
     jpeg = production_jpeg(stem) if stem else None
     if jpeg:
         post_as(MARGO, CHANNELS["milestones"],
-                text=f"production layout for {stem} at milestone [{kind}]",
-                file=jpeg)
+                text=f"and here's my production layout for {stem} at the "
+                     f"[{kind}] milestone", file=jpeg)
     if meeting_cb is not None:
         meeting_cb(f"milestone:{kind}", stem)
 
@@ -360,9 +374,13 @@ def _meeting_reasoning(agenda: dict) -> tuple[str, str]:
     Ollama); in environments with no Ollama (this container) it falls back to
     a deterministic template. The fallback is explicit and non-fatal."""
     prompt = (
-        "You are facilitating a short standup of the EMBIZ embroidery agents. "
-        "Given this agenda JSON, produce 2-4 sentences: current state, the "
-        "single biggest risk, and one concrete parameter action.\n"
+        "You are Minerva, facilitating a short standup of the EMBIZ "
+        "embroidery agents. Speak in the first person as Minerva and refer "
+        "to your colleagues by name: Mira runs the show, Maya vectorizes, "
+        "Marnie digitizes, Mercy inspects QA, Mabel keeps the knowledge, "
+        "Margo reports ops. Given this agenda JSON, produce 2-4 sentences: "
+        "where we stand, our single biggest risk, and one concrete parameter "
+        "action, naming who owns it.\n"
         + json.dumps(agenda, default=str)[:4000]
     )
     try:
@@ -379,18 +397,18 @@ def _meeting_reasoning(agenda: dict) -> tuple[str, str]:
         worst = min(agenda["scores"], key=lambda s: s["best_composite"],
                     default=None) if agenda.get("scores") else None
         lines = [
-            f"Deterministic template meeting (model_router unavailable: "
-            f"{type(exc).__name__}).",
-            f"{len(agenda.get('scores', []))} image(s) tracked at global "
-            f"epoch {agenda.get('global_epoch')}; "
+            f"I'm running this standup from my deterministic template "
+            f"(model_router unavailable: {type(exc).__name__}).",
+            f"We're tracking {len(agenda.get('scores', []))} order(s) at "
+            f"global epoch {agenda.get('global_epoch')}; "
             f"{agenda.get('images_at_target', 0)} at target.",
         ]
         if worst:
             lines.append(
-                f"Weakest image is {worst['image']} at composite "
+                f"Our weakest order is {worst['image']} at composite "
                 f"{worst['best_composite']:.4f} (stall {worst['stall']}); "
-                f"next action: reseed its hill-climb from the correlation-"
-                f"index bucket prior and continue epochs.")
+                f"Maya, please reseed its hill-climb from Mabel's "
+                f"correlation-index bucket prior and continue epochs.")
         return " ".join(lines), "deterministic_template"
 
 
@@ -423,15 +441,17 @@ def hold_meeting(state: dict, reason: str, focus_stem: str | None) -> dict:
     action_items = []
     if stalled:
         decisions.append(
-            f"Reseed stalled image(s) {', '.join(stalled)} from their "
-            f"correlation-index bucket priors on the next epoch.")
+            f"Maya will reseed the stalled order(s) {', '.join(stalled)} "
+            f"from Mabel's correlation-index bucket priors on the next "
+            f"epoch.")
         action_items.append({"owner": "Maya",
                              "item": f"re-run refinement for {', '.join(stalled)}"})
         action_items.append({"owner": "Mabel",
                              "item": "verify bucket priors are current in "
                                      "parameter_correlation_index_vec.json"})
     else:
-        decisions.append("Continue epochs unchanged; scores are moving.")
+        decisions.append("we continue epochs unchanged; Mira confirmed the "
+                         "scores are moving.")
         action_items.append({"owner": "Mira", "item": "continue epoch loop"})
     action_items.append({"owner": "Mercy",
                          "item": "flag any composite < 0.75 in #embiz-qa"})
@@ -450,10 +470,10 @@ def hold_meeting(state: dict, reason: str, focus_stem: str | None) -> dict:
         "action_items": action_items,
     }
     _append_jsonl(MEETINGS_LOG, meeting)
+    others = ", ".join(n for n in meeting["attendees"] if n != "Minerva")
     post_as(MINERVA, CHANNELS["meetings"],
-            text=(f"MEETING ({reason}) — attendees: "
-                  f"{', '.join(meeting['attendees'])}. {summary} "
-                  f"Decisions: {' | '.join(decisions)}"))
+            text=(f"I called a meeting ({reason}) with {others}. {summary} "
+                  f"We decided: {' | '.join(decisions)}"))
     return meeting
 
 
@@ -553,11 +573,11 @@ def plan_stall_break(state: dict, rec: dict, stem: str, path: Path,
     for i in range(n_random):
         extra.append((f"stall{stall}_random{i}", _random_params(base, rng)))
 
-    decision = (f"stall {stall} on {stem}: injecting "
+    decision = (f"{stem} has stalled {stall} epoch(s), so Maya will inject "
                 + (f"{len(transplants)} transplanted proven config(s) + "
                    if transplants else "")
-                + f"{n_jitter} jittered + {n_random} random starts, "
-                  f"radius {radius}")
+                + f"{n_jitter} jittered + {n_random} random starts "
+                  f"(radius {radius}), and Mabel will log any winner")
     meeting = {
         "timestamp": _utcnow(),
         "facilitator": "Minerva",
@@ -580,7 +600,8 @@ def plan_stall_break(state: dict, rec: dict, stem: str, path: Path,
     }
     _append_jsonl(MEETINGS_LOG, meeting)
     post_as(MINERVA, CHANNELS["meetings"],
-            text=f"MEETING (stall-break) — {decision}")
+            text=f"I met with Maya, Mabel and Mercy about a stall: "
+                 f"{decision}.")
     return extra
 
 
@@ -603,11 +624,11 @@ def mabel_stall_break_note(stem: str, epoch: int, prev_best: float,
     }
     _append_jsonl(STALL_WINS_LOG, note)
     post_as(MABEL, CHANNELS["reports"],
-            text=(f"{stem}: stall-break start {vec.get('best_start')} beat "
-                  f"the previous best (composite {prev_best:.4f} -> "
-                  f"{vec.get('best_composite'):.4f}); params recorded in "
-                  f"knowledge/vectorization/{STALL_WINS_LOG.name} and the "
-                  f"correlation index"))
+            text=(f"Maya, your stall-break start {vec.get('best_start')} on "
+                  f"{stem} beat our previous best (composite {prev_best:.4f} "
+                  f"-> {vec.get('best_composite'):.4f}); I've recorded the "
+                  f"params in knowledge/vectorization/{STALL_WINS_LOG.name} "
+                  f"and my correlation index."))
 
 
 # ---------------------------------------------------------------------------
@@ -734,7 +755,8 @@ def mabel_knowledge_pass(state: dict, stem: str, rec: dict) -> dict:
         "retrieval_proofs": retrievals,
     })
     post_as(MABEL, CHANNELS["reports"],
-            text=f"{stem} finalization knowledge pass: {summary}")
+            text=f"I finished the finalization knowledge pass for {stem}: "
+                 f"{summary}")
     return {"met": bool(consulted), "objects_consulted": len(consulted),
             "sources": [c["source"] for c in consulted],
             "applied": applied, "summary": summary,
@@ -753,14 +775,16 @@ def post_final_production_message(stem: str, rec: dict, criteria: dict,
     sat = criteria["stitch_safety"]
     text = (
         f"FINAL PRODUCTION RUN — {stem}\n"
-        f"attempts: {criteria['attempts']['total_attempts']} across "
-        f"{rec['epochs']} epoch(s), "
-        f"{criteria['attempts']['method_combinations']} method combination(s)\n"
-        f"final quality: ssim {rec['best_ssim']:.4f} / composite "
+        f"This order is complete. We made "
+        f"{criteria['attempts']['total_attempts']} attempts across "
+        f"{rec['epochs']} epoch(s) and "
+        f"{criteria['attempts']['method_combinations']} method combination(s).\n"
+        f"Maya's final quality: ssim {rec['best_ssim']:.4f} / composite "
         f"{rec['best_composite']:.4f} ({rec.get('done_reason')})\n"
-        f"stitch safety: {sat['summary']}\n"
-        f"knowledge: {criteria['knowledge']['summary']}\n"
-        f"attached: original / SVG / stitch plan on the 5x5in ruler grid"
+        f"Marnie's stitch safety: {sat['summary']}\n"
+        f"Mabel's knowledge pass: {criteria['knowledge']['summary']}\n"
+        f"I've attached the original / SVG / stitch plan on the 5x5in "
+        f"ruler grid."
     )
     body = f"{MARGO.style} {text}"
     channel = CHANNELS["production"]
@@ -857,7 +881,8 @@ def finalize_production_run(state: dict, stem: str, rec: dict) -> bool:
                 rows = digitize_epoch(raster, stem)
             except Exception as exc:  # noqa: BLE001
                 post_as(MARNIE, CHANNELS["alerts"],
-                        text=f"finalization digitize failed for {stem}: {exc}")
+                        text=f"I hit an error digitizing {stem} during "
+                             f"finalization: {exc}")
     objects = []
     for _stem_r, label, s in rows:
         objects.append({
@@ -905,8 +930,8 @@ def finalize_production_run(state: dict, stem: str, rec: dict) -> bool:
     if unmet:
         rec["finalization_blocked_by"] = unmet
         post_as(MIRA, CHANNELS["jobs"],
-                text=(f"{stem}: finalization blocked by {', '.join(unmet)} "
-                      f"(attempts={total_attempts}, "
+                text=(f"I can't finalize {stem} yet — blocked by "
+                      f"{', '.join(unmet)} (attempts={total_attempts}, "
                       f"stitch: {sat_summary})"))
         save_state(state)
         return False
@@ -960,17 +985,20 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
         extra_starts = transplants or None
         if transplants:
             post_as(MABEL, CHANNELS["reports"],
-                    text=(f"{stem}: first epoch seeded with "
-                          f"{len(transplants)} proven config(s) from "
+                    text=(f"I'm seeding {stem}'s first epoch with "
+                          f"{len(transplants)} proven config(s) I archived "
+                          f"from "
                           + ", ".join(lbl.removeprefix("transplant_")
                                       for lbl, _ in transplants)
-                          + " (preset starts still run)"))
+                          + " — Maya, your preset starts still run."))
 
     post_as(MAYA, CHANNELS["jobs"],
-            text=(f"epoch {epoch} for {stem}: vectorizer refinement "
-                  f"({iters_per_epoch} iters/start, target ssim {target}"
-                  + (f", stall-break with {len(extra_starts)} injected starts"
-                     if extra_starts else "") + ")"))
+            text=(f"I'm starting epoch {epoch} for {stem}: vectorizer "
+                  f"refinement, {iters_per_epoch} iters/start toward ssim "
+                  f"{target}"
+                  + (f" — Minerva signed off on {len(extra_starts)} injected "
+                     f"starts to break the stall" if stall_break else "")
+                  + ". Marnie, the best SVG is yours when I'm done."))
     vec = vectorizer.optimize(str(path), max_iters=iters_per_epoch,
                               target_ssim=target, verbose=False,
                               extra_starts=extra_starts,
@@ -980,18 +1008,20 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
     raster = rasterize_best_svg(Path(vec["svg_path"]), stem)
     if raster is not None:
         post_as(MARNIE, CHANNELS["jobs"],
-                text=f"epoch {epoch} for {stem}: digitizing best SVG -> "
-                     f"EXP/PES/preview + production layout")
+                text=f"thanks Maya — I'm digitizing your best SVG for {stem} "
+                     f"(epoch {epoch}) into EXP/PES + preview and the "
+                     f"production layout. Mercy, it's headed your way.")
         try:
             stitch_rows = digitize_epoch(raster, stem)
         except Exception as exc:  # noqa: BLE001
             post_as(MARNIE, CHANNELS["alerts"],
-                    text=f"digitizer failed for {stem} epoch {epoch}: {exc}")
+                    text=f"I hit an error digitizing {stem} epoch {epoch}: "
+                         f"{exc}")
 
     verdict = mercy_verdict(vec, stitch_rows, target)
-    qa_text = (f"{stem} epoch {epoch}: {verdict['grade']} — {verdict['note']}; "
-               f"{verdict['stitch_count']} stitches / "
-               f"{verdict['objects']} object(s)")
+    qa_text = (f"I inspected {stem} epoch {epoch}: {verdict['grade']} — "
+               f"{verdict['note']}; I counted {verdict['stitch_count']} "
+               f"stitches across {verdict['objects']} object(s).")
     post_as(MERCY, CHANNELS["qa"], text=qa_text)
 
     learn = mabel_learnings(vec)
@@ -1001,7 +1031,7 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
     jpeg = production_jpeg(stem)
     if jpeg:
         post_as(MARGO, CHANNELS["production"],
-                text=f"{stem} epoch {epoch} production layout "
+                text=f"here's my production layout for {stem} epoch {epoch} "
                      f"(5x5in ruler/grid, subject at true 3in)", file=jpeg)
 
     # ---- convergence bookkeeping ------------------------------------------
@@ -1092,6 +1122,9 @@ def main(argv=None) -> int:
                          "per epoch")
     ap.add_argument("--meeting-interval", type=int, default=25,
                     help="hold an agent meeting every M global epochs")
+    ap.add_argument("--round-robin", action="store_true",
+                    help="legacy scheduling: one epoch per image per pass "
+                         "(default works each order to completion first)")
     args = ap.parse_args(argv)
 
     bounded = bool(args.epochs_budget or args.time_budget_min)
@@ -1102,12 +1135,16 @@ def main(argv=None) -> int:
     last_meeting_epoch = state["global_epochs"]
 
     post_as(MIRA, CHANNELS["jobs"],
-            text=(f"continuous perfection run starting — resume point: "
-                  f"global epoch {state['global_epochs']}, "
-                  f"budget={'bounded' if bounded else 'UNBOUNDED (systemd)'}"
+            text=(f"I'm resuming the continuous run at global epoch "
+                  f"{state['global_epochs']} — "
+                  + ("working round-robin across all orders"
+                     if args.round_robin else
+                     "processing customer orders one at a time, oldest first")
+                  + f", budget={'bounded' if bounded else 'UNBOUNDED (systemd)'}"
                   f" (epochs<={args.epochs_budget or 'inf'}, "
                   f"time<={args.time_budget_min or 'inf'}min), "
-                  f"target ssim {args.target_ssim}"))
+                  f"target ssim {args.target_ssim}. Maya, Marnie, Mercy, "
+                  f"Mabel, Margo, Minerva — stand by."))
 
     def out_of_budget() -> bool:
         if args.epochs_budget and epochs_this_run >= args.epochs_budget:
@@ -1116,13 +1153,21 @@ def main(argv=None) -> int:
             return True
         return False
 
+    def maybe_meeting() -> None:
+        nonlocal last_meeting_epoch
+        if (state["global_epochs"] - last_meeting_epoch
+                >= args.meeting_interval):
+            last_meeting_epoch = state["global_epochs"]
+            hold_meeting(state, f"interval:{args.meeting_interval}", None)
+
     try:
         while True:
             images = scan_inputs(args.images)
             if not images:
                 post_as(MIRA, CHANNELS["alerts"],
-                        text="no raster images found in input_images/ — "
-                             "drop files there to start perfection loops")
+                        text="I don't see any raster images in input_images/ "
+                             "— drop customer files there and we'll get to "
+                             "work.")
                 if not bounded:
                     time.sleep(IDLE_RESCAN_S)
                     continue
@@ -1143,45 +1188,68 @@ def main(argv=None) -> int:
                        if not state["images"].get(_stem(p), {}).get("done")]
             if not pending:
                 post_as(MIRA, CHANNELS["jobs"],
-                        text=(f"all {len(images)} image(s) converged "
+                        text=(f"all {len(images)} order(s) are complete "
                               f"(target or stall). "
-                              + ("Idling; rescanning input_images/ every "
-                                 f"{IDLE_RESCAN_S}s." if not bounded
-                                 else "Bounded pass complete.")))
+                              + ("I'm idling and rescanning input_images/ "
+                                 f"every {IDLE_RESCAN_S}s for new orders."
+                                 if not bounded
+                                 else "My bounded pass is complete.")))
                 if not bounded:
                     time.sleep(IDLE_RESCAN_S)
                     continue
                 break
 
-            # Round-robin: one epoch per unfinished image per pass, so every
-            # image gets first-epoch coverage before deep refinement.
             progressed = False
-            for path in pending:
-                if out_of_budget():
-                    break
-                run_epoch(state, path, args.iters_per_epoch)
-                epochs_this_run += 1
-                progressed = True
-                if (state["global_epochs"] - last_meeting_epoch
-                        >= args.meeting_interval):
-                    last_meeting_epoch = state["global_epochs"]
-                    hold_meeting(state, f"interval:{args.meeting_interval}",
-                                 None)
+            if args.round_robin:
+                # Legacy: one epoch per unfinished image per pass, so every
+                # image gets first-epoch coverage before deep refinement.
+                for path in pending:
+                    if out_of_budget():
+                        break
+                    run_epoch(state, path, args.iters_per_epoch)
+                    epochs_this_run += 1
+                    progressed = True
+                    maybe_meeting()
+            else:
+                # Default: sequential customer orders. The oldest unfinished
+                # input is one customer's order — work it to convergence and
+                # finalization before opening the next.
+                path = pending[0]
+                stem = _stem(path)
+                announced = state.setdefault("orders_announced", [])
+                if stem not in announced:
+                    announced.append(stem)
+                    post_as(MIRA, CHANNELS["jobs"],
+                            text=(f"new customer order: *{stem}* is next in "
+                                  f"the queue — I'm putting it into "
+                                  f"production now. Maya, it's yours first."))
+                while not out_of_budget():
+                    rec = run_epoch(state, path, args.iters_per_epoch)
+                    epochs_this_run += 1
+                    progressed = True
+                    maybe_meeting()
+                    if rec.get("done"):
+                        post_as(MIRA, CHANNELS["jobs"],
+                                text=(f"that wraps order *{stem}* "
+                                      f"({rec.get('done_reason')}, best ssim "
+                                      f"{rec['best_ssim']:.4f}) — on to the "
+                                      f"next one in the queue."))
+                        break
             if out_of_budget() or not progressed:
                 break
     except KeyboardInterrupt:
         post_as(MIRA, CHANNELS["alerts"],
-                text="continuous run interrupted — state checkpointed, "
-                     "safe to resume")
+                text="I've been interrupted — state is checkpointed, we can "
+                     "resume right where we left off.")
     finally:
         save_state(state)
 
     done = sum(1 for r in state["images"].values() if r.get("reached_target"))
     post_as(MIRA, CHANNELS["jobs"],
-            text=(f"run pass ended: {epochs_this_run} epoch(s) this "
-                  f"invocation, global epoch {state['global_epochs']}, "
-                  f"{done}/{len(state['images'])} image(s) at target. "
-                  f"State: {STATE_FILE.name} (resumable)"))
+            text=(f"my run pass ended: I ran {epochs_this_run} epoch(s) this "
+                  f"invocation (global epoch {state['global_epochs']}); "
+                  f"{done}/{len(state['images'])} order(s) at target. "
+                  f"State: {STATE_FILE.name} (resumable)."))
 
     print("\n=== continuous run summary ===")
     print(f"{'image':<20} {'epochs':>6} {'best_ssim':>10} "
