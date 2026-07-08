@@ -88,6 +88,22 @@ AGENT_REQUIREMENTS: dict[str, dict[str, list[str]]] = {
     "minerva": {"required": [], "optional": ["global"]},
 }
 
+CLOUDFLARE_AWS_EXPECTED_SURFACE = [
+    "wrangler.toml",
+    "functions/_middleware.ts",
+    "functions/api/quote.ts",
+    "functions/api/order.ts",
+    "functions/api/upload.ts",
+    "functions/api/contact.ts",
+    "terraform/main.tf",
+    "terraform/variables.tf",
+    "terraform/outputs.tf",
+    ".github/workflows/deploy-cloudflare-pages.yml",
+    ".github/workflows/deploy-aws.yml",
+    "aws/lambdas/",
+    "package.json",
+]
+
 RUNTIME_FILES = [
     "vectorizer.py",
     "digitizer.py",
@@ -402,16 +418,33 @@ def url_coverage(repo: Path, knowledge: dict[str, Any]) -> dict[str, Any]:
 
 
 def cloudflare_inventory(repo: Path) -> dict[str, Any]:
-    names = ["wrangler.toml", "wrangler.json", "worker.ts", "worker.js", "cloudflare", "flue", "durable", "d1", "r2", "vectorize"]
+    names = ["wrangler.toml", "wrangler.json", "worker.ts", "worker.js", "cloudflare", "flue", "durable", "d1", "r2", "vectorize", "terraform", "lambda", "sqs", "ses", "x-ray", "xray", "pages functions"]
     hits = search_files(repo, names, max_files=8000)["matches"]
     files = []
     for rel in sorted(set(sum(hits.values(), []))):
         p = repo / rel
         files.append({"path": rel, "size": p.stat().st_size if p.exists() else None})
+
+    expected = []
+    for rel in CLOUDFLARE_AWS_EXPECTED_SURFACE:
+        p = repo / rel
+        if rel.endswith("/"):
+            present = p.is_dir()
+        else:
+            present = p.exists()
+        expected.append({"path": rel, "present": present})
+
+    missing_expected = [x["path"] for x in expected if not x["present"]]
     return {
         "matched_files": files,
         "pattern_hits": hits,
-        "status": "found_cloudflare_related_files" if files else "no_cloudflare_customer_facing_files_found_in_this_checkout",
+        "expected_surface": expected,
+        "missing_expected_surface": missing_expected,
+        "status": (
+            "expected_cloudflare_aws_surface_present"
+            if expected and not missing_expected
+            else "cloudflare_aws_surface_incomplete_or_absent"
+        ),
     }
 
 
@@ -451,7 +484,7 @@ def verdicts(report: dict[str, Any]) -> list[dict[str, str]]:
     cf_status = report["cloudflare"]["status"]
     items.append({
         "check": "cloudflare customer-facing surface",
-        "status": "ok" if cf_status == "found_cloudflare_related_files" else "missing",
+        "status": "ok" if cf_status == "expected_cloudflare_aws_surface_present" else "missing",
         "detail": cf_status,
     })
 
@@ -556,6 +589,15 @@ def write_markdown(report: dict[str, Any], path: Path) -> None:
     lines.append("## Cloudflare/customer-facing surface")
     lines.append("")
     lines.append(f"- Status: `{report['cloudflare']['status']}`")
+    lines.append("")
+    lines.append("### Expected Cloudflare + AWS surface")
+    lines.append("")
+    lines.append("| Path | Present |")
+    lines.append("|---|---:|")
+    for f in report["cloudflare"].get("expected_surface", []):
+        lines.append(f"| `{f['path']}` | {f['present']} |")
+    lines.append("")
+    lines.append("### Pattern-matched files")
     for f in report["cloudflare"]["matched_files"][:50]:
         lines.append(f"- `{f['path']}`")
 
