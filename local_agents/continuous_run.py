@@ -116,6 +116,17 @@ DEFAULT_STALL_EPOCHS = 10     # raised from 5: stalled epochs now differ
 KNOWLEDGE_VEC_DIR = REPO_ROOT / "knowledge" / "vectorization"
 STALL_WINS_LOG = KNOWLEDGE_VEC_DIR / "stall_break_wins.jsonl"
 
+# --- proven-config transplant ----------------------------------------------
+# Minerva's first_epoch_complete recommendation (2026-07-08): images that
+# already found a strong config donate their best_params to images that are
+# stalled or just starting, so each image does not rediscover parameters from
+# scratch. The correlation index only seeds from a NEARBY feature bucket
+# (dist < 3.0); transplant is the cross-bucket complement. Donor configs run
+# as additional starts, so they can only add — never replace — the image's
+# own no-regression baseline.
+TRANSPLANT_MIN_COMPOSITE = 0.75   # Mercy's OK floor: weaker isn't "proven"
+TRANSPLANT_MAX_DONORS = 3         # strongest distinct configs per epoch
+
 # --- production-run finalization -------------------------------------------
 # A production run is FINALIZED only when ALL of:
 #   1. attempts   : >= FINALIZE_MIN_ATTEMPTS vectorizer attempts accumulated
@@ -492,11 +503,40 @@ def _stall_base_params(rec: dict, path: Path) -> dict:
         return dict(vectorizer.DOCTRINE_SEED["default"])
 
 
+def plan_config_transplant(state: dict, stem: str, floor: float) -> list[tuple]:
+    """Proven configs from OTHER images as (label, params) starts, strongest
+    donor first. A config is proven when its image's best_composite clears
+    both TRANSPLANT_MIN_COMPOSITE and `floor` (the receiving image's own best
+    — donating something weaker than what it already has is pointless).
+    Identical param dicts are deduped, keeping the strongest donor."""
+    donors = []
+    for other, orec in state["images"].items():
+        if other == stem or not orec.get("best_params"):
+            continue
+        comp = orec.get("best_composite", -1.0)
+        if comp < max(TRANSPLANT_MIN_COMPOSITE, floor):
+            continue
+        donors.append((comp, other, dict(orec["best_params"])))
+    donors.sort(key=lambda d: (-d[0], d[1]))
+    starts, seen = [], set()
+    for comp, other, params in donors:
+        key = json.dumps(params, sort_keys=True)
+        if key in seen:
+            continue
+        seen.add(key)
+        starts.append((f"transplant_{other}", params))
+        if len(starts) >= TRANSPLANT_MAX_DONORS:
+            break
+    return starts
+
+
 def plan_stall_break(state: dict, rec: dict, stem: str, path: Path,
-                     epoch: int) -> list[tuple]:
+                     epoch: int, transplants: list[tuple] | None = None
+                     ) -> list[tuple]:
     """Build the injected start list for a stalled image's next epoch and
     record the decision as a Minerva meeting entry. Escalates with stall:
-    stall < STALL_ESCALATE_AT -> radius 1; else radius 2 + more randoms."""
+    stall < STALL_ESCALATE_AT -> radius 1; else radius 2 + more randoms.
+    Transplanted proven configs (if any) run ahead of the exploration."""
     stall = rec.get("stall", 0)
     radius = 1 if stall < STALL_ESCALATE_AT else 2
     n_jitter = STALL_JITTER_STARTS
@@ -506,15 +546,18 @@ def plan_stall_break(state: dict, rec: dict, stem: str, path: Path,
     # epoch explores a DIFFERENT region (this is what breaks determinism).
     rng = random.Random(f"{stem}:epoch{epoch}")
     base = _stall_base_params(rec, path)
-    extra = []
+    extra = list(transplants or [])
     for i in range(n_jitter):
         extra.append((f"stall{stall}_jitter{i}_r{radius}",
                       _jitter_params(base, radius, rng)))
     for i in range(n_random):
         extra.append((f"stall{stall}_random{i}", _random_params(base, rng)))
 
-    decision = (f"stall {stall} on {stem}: injecting {n_jitter} jittered + "
-                f"{n_random} random starts, radius {radius}")
+    decision = (f"stall {stall} on {stem}: injecting "
+                + (f"{len(transplants)} transplanted proven config(s) + "
+                   if transplants else "")
+                + f"{n_jitter} jittered + {n_random} random starts, "
+                  f"radius {radius}")
     meeting = {
         "timestamp": _utcnow(),
         "facilitator": "Minerva",
@@ -906,8 +949,22 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
     # deterministic preset starts (only the index start, which reproduces the
     # best-known score, is kept as a no-regression floor).
     stall_break = rec.get("stall", 0) >= 1 and not rec.get("reached_target")
-    extra_starts = (plan_stall_break(state, rec, stem, path, epoch)
-                    if stall_break else None)
+    # Proven-config transplant: stalled or first-epoch images also start from
+    # the strongest configs other images already validated.
+    transplants = (plan_config_transplant(state, stem, rec["best_composite"])
+                   if (stall_break or rec["epochs"] == 0) else [])
+    if stall_break:
+        extra_starts = plan_stall_break(state, rec, stem, path, epoch,
+                                        transplants)
+    else:
+        extra_starts = transplants or None
+        if transplants:
+            post_as(MABEL, CHANNELS["reports"],
+                    text=(f"{stem}: first epoch seeded with "
+                          f"{len(transplants)} proven config(s) from "
+                          + ", ".join(lbl.removeprefix("transplant_")
+                                      for lbl, _ in transplants)
+                          + " (preset starts still run)"))
 
     post_as(MAYA, CHANNELS["jobs"],
             text=(f"epoch {epoch} for {stem}: vectorizer refinement "
@@ -961,7 +1018,8 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
         rec["best_composite"] = vec["best_composite"]
         rec["best_ssim"] = max(rec["best_ssim"], vec["best_ssim"])
         rec["best_params"] = vec.get("best_params")
-        if stall_break and str(vec.get("best_start", "")).startswith("stall"):
+        if (str(vec.get("best_start", "")).startswith(("stall", "transplant"))
+                and (stall_break or transplants)):
             mabel_stall_break_note(stem, epoch, prev_best, vec)
     reached_now = (not rec["reached_target"]) and vec["reached_target"]
     rec["reached_target"] = rec["reached_target"] or vec["reached_target"]
