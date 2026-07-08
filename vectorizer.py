@@ -733,7 +733,8 @@ def _neighbor_candidates(factor, cur, cp_floor):
 
 
 def optimize(path, max_iters=DEFAULT_MAX_ITERS, target_ssim=0.98,
-             stall_k=STALL_LIMIT, verbose=True):
+             stall_k=STALL_LIMIT, verbose=True, extra_starts=None,
+             skip_preset_starts=False):
     """Iteratively improve vtracer params for `path` by MULTI-START
     coordinate-descent hill-climbing of the (guarded) composite score.
 
@@ -747,6 +748,16 @@ def optimize(path, max_iters=DEFAULT_MAX_ITERS, target_ssim=0.98,
       - color_precision is floored by the source's distinct-color count.
       - soft-shaded sources are traced from a lightly pre-smoothed copy, but ALWAYS
         scored against the true original.
+
+    Stall-breaking (used by continuous_run):
+      - `extra_starts`: optional list of (label, params) tuples appended to the
+        multi-start list — e.g. jittered/random restarts injected by the
+        orchestrator when an image's epochs stop improving.
+      - `skip_preset_starts`: drop the deterministic preset starts (default/
+        logo/line_art/high_color/soft-shade) and keep ONLY the correlation-index
+        start (which reproduces the best-known score, so no regression) plus
+        `extra_starts`. This spends the budget on exploration instead of
+        re-confirming byte-identical preset climbs.
 
     Logs every attempt; saves best SVG + compare PNG; updates the param index."""
     stem = os.path.splitext(os.path.basename(path))[0]
@@ -809,6 +820,12 @@ def optimize(path, max_iters=DEFAULT_MAX_ITERS, target_ssim=0.98,
     if is_soft_shaded(feat):
         for lbl, seed in SOFT_SHADE_STARTS.items():
             starts.append((lbl, _clamp_seed(seed)))
+    # Stall-breaking: keep only the index start (best-known, no regression)...
+    if skip_preset_starts:
+        starts = [(lbl, p) for lbl, p in starts if lbl.startswith("index(")]
+    # ...and append orchestrator-injected jittered/random restarts.
+    for lbl, p in (extra_starts or []):
+        starts.append((lbl, _clamp_seed(dict(p))))
 
     trajectory = []
     g_best_svg, g_best_sc, g_best_params, g_best_start = None, None, None, None

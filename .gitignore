@@ -1,6 +1,9 @@
 # Ignore the heavy reference images
 reference_images/
 
+# Source input images (trademark/personal art precedent — never committed)
+input_images/
+
 # Ignore generated inspection renders (regenerated each run)
 renders/
 

@@ -1,0 +1,95 @@
+{
+  "channel": "#embiz-production",
+  "method": "files_upload_v2",
+  "initial_comment": "[Margo | ops] FINAL PRODUCTION RUN \u2014 cr_img_0331\nattempts: 1 across 1 epoch(s), 1 method combination(s)\nfinal quality: ssim 0.9933 / composite 0.9681 (target_reached)\nstitch safety: satin borders x6, max local density 1.111/mm^2 (limit 1.2), PASS\nknowledge: 18 knowledge object(s) consulted (16 technique notes + correlation indexes); applied: bucket prior + 0 stall-break epoch(s)\nattached: original / SVG / stitch plan on the 5x5in ruler grid",
+  "file_uploads": [
+    {
+      "file": "/home/user/Bernina-Stitch-Master-MVA/production_runs/cr_img_0331/1_original_on_ruler.jpg",
+      "filename": "1_original_on_ruler.jpg",
+      "title": "cr_img_0331 1_original_on_ruler.jpg"
+    },
+    {
+      "file": "/home/user/Bernina-Stitch-Master-MVA/production_runs/cr_img_0331/2_svg_on_ruler.jpg",
+      "filename": "2_svg_on_ruler.jpg",
+      "title": "cr_img_0331 2_svg_on_ruler.jpg"
+    },
+    {
+      "file": "/home/user/Bernina-Stitch-Master-MVA/production_runs/cr_img_0331/3_stitchplan_on_ruler.jpg",
+      "filename": "3_stitchplan_on_ruler.jpg",
+      "title": "cr_img_0331 3_stitchplan_on_ruler.jpg"
+    }
+  ],
+  "delivered_to_slack": false,
+  "criteria": {
+    "attempts": {
+      "met": true,
+      "total_attempts": 1,
+      "min_required": 200,
+      "target_reached_bypass": true,
+      "method_combinations": 1
+    },
+    "convergence": {
+      "met": true,
+      "reason": "target_reached",
+      "best_ssim": 0.993346,
+      "best_composite": 0.968064
+    },
+    "stitch_safety": {
+      "met": true,
+      "objects": [
+        {
+          "object": "logo",
+          "satin_borders": 6,
+          "satin_width_mm": 1.6,
+          "satin_spacing_mm": 0.35,
+          "line_art": false,
+          "density": {
+            "cell_mm": 3.0,
+            "max_local_density_per_mm2": 1.111,
+            "limit_per_mm2": 1.2,
+            "cells_over_limit": 0,
+            "cells_total": 337,
+            "stitch_count": 2481,
+            "max_stitches_warn": 60000,
+            "stitch_count_ok": true,
+            "density_ok": true,
+            "ok": true,
+            "backoff_attempts": 1
+          }
+        }
+      ],
+      "summary": "satin borders x6, max local density 1.111/mm^2 (limit 1.2), PASS"
+    },
+    "knowledge": {
+      "met": true,
+      "objects_consulted": 18,
+      "sources": [
+        "knowledge/vectorization/color_agent/color_delta_e_merge_tolerance.json",
+        "knowledge/vectorization/color_agent/hierarchical_color_layering.json",
+        "knowledge/vectorization/color_agent/hsl_perceptual_color_matching.json",
+        "knowledge/vectorization/color_agent/max_thread_color_budget.json",
+        "knowledge/vectorization/curve_agent/alphamax_corner_threshold.json",
+        "knowledge/vectorization/curve_agent/opticurve_bezier_vs_polygon.json",
+        "knowledge/vectorization/curve_agent/opttolerance_curve_smoothness.json",
+        "knowledge/vectorization/curve_agent/opttolerance_segment_joining.json",
+        "knowledge/vectorization/edge_agent/corner_sharpness_edge_fidelity.json",
+        "knowledge/vectorization/edge_agent/max_path_deviation_fidelity.json",
+        "knowledge/vectorization/edge_agent/node_count_topology_target.json",
+        "knowledge/vectorization/edge_agent/turnpolicy_topology_resolution.json",
+        "knowledge/vectorization/noise_agent/blacklevel_bilevel_cutoff.json",
+        "knowledge/vectorization/noise_agent/mkbitmap_highpass_background_gradient.json",
+        "knowledge/vectorization/noise_agent/mkbitmap_lowpass_foreground_smoothing.json",
+        "knowledge/vectorization/noise_agent/turdsize_speckle_suppression.json",
+        "parameter_correlation_index_vec.json",
+        "parameter_correlation_index.json"
+      ],
+      "applied": {
+        "winning_params": null,
+        "learnings": "bucket line_art|c1|e0: best composite 0.968064 with mode=polygon, color_precision=6, filter_speckle=1, corner_threshold=40, layer_difference=16, hierarchical=cutout",
+        "stall_break_epochs": 0
+      },
+      "summary": "18 knowledge object(s) consulted (16 technique notes + correlation indexes); applied: bucket prior + 0 stall-break epoch(s)"
+    }
+  },
+  "timestamp": "2026-07-07T18:42:45.637272+00:00"
+}

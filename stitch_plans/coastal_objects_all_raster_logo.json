@@ -1,0 +1,51 @@
+{
+  "object": "logo",
+  "name": "logo",
+  "width_mm": 427.6,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 3278,
+  "jump_count": 210,
+  "trim_count": 180,
+  "color_count": 6,
+  "thread_rgb": [
+    [
+      151,
+      94,
+      81
+    ],
+    [
+      200,
+      52,
+      45
+    ],
+    [
+      40,
+      121,
+      173
+    ],
+    [
+      192,
+      191,
+      194
+    ],
+    [
+      241,
+      199,
+      55
+    ],
+    [
+      237,
+      227,
+      169
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "coastal_objects_all_raster_logo.exp",
+    "pes": "coastal_objects_all_raster_logo.pes",
+    "preview": "coastal_objects_all_raster_logo_preview.png"
+  }
+}

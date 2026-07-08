@@ -1,0 +1,72 @@
+{
+  "object": "logo",
+  "name": "logo",
+  "width_mm": 60.3,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 1806,
+  "jump_count": 249,
+  "trim_count": 184,
+  "color_count": 6,
+  "thread_rgb": [
+    [
+      31,
+      53,
+      39
+    ],
+    [
+      234,
+      237,
+      235
+    ],
+    [
+      45,
+      64,
+      52
+    ],
+    [
+      66,
+      84,
+      73
+    ],
+    [
+      187,
+      196,
+      191
+    ],
+    [
+      107,
+      122,
+      113
+    ]
+  ],
+  "line_art": false,
+  "satin": {
+    "borders": 0,
+    "width_mm": 1.6,
+    "spacing_mm": 0.35,
+    "width_cap_mm": 7.0,
+    "width_floor_mm": 1.0,
+    "density_floor_mm": 0.35
+  },
+  "density": {
+    "cell_mm": 3.0,
+    "max_local_density_per_mm2": 1.111,
+    "limit_per_mm2": 1.2,
+    "cells_over_limit": 0,
+    "cells_total": 270,
+    "stitch_count": 1806,
+    "max_stitches_warn": 60000,
+    "stitch_count_ok": true,
+    "density_ok": true,
+    "ok": true,
+    "backoff_attempts": 1
+  },
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "cr_img_0322_logo.exp",
+    "pes": "cr_img_0322_logo.pes",
+    "preview": "cr_img_0322_logo_preview.png"
+  }
+}

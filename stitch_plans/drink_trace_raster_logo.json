@@ -1,0 +1,41 @@
+{
+  "object": "logo",
+  "name": "logo",
+  "width_mm": 64.7,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 2521,
+  "jump_count": 87,
+  "trim_count": 71,
+  "color_count": 4,
+  "thread_rgb": [
+    [
+      240,
+      140,
+      39
+    ],
+    [
+      253,
+      221,
+      84
+    ],
+    [
+      210,
+      249,
+      250
+    ],
+    [
+      11,
+      11,
+      9
+    ]
+  ],
+  "line_art": false,
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "drink_trace_raster_logo.exp",
+    "pes": "drink_trace_raster_logo.pes",
+    "preview": "drink_trace_raster_logo_preview.png"
+  }
+}

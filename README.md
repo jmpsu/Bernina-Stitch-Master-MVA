@@ -1,6 +1,14 @@
 # Bernina-Stitch-Master-MVA
 High-Precision Image-to-Embroidery Vectorization Framework
 
+> **Start here:** [`docs/SYSTEM_ATLAS.md`](docs/SYSTEM_ATLAS.md) — the
+> definitive system documentation: operation status across branches, graph
+> maps of the agents/pipeline/knowledge library, an exact developer
+> replication guide, the knowledge-library deep dive with real retrieval
+> proofs, and the incremental-improvement evidence (real scores from
+> `vectorization_attempts.jsonl`). See also [`OUTPUTS.md`](OUTPUTS.md) for
+> every artifact the system produces.
+
 ## Architecture & Optimization Loop
 
 This repository runs a closed-loop optimization framework that measures the

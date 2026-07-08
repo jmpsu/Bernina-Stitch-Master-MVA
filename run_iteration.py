@@ -73,10 +73,18 @@ DENSITY_MAX = 120.0
 # is a legitimate, non-circular fidelity metric for an image->vector->embroidery
 # pipeline: it measures how faithfully the sewn result reproduces the design.
 #
-# EXPLICIT documented SVG<->PES pairing (matched by obvious stems):
+# EXPLICIT documented SVG<->PES/EXP pairing (matched by obvious stems):
 #   drink_v2.svg            <-> drink_v2.pes
 #   coastal_objects_all.svg <-> summer_coastal-icons.pes
 #   drink_trace.svg         <-> drink.pes
+# Iteration 9 adds 5 vectorizer->digitizer pairs whose SVGs were copied from
+# vectorized_svg/ into vector_source/ and whose EXP stitch-outs were produced
+# by rasterizing each SVG via cairosvg then running digitizer.process_images():
+#   img_0263.svg  <->  img_0263_logo.exp
+#   img_0293.svg  <->  img_0293_logo.exp
+#   img_0322.svg  <->  img_0322_logo.exp
+#   img_0331.svg  <->  img_0331_logo.exp
+#   img_1126.svg  <->  img_1126_logo.exp
 # basket_7scans.pes and basket_small.pes have NO SVG source in vector_source/,
 # so they are EXCLUDED from visual_similarity (documented, not silently dropped).
 #

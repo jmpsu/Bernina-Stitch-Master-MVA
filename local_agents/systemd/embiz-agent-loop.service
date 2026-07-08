@@ -1,0 +1,27 @@
+# EMBIZ persistent autonomous agent loop — systemd USER service (Linux Mint)
+#
+# Install:
+#   mkdir -p ~/.config/systemd/user
+#   cp local_agents/systemd/embiz-agent-loop.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now embiz-agent-loop.service
+#   loginctl enable-linger jmmint      # survive logout/reboot
+
+[Unit]
+Description=EMBIZ autonomous agent loop (plan/act/report, local qwen3:8b)
+Documentation=file:%h/Bernina-Stitch-Master-MVA/EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Bernina-Stitch-Master-MVA/local_agents
+EnvironmentFile=%h/.config/embiz/env
+ExecStart=%h/Bernina-Stitch-Master-MVA/.venv/bin/python %h/Bernina-Stitch-Master-MVA/local_agents/agent_loop.py
+Restart=always
+RestartSec=10
+TimeoutStopSec=45
+NoNewPrivileges=true
+
+[Install]
+WantedBy=default.target
