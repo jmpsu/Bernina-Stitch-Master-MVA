@@ -168,16 +168,77 @@ def repo_root_from(start: Path) -> Path:
 
 def safe_read(path: Path, max_bytes: int = 2_000_000) -> str:
     try:
-        if not path.is_file() or path.stat().st_size > max_bytes:
+        if not path_is_file(path) or (path_size(path) or 0) > max_bytes:
             return ""
         return path.read_text(encoding="utf-8", errors="replace")
     except OSError:
         return ""
 
 
+def path_exists(path: Path) -> bool:
+    try:
+        return path.exists()
+    except OSError:
+        return False
+
+
+def path_is_file(path: Path) -> bool:
+    try:
+        return path.is_file()
+    except OSError:
+        return False
+
+
+def path_is_dir(path: Path) -> bool:
+    try:
+        return path.is_dir()
+    except OSError:
+        return False
+
+
+def path_size(path: Path) -> int | None:
+    try:
+        return path.stat().st_size
+    except OSError:
+        return None
+
+
+def path_readable(path: Path) -> bool:
+    try:
+        return path.exists() and os.access(path, os.R_OK)
+    except OSError:
+        return False
+
+
+def path_writable(path: Path) -> bool:
+    try:
+        return path.exists() and os.access(path, os.W_OK)
+    except OSError:
+        return False
+
+
+def safe_rglob(path: Path, pattern: str) -> list[Path]:
+    try:
+        if not path_is_dir(path):
+            return []
+        return sorted(path.rglob(pattern))
+    except OSError:
+        return []
+
+
+def safe_glob(path: Path, pattern: str) -> list[Path]:
+    try:
+        if not path_is_dir(path):
+            return []
+        return sorted(path.glob(pattern))
+    except OSError:
+        return []
+
+
+
 def count_jsonl(path: Path) -> dict[str, Any]:
-    info: dict[str, Any] = {"path": str(path), "exists": path.exists(), "lines": 0, "valid_json": 0, "invalid_json": 0, "sample_keys": []}
-    if not path.is_file():
+    info: dict[str, Any] = {"path": str(path), "exists": path_exists(path), "lines": 0, "valid_json": 0, "invalid_json": 0, "sample_keys": []}
+    if not path_is_file(path):
         return info
     keys: set[str] = set()
     try:
@@ -262,7 +323,7 @@ def default_roots(repo: Path) -> list[Path]:
     out: list[Path] = []
     seen: set[str] = set()
     for r in roots:
-        key = str(r.resolve()) if r.exists() else str(r)
+        key = str(r.resolve()) if path_exists(r) else str(r)
         if key not in seen:
             seen.add(key)
             out.append(r)
@@ -275,12 +336,12 @@ def corpus_files(root: Path, corpus: str) -> list[Path]:
             root / "global_knowledge_objects.jsonl",
             root / "global_knowledge_objects.clean.jsonl",
             root / "global_knowledge_objects.multimodal.jsonl",
-        ] if p.exists()]
+        ] if path_exists(p)]
     rel = EXPECTED_CORPORA[corpus]
     d = root / rel
-    if not d.is_dir():
+    if not path_is_dir(d):
         return []
-    return sorted(d.glob("*.jsonl"))
+    return safe_glob(d, "*.jsonl")
 
 
 def knowledge_inventory(repo: Path) -> dict[str, Any]:
@@ -296,13 +357,13 @@ def knowledge_inventory(repo: Path) -> dict[str, Any]:
     for root in roots:
         root_info: dict[str, Any] = {
             "path": str(root),
-            "exists": root.exists(),
-            "is_dir": root.is_dir(),
-            "readable": os.access(root, os.R_OK) if root.exists() else False,
-            "writable": os.access(root, os.W_OK) if root.exists() else False,
+            "exists": path_exists(root),
+            "is_dir": path_is_dir(root),
+            "readable": path_readable(root),
+            "writable": path_writable(root),
         }
-        if root.is_dir():
-            jsonls = sorted(root.rglob("*.jsonl"))
+        if path_is_dir(root):
+            jsonls = safe_rglob(root, "*.jsonl")
             root_info["jsonl_count"] = len(jsonls)
             root_info["jsonl_total_lines"] = sum(count_jsonl(p)["lines"] for p in jsonls[:500])
             root_info["global_files"] = [str(p) for p in corpus_files(root, "global")]
@@ -311,7 +372,7 @@ def knowledge_inventory(repo: Path) -> dict[str, Any]:
     for corpus in EXPECTED_CORPORA:
         files: list[Path] = []
         for root in roots:
-            if root.is_dir():
+            if path_is_dir(root):
                 files.extend(corpus_files(root, corpus))
         file_counts = [count_jsonl(p) for p in files]
         inv["corpora"][corpus] = {
@@ -333,7 +394,7 @@ def knowledge_inventory(repo: Path) -> dict[str, Any]:
             "gate": "ok" if not missing else "MISSING_REQUIRED_CORPUS: " + ", ".join(missing),
         }
 
-    repo_jsonl = sorted((repo / "knowledge").rglob("*.jsonl")) if (repo / "knowledge").is_dir() else []
+    repo_jsonl = safe_rglob(repo / "knowledge", "*.jsonl")
     for p in repo_jsonl[:300]:
         inv["all_jsonl_files"].append(count_jsonl(p))
     return inv
@@ -344,12 +405,12 @@ def search_files(repo: Path, needles: list[str], max_files: int = 6000) -> dict[
     skip_dirs = {".git", ".venv", "__pycache__", "node_modules", ".mypy_cache", ".pytest_cache"}
     exts = {".py", ".md", ".txt", ".json", ".jsonl", ".toml", ".yml", ".yaml", ".ts", ".tsx", ".js", ".html", ".htm"}
     visited = 0
-    for p in repo.rglob("*"):
+    for p in safe_rglob(repo, "*"):
         if visited >= max_files:
             break
         if any(part in skip_dirs for part in p.parts):
             continue
-        if not p.is_file() or p.suffix.lower() not in exts:
+        if not path_is_file(p) or p.suffix.lower() not in exts:
             continue
         visited += 1
         text = safe_read(p, max_bytes=1_500_000)
@@ -369,8 +430,8 @@ def runtime_inventory(repo: Path) -> dict[str, Any]:
         p = repo / rel
         text = safe_read(p)
         inv["files"][rel] = {
-            "exists": p.exists(),
-            "size": p.stat().st_size if p.exists() else None,
+            "exists": path_exists(p),
+            "size": path_size(p) if path_exists(p) else None,
             "lines": text.count("\n") + 1 if text else 0,
         }
     for label, needles in RUNTIME_PATTERNS.items():
@@ -386,9 +447,9 @@ def url_coverage(repo: Path, knowledge: dict[str, Any]) -> dict[str, Any]:
     jsonl_hits: dict[str, list[str]] = {u: [] for u in EXPECTED_URLS}
     for root_info in knowledge.get("roots", []):
         root = Path(root_info["path"])
-        if not root.is_dir():
+        if not path_is_dir(root):
             continue
-        for jf in sorted(root.rglob("*.jsonl"))[:800]:
+        for jf in safe_rglob(root, "*.jsonl")[:800]:
             text = safe_read(jf, max_bytes=5_000_000)
             if not text:
                 continue
@@ -423,15 +484,15 @@ def cloudflare_inventory(repo: Path) -> dict[str, Any]:
     files = []
     for rel in sorted(set(sum(hits.values(), []))):
         p = repo / rel
-        files.append({"path": rel, "size": p.stat().st_size if p.exists() else None})
+        files.append({"path": rel, "size": path_size(p) if path_exists(p) else None})
 
     expected = []
     for rel in CLOUDFLARE_AWS_EXPECTED_SURFACE:
         p = repo / rel
         if rel.endswith("/"):
-            present = p.is_dir()
+            present = path_is_dir(p)
         else:
-            present = p.exists()
+            present = path_exists(p)
         expected.append({"path": rel, "present": present})
 
     missing_expected = [x["path"] for x in expected if not x["present"]]
