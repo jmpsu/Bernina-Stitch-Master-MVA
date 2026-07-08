@@ -18,6 +18,19 @@ The seven personas (all names start with M):
   Margo   — Operations reporter. Status posts + production layout images.
   Minerva — Meeting facilitator. Agent meetings, decisions, transcripts.
 
+Knowledge-library specialist personas (Multimodal Knowledge Objects spec;
+each maps to required corpora in knowledge_retrieval.AGENT_CORPORA):
+
+  Mila      — Raster-to-vector specialist (raster-to-vector + vector-design
+              + visual-semantics corpora).
+  Melanie   — Vector-design / SVG specialist (vector-design +
+              svg-specification + inkscape + svg-conformance corpora).
+  Mckenna   — Ink/Stitch digitization specialist (ink-stitch corpora).
+  Meredith  — Ink/Stitch automation specialist (ink-stitch corpora).
+  Miranda   — Bernina B700 machine specialist (bernina-b700 corpus).
+  Mackenzie — Visual QA specialist (visual-qa corpora).
+  Monica    — Knowledge operations / corpus curator (global library).
+
 Usage:
     from personas import PERSONAS, post_as
     post_as(PERSONAS["mira"], "#embiz-milestones", text="epoch 1 complete")
@@ -115,6 +128,49 @@ PERSONAS: dict[str, Persona] = {
         icon_emoji=":owl:",
         style="[Minerva | meetings]",
         home_channels=(CHANNELS["meetings"],),
+    ),
+    # --- knowledge-library specialists (Multimodal Knowledge Objects spec) --
+    "mila": Persona(
+        key="mila", name="Mila", role="Raster-to-Vector Specialist",
+        icon_emoji=":black_square_button:",
+        style="[Mila | raster-to-vector]",
+        home_channels=(CHANNELS["jobs"],),
+    ),
+    "melanie": Persona(
+        key="melanie", name="Melanie", role="Vector Design / SVG Specialist",
+        icon_emoji=":art:",
+        style="[Melanie | vector design]",
+        home_channels=(CHANNELS["jobs"],),
+    ),
+    "mckenna": Persona(
+        key="mckenna", name="Mckenna", role="Ink/Stitch Digitization Specialist",
+        icon_emoji=":sewing_needle:",
+        style="[Mckenna | ink/stitch digitization]",
+        home_channels=(CHANNELS["jobs"],),
+    ),
+    "meredith": Persona(
+        key="meredith", name="Meredith", role="Ink/Stitch Automation Specialist",
+        icon_emoji=":gear:",
+        style="[Meredith | ink/stitch automation]",
+        home_channels=(CHANNELS["jobs"],),
+    ),
+    "miranda": Persona(
+        key="miranda", name="Miranda", role="Bernina B700 Machine Specialist",
+        icon_emoji=":sewing_machine:",
+        style="[Miranda | bernina b700]",
+        home_channels=(CHANNELS["production"],),
+    ),
+    "mackenzie": Persona(
+        key="mackenzie", name="Mackenzie", role="Visual QA Specialist",
+        icon_emoji=":frame_with_picture:",
+        style="[Mackenzie | visual QA]",
+        home_channels=(CHANNELS["qa"],),
+    ),
+    "monica": Persona(
+        key="monica", name="Monica", role="Knowledge Operations Curator",
+        icon_emoji=":card_file_box:",
+        style="[Monica | knowledge ops]",
+        home_channels=(CHANNELS["reports"],),
     ),
 }
 

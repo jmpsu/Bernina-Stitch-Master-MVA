@@ -580,11 +580,56 @@ def _ruler_jpegs(stem: str) -> list[str]:
     return out
 
 
+def _finalization_retrievals(stem: str, rec: dict) -> list[dict]:
+    """Route real queries — derived from the image's weaknesses — through the
+    knowledge-retrieval router (Mabel + the relevant specialists). Returns the
+    retrieval-proof lines (each is also appended to reports/retrieval_log.jsonl
+    by the router). Gate failures (MISSING_REQUIRED_CORPUS) are recorded
+    honestly, never converted into passes. Never raises."""
+    try:
+        from knowledge_retrieval import route
+    except Exception as exc:  # noqa: BLE001 — never kill the run
+        return [{"status": "router_unavailable", "error": str(exc)}]
+
+    ssim = rec.get("best_ssim", -1.0)
+    stalls = rec.get("stall", 0)
+    weak = ssim < 0.90
+    queries = [
+        ("mabel", "finalization",
+         f"finalization checklist density satin corner fidelity {stem}"),
+        ("mila", "vectorization",
+         "preserve source silhouette during raster to vector conversion"
+         + (" corner detection sharp turns" if weak or stalls else
+            " polygon tracing")),
+        ("mckenna", "digitization",
+         "satin column density avoid jamming spacing floor"),
+        ("melanie", "svg-authoring",
+         "svg path fill rule viewBox stroke to path"),
+        ("miranda", "machine-setup",
+         "bernina b700 hoop size density limits"),
+    ]
+    proofs = []
+    for agent, task_type, query in queries:
+        try:
+            res = route(agent, job_id=f"finalize:{stem}",
+                        task_type=task_type, query=query,
+                        source_file=rec.get("path"),
+                        current_phase="finalization")
+            proofs.append(res["retrieval_proof"])
+        except Exception as exc:  # noqa: BLE001
+            proofs.append({"agent": agent, "query": query,
+                           "status": "error", "error": str(exc)})
+    return proofs
+
+
 def mabel_knowledge_pass(state: dict, stem: str, rec: dict) -> dict:
     """Criterion 4: load ALL knowledge modular objects
     (knowledge/vectorization/**/*.json[l]) + parameter_correlation_index*.json
-    and record which techniques were consulted/applied. Logged as a meeting
-    entry (Mabel reporting to Minerva's log)."""
+    and record which techniques were consulted/applied, AND route real
+    weakness-derived queries through the knowledge-retrieval router for Mabel
+    + the specialist personas (proof lines land in
+    reports/retrieval_log.jsonl and in the finalization record). Logged as a
+    meeting entry (Mabel reporting to Minerva's log)."""
     consulted = []
     if KNOWLEDGE_VEC_DIR.exists():
         for p in sorted(KNOWLEDGE_VEC_DIR.rglob("*.json*")):
@@ -618,10 +663,20 @@ def mabel_knowledge_pass(state: dict, stem: str, rec: dict) -> dict:
         "stall_break_epochs": sum(1 for h in rec.get("history", [])
                                   if h.get("stall_break")),
     }
+
+    # Knowledge-library retrieval router pass (Mabel + specialists) --------
+    retrievals = _finalization_retrievals(stem, rec)
+    n_selected = sum(len(p.get("records_selected", [])) for p in retrievals)
+    gate_failures = sorted({p.get("gate") for p in retrievals
+                            if p.get("status") == "gate_failed"})
     summary = (f"{len(consulted)} knowledge object(s) consulted "
                f"({sum(1 for c in consulted if 'concept' in c)} technique "
                f"notes + correlation indexes); applied: bucket prior + "
-               f"{applied['stall_break_epochs']} stall-break epoch(s)")
+               f"{applied['stall_break_epochs']} stall-break epoch(s); "
+               f"library router: {len(retrievals)} retrieval(s), "
+               f"{n_selected} object(s) selected"
+               + (f", GATES FAILED: {'; '.join(gate_failures)}"
+                  if gate_failures else ""))
     _append_jsonl(MEETINGS_LOG, {
         "timestamp": _utcnow(),
         "facilitator": "Minerva",
@@ -633,12 +688,15 @@ def mabel_knowledge_pass(state: dict, stem: str, rec: dict) -> dict:
                       f"{summary}"],
         "consulted": consulted,
         "applied": applied,
+        "retrieval_proofs": retrievals,
     })
     post_as(MABEL, CHANNELS["reports"],
             text=f"{stem} finalization knowledge pass: {summary}")
     return {"met": bool(consulted), "objects_consulted": len(consulted),
             "sources": [c["source"] for c in consulted],
-            "applied": applied, "summary": summary}
+            "applied": applied, "summary": summary,
+            "retrieval_proofs": retrievals,
+            "retrieval_gate_failures": gate_failures}
 
 
 def post_final_production_message(stem: str, rec: dict, criteria: dict,
