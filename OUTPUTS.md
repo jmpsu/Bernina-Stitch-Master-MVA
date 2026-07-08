@@ -52,7 +52,9 @@ View: disk/GitHub, or Slack `#embiz-production` (posted every epoch by
 | `reports/vectorizer_v*.md` | Vectorizer version/promotion engineering notes |
 | `reports/knowledge_experiments.md` | Stage-2 validation of library-doctrine artifacts |
 | `reports/library_utilization_coverage.md`, `reports/slack_utilization_report.md`, `reports/production_visuals.md` | Coverage/utilization audits |
-| `reports/slack_messages/*.txt` | Drafted Slack message bodies (posted when tokens present) |
+| `reports/slack_messages/*.txt` / `*.json` | Drafted Slack message bodies + exact final-production payloads (`files_upload_v2` file lists) — posted when tokens present |
+| `reports/retrieval_log.jsonl` | **Knowledge-retrieval PROOF ledger**: one line per `knowledge_retrieval.route()` call — agent, query, corpora consulted (required/present/records), records considered/selected, and the hard-gate outcome (`ok` or `MISSING_REQUIRED_CORPUS: ...`) |
+| `reports/knowledge_audit.md` | Honest inventory of knowledge present in this container vs the spec's local-machine roots, upload inventory, and URL-fetch failures |
 
 View: text/Markdown on disk or GitHub; JSONL with `jq` or any editor.
 
@@ -66,6 +68,7 @@ View: text/Markdown on disk or GitHub; JSONL with `jq` or any editor.
 | `vectorization_attempts.jsonl` | EVERY vectorizer hill-climb attempt: params, ssim/edge/rmse/color-fidelity/composite, accepted flag — the full search history across all epochs |
 | `parameter_correlation_index.json` / `parameter_correlation_index_vec.json` | Best-known parameters per image-feature bucket (cross-image transfer; Mabel's library) |
 | `knowledge_experiments.jsonl`, `knowledge/` | Library-doctrine experiment records + extracted knowledge |
+| `knowledge/library/` | The **Multimodal Knowledge Object library**: per-corpus `knowledge_objects.jsonl` (`5-agent-architecture/raster-to-vector-agent/` 36 objects, `5-agent-architecture/vector-design-agent/` 4, `9-knowledge-management-architecture/svg-specification-corpus/` 10), `14-ink-stitch-automation-framework/embroidery-techniques/visual_captions.jsonl` (1), `global_knowledge_objects.jsonl` (50) + `.multimodal.jsonl` (15), source PDFs in `sources/`, and `ingestion_log.jsonl` (every ingest/fetch attempt incl. proxy-blocked URL errors) |
 | `weights.json`, `metrics.py` outputs | Scoring weights / metric definitions |
 
 View: `jq . <file>` or any editor; each line is standalone JSON.
