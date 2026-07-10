@@ -133,8 +133,23 @@ def _log_event(record: dict) -> None:
     _append_jsonl(ROUTER_EVENT_LOG, record)
 
 
+def _local_only() -> bool:
+    """Global no-spend kill switch. DEFAULT ON: every LLM task runs on the
+    local Ollama rungs and the paid rung is unreachable, regardless of task
+    policy or configured API keys. Paid escalation requires BOTH the
+    EMBIZ_PAID_* config AND an explicit EMBIZ_LOCAL_ONLY=0 opt-out."""
+    return os.environ.get("EMBIZ_LOCAL_ONLY", "1").lower() not in (
+        "0", "false", "no", "off")
+
+
 def _paid_call(prompt: str, system: str, audit: dict) -> str:
     """Rung 4 — paid API. Env-gated. Logged. Slack-announced before and after."""
+    if _local_only():
+        raise EscalationExhausted(
+            "EMBIZ_LOCAL_ONLY is on (the default): paid escalation is "
+            "disabled and this task fails locally instead of spending. "
+            "Set EMBIZ_LOCAL_ONLY=0 explicitly to ever allow paid calls."
+        )
     provider = os.environ.get("EMBIZ_PAID_PROVIDER")
     model = os.environ.get("EMBIZ_PAID_MODEL")
     api_key = os.environ.get("EMBIZ_PAID_API_KEY")

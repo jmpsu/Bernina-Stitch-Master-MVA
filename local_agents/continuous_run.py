@@ -85,6 +85,7 @@ for p in (str(REPO_ROOT), str(_HERE)):
 
 import vectorizer   # noqa: E402  repo-root module
 import digitizer    # noqa: E402  repo-root module
+import solidify     # noqa: E402  repo-root module
 from personas import CHANNELS, PERSONAS, post_as   # noqa: E402
 
 STATE_DIR = Path(os.environ.get("EMBIZ_STATE_DIR", _HERE / "state"))
@@ -98,6 +99,7 @@ MEETINGS_LOG = REPORTS_DIR / "agent_meetings.jsonl"
 PROD_DIR = REPO_ROOT / "production_runs"
 STITCH_DIR = REPO_ROOT / "stitch_plans"
 VEC_INDEX = REPO_ROOT / "parameter_correlation_index_vec.json"
+SOLIDIFY_DIR = WORK_DIR / "solidified"
 
 RASTER_EXTS = {".png", ".jpg", ".jpeg", ".webp", ".heic", ".bmp", ".gif"}
 RASTER_WIDTH = 600            # SVG re-raster width fed to the digitizer
@@ -157,6 +159,7 @@ RULER_JPEGS = ("1_original_on_ruler.jpg", "2_svg_on_ruler.jpg",
                "3_stitchplan_on_ruler.jpg")
 
 MIRA = PERSONAS["mira"]
+MILA = PERSONAS["mila"]
 MAYA = PERSONAS["maya"]
 MARNIE = PERSONAS["marnie"]
 MERCY = PERSONAS["mercy"]
@@ -252,6 +255,29 @@ def rasterize_best_svg(svg_path: Path, stem: str) -> Path | None:
     except Exception as exc:  # noqa: BLE001
         post_as(MARNIE, CHANNELS["alerts"],
                 text=f"SVG re-raster failed for {stem}: {exc}")
+        return None
+
+
+def solidify_for_vectorization(path: Path, stem: str) -> Path | None:
+    """Posterize the raster to remove pencil texture before vectorization.
+
+    Returns the path to a solidified (posterized) version of the input, or None
+    on failure. The solidified version is flat-color SOLID regions per the
+    knowledge/vectorization library guidance."""
+    SOLIDIFY_DIR.mkdir(parents=True, exist_ok=True)
+    out = SOLIDIFY_DIR / f"{stem}.png"
+    try:
+        solidify.solidify_file(str(path), str(out))
+        post_as(MILA, CHANNELS["jobs"],
+                text=(f"I solidified {stem} for Maya: lowpass smoothing, "
+                      f"Lab delta-E<=5 color merge, thread budget, speckle "
+                      f"suppression, stacked layers — per our "
+                      f"knowledge/vectorization notes. Maya, trace my flat "
+                      f"version, not the pencil texture."))
+        return out
+    except Exception as exc:  # noqa: BLE001
+        post_as(MILA, CHANNELS["alerts"],
+                text=f"Solidification failed for {stem}: {exc}")
         return None
 
 
@@ -999,7 +1025,16 @@ def run_epoch(state: dict, path: Path, iters_per_epoch: int) -> dict:
                   + (f" — Minerva signed off on {len(extra_starts)} injected "
                      f"starts to break the stall" if stall_break else "")
                   + ". Marnie, the best SVG is yours when I'm done."))
-    vec = vectorizer.optimize(str(path), max_iters=iters_per_epoch,
+
+    # Stage 1: solidify the raster to remove pencil texture before vectorization
+    vec_input = path
+    if rec.get("epochs", 0) == 0:  # Only solidify on first epoch
+        solidified = solidify_for_vectorization(path, stem)
+        if solidified is not None:
+            vec_input = solidified
+            rec["solidified_input"] = str(solidified)
+
+    vec = vectorizer.optimize(str(vec_input), max_iters=iters_per_epoch,
                               target_ssim=target, verbose=False,
                               extra_starts=extra_starts,
                               skip_preset_starts=stall_break)
