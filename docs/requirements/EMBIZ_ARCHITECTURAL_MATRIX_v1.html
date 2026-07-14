@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMBIZ // ARCHITECTURAL MATRIX</title>
+<style>
+  :root{
+    --bg:#000000; --panel:#0b0b0b; --box:#070707;
+    --line:#8f8f8f; --line-dim:#4a4a4a; --line-faint:#2c2c2c;
+    --txt:#e6e6e6; --txt-dim:#9a9a9a; --txt-faint:#5d5d5d;
+    --hot:#ffffff; --led:#d8d8d8;
+    --mono:"SF Mono","Menlo","Consolas","DejaVu Sans Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+  html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:var(--mono)}
+
+  /* ---------- top strip ---------- */
+  #topbar{
+    position:fixed;top:0;left:0;right:0;height:26px;z-index:40;
+    background:#050505;border-bottom:1px solid var(--line-faint);
+    display:flex;align-items:center;gap:0;font-size:9px;letter-spacing:.08em;
+    user-select:none;
+  }
+  #topbar .brand{padding:0 12px;color:var(--txt);border-right:1px solid var(--line-faint);height:100%;display:flex;align-items:center;gap:7px;white-space:nowrap}
+  #topbar .brand .dot{width:6px;height:6px;border:1px solid var(--line);border-radius:50%}
+  #crumbs{display:flex;align-items:center;height:100%;overflow:hidden;flex:1;min-width:0}
+  .crumb{padding:0 10px;height:100%;display:flex;align-items:center;color:var(--txt-dim);
+    border-right:1px solid var(--line-faint);cursor:pointer;white-space:nowrap}
+  .crumb:hover{color:var(--txt);background:#0e0e0e}
+  .crumb.cur{color:var(--txt)}
+  .crumb .sep{margin-left:10px;color:var(--txt-faint)}
+  #topbar .keys{padding:0 12px;color:var(--txt-faint);border-left:1px solid var(--line-faint);height:100%;display:flex;align-items:center;gap:12px;white-space:nowrap}
+  #topbar .keys b{color:var(--txt-dim);font-weight:400;border:1px solid var(--line-faint);padding:0 4px;border-radius:2px}
+
+  /* ---------- left rail ---------- */
+  #rail{
+    position:fixed;top:26px;left:0;bottom:22px;width:26px;z-index:40;
+    background:#050505;border-right:1px solid var(--line-faint);
+    display:flex;flex-direction:column;align-items:center;user-select:none;
+  }
+  .railtab{
+    writing-mode:vertical-rl;transform:rotate(180deg);
+    font-size:8px;letter-spacing:.22em;color:var(--txt-faint);
+    padding:12px 0;cursor:pointer;border-bottom:1px solid var(--line-faint);
+    width:100%;text-align:center;
+  }
+  .railtab:hover,.railtab.on{color:var(--txt);background:#0e0e0e}
+  #rail .spacer{flex:1;border-bottom:none}
+
+  /* ---------- status bar ---------- */
+  #status{
+    position:fixed;bottom:0;left:0;right:0;height:22px;z-index:40;
+    background:#050505;border-top:1px solid var(--line-faint);
+    display:flex;align-items:center;font-size:8.5px;letter-spacing:.06em;color:var(--txt-faint);
+    user-select:none;
+  }
+  #status .cell{padding:0 10px;height:100%;display:flex;align-items:center;border-right:1px solid var(--line-faint);gap:6px;white-space:nowrap}
+  #status .cell b{color:var(--txt-dim);font-weight:400}
+  #status #hoverinfo{flex:1;color:var(--txt-dim);border-right:none;overflow:hidden;text-overflow:ellipsis}
+  #status .meter{width:60px;height:5px;border:1px solid var(--line-faint);position:relative}
+  #status .meter i{position:absolute;left:0;top:0;bottom:0;background:var(--line-dim)}
+  .ledgrid{display:flex;gap:3px}
+  .ledgrid i{width:4px;height:4px;border:1px solid var(--line-faint)}
+  .ledgrid i.on{background:var(--led);border-color:var(--led)}
+
+  /* ---------- canvas ---------- */
+  #stage{position:fixed;top:26px;left:26px;right:0;bottom:22px;overflow:hidden;cursor:default}
+  #stage.panning{cursor:grabbing}
+  svg{display:block;width:100%;height:100%}
+  svg text{font-family:var(--mono)}
+
+  .node rect.body{fill:var(--box);stroke:var(--line-dim);stroke-width:1;shape-rendering:crispEdges}
+  .node.hub rect.body{stroke:var(--line)}
+  .node .lbl{fill:var(--txt);font-size:9px;letter-spacing:.04em}
+  .node .sub{fill:var(--txt-dim);font-size:7px;letter-spacing:.03em}
+  .node .tag{fill:var(--txt-faint);font-size:6.5px;letter-spacing:.12em}
+  .node .port{fill:#000;stroke:var(--line-dim);stroke-width:1}
+  .node .led{fill:none;stroke:var(--line-dim);stroke-width:1}
+  .node .led.on{fill:var(--led);stroke:var(--led)}
+  .node{cursor:pointer}
+  .node:hover rect.body{stroke:var(--hot)}
+  .node:hover .lbl{fill:var(--hot)}
+  .node.drillable rect.body{stroke-dasharray:none}
+  .node .drillmark{fill:none;stroke:var(--line-dim);stroke-width:1;shape-rendering:crispEdges}
+  .node:hover .drillmark{stroke:var(--hot)}
+  .node.sel rect.body{stroke:var(--hot);stroke-width:1.25}
+
+  .cable{fill:none;stroke:var(--line-dim);stroke-width:1;opacity:.85}
+  .cable.hi{stroke:var(--hot);opacity:1}
+  .cable.dim{opacity:.18}
+  .cable.dash{stroke-dasharray:3 3}
+
+  .frame{fill:none;stroke:var(--line-faint);stroke-width:1;stroke-dasharray:4 4;shape-rendering:crispEdges}
+  .frametitle{fill:var(--txt-dim);font-size:8px;letter-spacing:.28em}
+  .badge circle{fill:#000;stroke:var(--line);stroke-width:1.25}
+  .badge text{fill:var(--txt);font-size:11px;text-anchor:middle}
+  .comment{fill:var(--txt-faint);font-size:7px;letter-spacing:.05em}
+  .comment.bright{fill:var(--txt-dim)}
+  .rule{stroke:var(--line-faint);stroke-width:1;shape-rendering:crispEdges}
+
+  .wtoggle{fill:#000;stroke:var(--line-dim);stroke-width:1;shape-rendering:crispEdges}
+  .wtoggle-x{stroke:var(--line-dim);stroke-width:1}
+  .wslider{fill:none;stroke:var(--line-dim);stroke-width:1;shape-rendering:crispEdges}
+  .wslider-k{fill:var(--line-dim)}
+  .wmeter{fill:none;stroke:var(--line-faint);stroke-width:1;shape-rendering:crispEdges}
+  .wmeter-f{fill:var(--line-dim)}
+  .wnum{fill:#000;stroke:var(--line-dim);stroke-width:1;shape-rendering:crispEdges}
+  .wnum-t{fill:var(--txt-dim);font-size:7px}
+  .wscope{stroke:var(--line-dim);stroke-width:1;fill:none}
+
+  /* ---------- inspector ---------- */
+  #inspector{
+    position:fixed;top:26px;right:0;bottom:22px;width:300px;z-index:45;
+    background:#050505;border-left:1px solid var(--line-faint);
+    transform:translateX(100%);transition:transform .18s ease;
+    display:flex;flex-direction:column;
+  }
+  #inspector.open{transform:translateX(0)}
+  #insp-head{padding:10px 12px;border-bottom:1px solid var(--line-faint);display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+  #insp-title{font-size:10px;letter-spacing:.1em;color:var(--txt)}
+  #insp-kind{font-size:7px;letter-spacing:.2em;color:var(--txt-faint);margin-top:3px}
+  #insp-x{font-size:10px;color:var(--txt-faint);cursor:pointer;border:1px solid var(--line-faint);padding:1px 6px}
+  #insp-x:hover{color:var(--txt);border-color:var(--line-dim)}
+  #insp-body{flex:1;overflow-y:auto;padding:10px 12px;scrollbar-width:thin;scrollbar-color:var(--line-faint) transparent}
+  .insp-sec{margin-bottom:12px}
+  .insp-sec h4{font-size:7px;letter-spacing:.24em;color:var(--txt-faint);border-bottom:1px solid var(--line-faint);padding-bottom:4px;margin-bottom:6px;font-weight:400}
+  .insp-line{font-size:8.5px;line-height:1.65;color:var(--txt-dim);padding-left:10px;position:relative}
+  .insp-line::before{content:"▸";position:absolute;left:0;color:var(--txt-faint);font-size:7px;top:2px}
+  .insp-mono{font-size:8px;line-height:1.7;color:var(--txt-dim);background:#0a0a0a;border:1px solid var(--line-faint);padding:6px 8px;white-space:pre-wrap;word-break:break-all}
+  #insp-drill{margin:0 12px 12px;border:1px solid var(--line-dim);background:transparent;color:var(--txt);
+    font-family:var(--mono);font-size:8.5px;letter-spacing:.18em;padding:7px 0;cursor:pointer;display:none}
+  #insp-drill:hover{background:#111;border-color:var(--hot)}
+
+  /* ---------- search ---------- */
+  #search{
+    position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.72);display:none;
+    align-items:flex-start;justify-content:center;padding-top:12vh;
+  }
+  #search.open{display:flex}
+  #searchbox{width:520px;max-width:92vw;background:#060606;border:1px solid var(--line-dim)}
+  #searchbox input{
+    width:100%;background:transparent;border:none;outline:none;color:var(--txt);
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;padding:11px 14px;
+    border-bottom:1px solid var(--line-faint);
+  }
+  #results{max-height:46vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--line-faint) transparent}
+  .res{padding:7px 14px;font-size:9px;color:var(--txt-dim);cursor:pointer;display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #101010}
+  .res:hover,.res.k{background:#101010;color:var(--txt)}
+  .res .path{color:var(--txt-faint);font-size:7.5px;letter-spacing:.08em;flex-shrink:0;align-self:center}
+
+  #transition{position:fixed;top:26px;left:26px;right:0;bottom:22px;z-index:30;pointer-events:none}
+
+  ::selection{background:#333;color:#fff}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="brand"><span class="dot"></span>EMBIZ // ARCHITECTURAL MATRIX <span style="color:var(--txt-faint)">rev.3</span></div>
+  <div id="crumbs"></div>
+  <div class="keys"><span><b>/</b> search</span><span><b>esc</b> up</span><span><b>f</b> fit</span><span><b>1–8</b> region</span><span><b>drag</b> pan · <b>wheel</b> zoom</span></div>
+</div>
+
+<div id="rail">
+  <div class="railtab" data-go="root">MASTER</div>
+  <div class="railtab" data-go="cloudflare">EDGE</div>
+  <div class="railtab" data-go="aws">AWS</div>
+  <div class="railtab" data-go="agents">AGENTS</div>
+  <div class="railtab" data-go="ihive">I-HIVE</div>
+  <div class="railtab" data-go="intake">INTAKE</div>
+  <div class="railtab" data-go="digitization">STITCH</div>
+  <div class="railtab" data-go="observability">OBSRV</div>
+  <div class="railtab spacer"></div>
+  <div class="railtab" data-go="terraform">IAC</div>
+</div>
+
+<div id="stage"><svg id="svg"><g id="world"></g></svg></div>
+
+<div id="inspector">
+  <div id="insp-head">
+    <div><div id="insp-title"></div><div id="insp-kind"></div></div>
+    <div id="insp-x">×</div>
+  </div>
+  <div id="insp-body"></div>
+  <button id="insp-drill">⤓ DRILL INTO SUBPATCH</button>
+</div>
+
+<div id="search"><div id="searchbox">
+  <input id="q" placeholder="locate node · agent · service · file …" autocomplete="off" spellcheck="false">
+  <div id="results"></div>
+</div></div>
+
+<div id="status">
+  <div class="cell"><b id="st-level">L0</b><span id="st-name">MASTER</span></div>
+  <div class="cell">nodes <b id="st-nodes">0</b></div>
+  <div class="cell">cables <b id="st-cables">0</b></div>
+  <div class="cell">depth <b id="st-depth">0</b></div>
+  <div class="cell"><span>bus</span><span class="ledgrid" id="busleds"></span></div>
+  <div class="cell"><span>zoom</span><b id="st-zoom">100%</b><div class="meter"><i id="st-zm" style="width:50%"></i></div></div>
+  <div class="cell" id="hoverinfo">—</div>
+  <div class="cell"><b>LOCK</b><span id="st-lock">OFF</span></div>
+</div>
+
+<script>
+/* ============================================================
+   EMBIZ ARCHITECTURAL MATRIX — DATA MODEL
+   Sources: ENHANCEMENT_DIRECTIVE (Cloudflare+AWS), EMBIZ BRD v3,
+            system_technical_spec (agent operating contracts)
+   ============================================================ */
+
+// ---- named agent roster (spec §NAMED AGENT ROSTER) ----
+const AGENTS = [
+ {n:"Maya",    r:"ORCHESTRATOR",        m:"Customer relationship mgmt · workflow orchestration · end-to-end job routing · agent sequencing · approval orchestration · final customer/project state",
+  auth:"Can grant approval — Slack msg required: what was checked, how, why it passed", cf:true,
+  routes:["Madeline","Morgan","Mila","Melanie","Monica","Mckenna","Meredith","Mackenzie","Margaret","Miranda","Marina","Maeve","Michaela","Miriam","Mallory"],
+  inp:["Customer emails / Slack DMs","Order forms · quote requests","Garment · fabric · placement · size","Deadlines · customer artwork"],
+  out:["Customer communications","Project specifications","Approval packets · handoff packets","Consolidated agent-state reports"],
+  gates:["Source raster preserved as truth","No clip-art substitution","Column B standard enforced","Background removal absolute","White = knockout OR thread path","Approval Slack: what/how/why/files"]},
+ {n:"Madeline", r:"CUSTOMER INTAKE",    m:"Order intake · requirements gathering · quote generation · artwork triage · garment/fabric intake · placement intake · production-estimation handoff", cf:true,
+  inp:["Inbound orders","Customer artwork uploads"], out:["Quotes","Complete intake packets"], gates:["All required order fields present"]},
+ {n:"Morgan",   r:"REQUIREMENTS",       m:"Requirements analysis · design specification · customer discovery · design-intent preservation · production-ready specification writing", cf:true,
+  inp:["Ambiguous order details"], out:["Production-ready specs"], gates:["Design intent preserved in spec"]},
+ {n:"Melody",   r:"CUSTOMER SUPPORT",   m:"Technical support · issue resolution · documentation access · customer-facing troubleshooting · post-delivery correction intake", cf:true,
+  inp:["Support tickets","Post-delivery issues"], out:["Resolutions","Correction jobs"], gates:["Issue traced to accountable agent"]},
+ {n:"Mila",     r:"RASTER→VECTOR",      m:"Image vectorization · SVG preparation · design cleanup · raster preprocessing · silhouette preservation · color segmentation · transparent-background generation · Column A→B transformation",
+  inp:["Customer raster (PNG/JPG)","MILA_HANDOFF.md directive"], out:["Clean flat-color SVG","Quality-scored candidates"],
+  gates:["Silhouette faithful","Node economy rules","No background residue","honest_scorer.py hard caps"]},
+ {n:"Melanie",  r:"VECTOR DESIGN",      m:"Vector design optimization · embroidery preparation · path cleanup · layer design · thread-color mapping · satin/fill preparation · SVG production hardening",
+  inp:["Mila SVG output"], out:["Production-hardened SVG","Thread-color map"], gates:["Paths clean · layers ordered"]},
+ {n:"Mackenzie",r:"ARTWORK REVIEW",     m:"Design quality validation · embroidery feasibility assessment · Column B standard enforcement · visual QA · production artwork approval",
+  inp:["Optimized SVG"], out:["Approve / reject verdicts"], gates:["Column B standard","Feasibility on target garment"]},
+ {n:"Marina",   r:"VISUAL KNOWLEDGE",   m:"Design pattern recognition · knowledge base population · reverse-engineered transformation capture · example indexing · visual-methodology extraction",
+  inp:["Completed transformations"], out:["Indexed method examples"], gates:["Method reproducible from record"]},
+ {n:"Monica",   r:"INKSCAPE AUTOMATION",m:"Automated SVG manipulation · batch processing · repeatable Inkscape cleanup · vector-operation scripting · pipeline automation",
+  inp:["Batch/script requests"], out:["Repeatable Inkscape scripts"], gates:["Script idempotent · logged"]},
+ {n:"Meredith", r:"INK/STITCH AUTO",    m:"Embroidery digitization · stitch file generation · Ink/Stitch processing · format conversion · stitch simulation · production export",
+  inp:["Digitization plan (Mckenna)"], out:["EXP / INF / BMP triplet","Stitch simulations"],
+  gates:["Ink/Stitch validation pass","Export triplet complete"]},
+ {n:"Mckenna",  r:"DIGITIZATION",       m:"Digitization workflow coordination · parameter optimization · production planning · stitch strategy · status updates during digitization",
+  inp:["Approved SVG"], out:["Stitch strategy + plan"], gates:["Underlay + pull comp specified"]},
+ {n:"Margaret", r:"STITCH QA",          m:"Stitch quality validation · embroidery output verification · defect detection · compliance checking · delivery approval / rejection",
+  inp:["Stitch files (EXP/INF/BMP)"], out:["QA verdicts + defect reports"], gates:["Density in range","No trapped defects","Rejection: gate·defect·cause·file·next agent"]},
+ {n:"Miranda",  r:"B700 COMPAT",        m:"Machine compatibility validation · format verification · Bernina B700 optimization · hoop-limit checking · final machine-handoff verification",
+  inp:["QA-passed stitch files"], out:["Machine-handoff clearance"], gates:["EXP format valid","Hoop limits respected"]},
+ {n:"Michaela", r:"RESEARCH",           m:"Industry research · technique discovery · knowledge updates · embroidery-standard monitoring · method validation against current practice",
+  inp:["Research gaps (from Maya)"], out:["Validated techniques"], gates:["Source-backed findings"]},
+ {n:"Maeve",    r:"KNOWLEDGE LIBRARIAN",m:"Knowledge base management · documentation curation · method indexing · version-controlled system memory · search optimization",
+  inp:["Methodology findings"], out:["Curated knowledge objects"], gates:["Indexed · versioned · retrievable"]},
+ {n:"Matilda",  r:"SECURITY AUDIT",     m:"Security validation · secrets detection · access control · file safety · automation safety · privacy-preserving workflow enforcement",
+  inp:["All file + message flows"], out:["Audit findings · blocks"], gates:["Zero secrets in Slack/logs"]},
+ {n:"Miriam",   r:"TRAINING / EVAL",    m:"Agent skill assessment · training program design · capability development · evaluation suite creation · failure-to-training conversion",
+  inp:["Training gaps · failures"], out:["Eval suites · training plans"], gates:["Failure converted to training"]},
+ {n:"Mallory",  r:"AGENT BUS / SLACK",  m:"Inter-agent communication · Slack mirroring · message routing · workflow-state publication · collaboration threading · hashtag discipline · message sanitization",
+  inp:["All agent messages"], out:["Sanitized #all-agent-network posts"], gates:["No-secrets sanitation pass"]},
+];
+
+const AG = Object.fromEntries(AGENTS.map(a=>[a.n,a]));
+
+// ============================================================
+// LEVEL DEFINITIONS
+// node: {id,x,y,w,l,s[],drill,detail{SEC:[..]},hub,tag,wg:[widgets]}
+// widget: ["tgl"|"sld"|"mtr"|"num"|"scp"|"led", dx,dy,(v)]
+// cable: [fromId,toId,{d:dash, of:outFrac, if:inFrac}]
+// ============================================================
+const LEVELS = {
+
+/* ------------------------------------------------ L0 MASTER */
+root:{
+ title:"EMBIZ MASTER PATCH", depth:0, w:1760, h:1120,
+ frames:[
+  {x:34, y:52,  w:470, h:268, t:"CLOUDFLARE EDGE",  b:"1"},
+  {x:530,y:52,  w:560, h:268, t:"AWS TRANSACTIONAL CORE", b:"2"},
+  {x:1116,y:52, w:300, h:430, t:"OBSERVABILITY", b:"7"},
+  {x:34, y:344, w:400, h:250, t:"CUSTOMER INTAKE", b:"5"},
+  {x:460,y:344, w:630, h:330, t:"AGENT NETWORK — 18×M", b:"3"},
+  {x:34, y:618, w:400, h:250, t:"I-HIVE ENGINE", b:"4"},
+  {x:460,y:698, w:630, h:230, t:"DIGITIZATION / PRODUCTION", b:"6"},
+  {x:1116,y:506,w:300, h:264, t:"IaC — TERRAFORM", b:"8"},
+  {x:1116,y:794,w:300, h:134, t:"HOSTS / TRANSPORT"},
+ ],
+ comments:[
+  {x:40,y:44,t:"jupiterembroideryco.com — multi-cloud: Cloudflare edge + AWS core + autonomous agent mesh",bright:1},
+  {x:536,y:340,t:"reads terminate at edge KV · writes decouple via SQS · no front-end native writes"},
+  {x:40,y:952,t:"PANIC → drain queues · halt agents · freeze exports",bright:1},
+  {x:250,y:952,t:"NUKE → DLQ purge (3× maxReceive)"},
+  {x:40,y:1096,t:"trace: X-Amz-Trace-Id Root=1-{hex} propagated edge→sqs→lambda→x-ray"},
+ ],
+ nodes:[
+  // -- edge
+  {id:"n-cust", x:44, y:70, w:104, l:"CUSTOMER", s:["browser / email","stripe.js client"], tag:"IO",
+   detail:{SOURCE:["Web storefront on Cloudflare Pages","Email → intake webhook","Slack DM → Maya"],NOTE:["All artwork enters as raster source-of-truth"]}},
+  {id:"n-pages",x:168,y:70, w:130, l:"cf pages CDN", s:["global edge","public/ SPA"], drill:"cloudflare", hub:1,
+   detail:{ROLE:["Content delivery · edge auth · cache mgmt · request filtering"],DEPLOY:["npx wrangler pages deploy public"]}},
+  {id:"n-mw",  x:168,y:140,w:130, l:"_middleware.js", s:["CORS · trace","session · OWASP"], drill:"cf-middleware",
+   detail:{STAGES:["1 preflight interception","2 X-Ray trace propagation","3 KV session attach","4 edge shield headers"]}},
+  {id:"n-kv",  x:52, y:150,w:96,  l:"KV", s:["SESSION_STORE"], wg:[["led",84,8,1]],
+   detail:{BINDING:["SESSION_STORE","session:{token} → user JSON"],TOPOLOGY:["cache-hit terminates at edge memory"]}},
+  {id:"n-api", x:330,y:70, w:150, l:"functions/api", s:["contact · stripe","auth · admin"], drill:"cf-api", hub:1,
+   detail:{ROUTES:["/api/contact","/api/stripe/checkout · webhook","/api/auth/register · login · me","/api/admin/* (perimeter mw)"]}},
+  {id:"n-r2",  x:330,y:146,w:70,  l:"R2", s:["IMAGES"],
+   detail:{BINDING:["IMAGES → jupiter-embroidery-images"],PROXY:["functions/images/[...path].js","Cache-Control: immutable 1y"]}},
+  {id:"n-d1",  x:410,y:146,w:70,  l:"D1", s:["fallback"],
+   detail:{SCHEMA:["users · orders · inquiries · products","schema.sql local mapping"]}},
+  {id:"n-sig", x:168,y:212,w:150, l:"lib/aws.js", s:["SigV4 signer","HMAC-SHA256 chain"],
+   detail:{CHAIN:["kDate→kRegion→kService→kSigning","Authorization: AWS4-HMAC-SHA256"],TARGET:["signed handoff → SQS"]}},
+  {id:"n-ts",  x:52, y:212,w:96,  l:"turnstile", s:["bot gate"], wg:[["tgl",76,20]],
+   detail:{USE:["contact form token verification"]}},
+  {id:"n-tun", x:330,y:212,w:150, l:"cf tunnel", s:["vps ingress"],
+   detail:{USE:["exposes VPS webhook + job API through Cloudflare Tunnel"]}},
+  // -- aws
+  {id:"n-sqs", x:544,y:70, w:130, l:"SQS event-stream", s:["long-poll 20s","vis 30s · ret 4d"], drill:"aws", hub:1,
+   detail:{QUEUE:["jupiter-embroidery-event-stream","max msg 256KB · redrive→DLQ ×3"]}},
+  {id:"n-dlq", x:544,y:146,w:130, l:"SQS DLQ", s:["dead-letter"], wg:[["led",116,8,0]],
+   detail:{POLICY:["maxReceiveCount 3 → dead-letter-queue"]}},
+  {id:"n-lam", x:700,y:70, w:150, l:"λ order-processor", s:["nodejs20 · 256MB","batch 5 · X-Ray"], drill:"aws-lambda", hub:1,
+   detail:{ACTIONS:["COMMIT_SETTLED_ORDER","PROCESS_CONTACT_FORM"],TRACE:["subsegment per record + TraceId annotation"]}},
+  {id:"n-ddb", x:876,y:70, w:120, l:"DynamoDB", s:["single-table","GSI1 · TTL"], drill:"aws-ddb",
+   detail:{KEYS:["PK/SK + GSI1PK/GSI1SK","PAY_PER_REQUEST"]}},
+  {id:"n-ses", x:876,y:146,w:120, l:"SES", s:["email tx"],
+   detail:{MAIL:["order confirmations → customer","Source: admin@jupiterembroideryco.com"]}},
+  {id:"n-s3",  x:876,y:212,w:120, l:"S3 vault", s:["→GLACIER 30d"],
+   detail:{BUCKET:["archival-vault-store","lifecycle: 30d → GLACIER"]}},
+  {id:"n-ssm", x:700,y:146,w:150, l:"SSM params", s:["jwt · stripe","SecureString"],
+   detail:{PARAMS:["/production/jwt_secret","/production/stripe_secret"]}},
+  {id:"n-vpc", x:700,y:212,w:150, l:"VPC 10.0.0.0/16", s:["isolated subnet","egress 443 only"],
+   detail:{NET:["subnet 10.0.1.0/24 @ us-east-1a","SG: zero ingress · egress tcp/443"]}},
+  {id:"n-str", x:1006,y:70,w:74, l:"stripe", s:["ext API"], tag:"IO",
+   detail:{FLOW:["checkout session server-side","webhook signature verified"]}},
+  // -- observability
+  {id:"n-xray",x:1128,y:70, w:130, l:"X-Ray", s:["distributed trace","sample 5% r10"], drill:"observability", hub:1,
+   detail:{RULE:["catch-all-traces · priority 10","fixed_rate 0.05 · reservoir 10"]}},
+  {id:"n-cw", x:1272,y:70, w:130, l:"CloudWatch", s:["dashboards","alarms"],
+   detail:{WIDGETS:["λ Invocations/Errors 300s","SQS visible msgs 60s"]}},
+  {id:"n-logs",x:1128,y:150,w:130, l:"logs", s:["λ log groups","vps journald"],
+   detail:{IAM:["logs:Create*/PutLogEvents"]}},
+  {id:"n-dash",x:1272,y:150,w:130, l:"ops dashboard", s:["human oversight","kiosk view"],
+   detail:{AREAS:["job states · agent health · rewards","failure analysis · alerts"]}},
+  {id:"n-scope",x:1128,y:236,w:274, l:"trace scope", s:[""], wg:[["scp",8,26,258]],
+   detail:{VIEW:["edge→queue→λ segment waterfall"]}},
+  {id:"n-alert",x:1128,y:320,w:130, l:"alerts", s:["slack notify"],
+   detail:{PIPE:["infra notification pipeline → Slack"]}},
+  {id:"n-audit",x:1272,y:320,w:130, l:"audit trail", s:["decision traces"],
+   detail:{REQ:["every claim backed by raw output","decision trace per artifact"]}},
+  // -- intake
+  {id:"n-mail",x:44, y:366,w:120, l:"email webhook", s:["POST /cloudflare-email"], drill:"intake", hub:1,
+   detail:{ROUTE:["Cloudflare Email → tunnel → VPS"]}},
+  {id:"n-e2j", x:44, y:436,w:120, l:"email_to_job.py", s:["job creation"],
+   detail:{FILE:["cloudflare_email_to_job.py"]}},
+  {id:"n-jobs",x:180,y:366,w:110, l:"job API", s:["GET /api/jobs"],
+   detail:{STATE:["canonical job record + states"]}},
+  {id:"n-cmplx",x:180,y:436,w:110, l:"complexity", s:["analysis"],
+   detail:{OUT:["complexity score · missing-info flags"]}},
+  {id:"n-artid",x:306,y:366,w:118, l:"artwork ID", s:["attachment extract","identification"],
+   detail:{PIPE:["extract → identify → review"]}},
+  {id:"n-canon",x:306,y:436,w:118, l:"canonical artifacts", s:["intake packet"],
+   detail:{OUT:["preserved source raster + intake record"]}},
+  {id:"n-route",x:180,y:506,w:244, l:"autonomous routing", s:["→ Maya orchestration"], wg:[["mtr",214,8,0.7]],
+   detail:{RULE:["no human-in-the-loop confirmation steps"]}},
+  // -- agents
+  {id:"n-maya",x:700,y:376,w:150, l:"MAYA", s:["orchestrator hub","routes 15 agents"], drill:"agents", hub:1,
+   detail:{ROSTER:["18 named M-agents","single source of truth roster"]}},
+  {id:"n-slk", x:486,y:376,w:150, l:"slack bus", s:["#all-agent-network","C0BAC73F4RY"],
+   detail:{DISCIPLINE:["approval msgs: what/how/why/files","rejections: gate·defect·cause·next"]}},
+  {id:"n-oc",  x:486,y:452,w:150, l:"openclaw", s:["agent platform","IS_SANDBOX=1"],
+   detail:{NOTE:["bypasses Claude CLI root restriction"]}},
+  {id:"n-mila",x:906,y:376,w:150, l:"MILA", s:["raster→vector","MILA_HANDOFF.md"], drill:"agent:Mila",
+   detail:{DIRECTIVE:["97,414B · 14+ sections","$2/wk token ceiling · canary cmbp_logo.png"]}},
+  {id:"n-qa",  x:906,y:452,w:150, l:"MARGARET", s:["stitch QA","honest_scorer.py"], drill:"agent:Margaret",
+   detail:{SCORER:["K-means color + SSIM (cairosvg)","hard score caps"]}},
+  {id:"n-mer", x:700,y:452,w:150, l:"MEREDITH", s:["ink/stitch auto"], drill:"agent:Meredith",
+   detail:{INVOKE:["VPS: extension form","Dell: /opt/inkstitch/inkstitch.py"]}},
+  {id:"n-ros", x:486,y:528,w:150, l:"full roster ▸", s:["18 agents"], drill:"agents",
+   detail:{LIST:AGENTS.map(a=>a.n+" — "+a.r)}},
+  {id:"n-do",  x:700,y:528,w:150, l:"durable object", s:["job dispatch","cloudflare"],
+   detail:{ROLE:["coordinates job dispatch → agents"]}},
+  {id:"n-r2o", x:906,y:528,w:150, l:"R2 outputs", s:["artifact store"],
+   detail:{ROLE:["run artifacts read by next I-HIVE pass"]}},
+  {id:"n-kg",  x:700,y:604,w:150, l:"knowledge graph", s:["24-folder canon","mandatory retrieval"],
+   detail:{RULE:["retrieval required before transform","Maeve curates · Marina extracts"]}},
+  // -- ihive
+  {id:"n-ih",  x:44, y:640,w:170, l:"I-HIVE", s:["recursive improve","1 pass = 1 focus"], drill:"ihive", hub:1,
+   detail:{LOOP:["each pass reads prior artifacts","makes one focused improvement"]}},
+  {id:"n-p1",  x:236,y:640,w:88, l:"P1", s:["converge"],
+   detail:{PHASE:["Vector Base Convergence"]}},
+  {id:"n-p2",  x:236,y:706,w:88, l:"P2", s:["verify"],
+   detail:{PHASE:["Structural Verification"]}},
+  {id:"n-p3",  x:236,y:772,w:88, l:"P3", s:["headless out"],
+   detail:{PHASE:["Headless Production Output"]}},
+  {id:"n-vt",  x:44, y:716,w:80, l:"vtracer", s:["vectorize"],
+   detail:{TOOL:["raster → SVG candidate engine"]}},
+  {id:"n-hs",  x:134,y:716,w:80, l:"scorer", s:["SSIM·kmeans"],
+   detail:{FILE:["honest_scorer.py — replaced fraudulent scorer","hard caps on all-black outputs"]}},
+  {id:"n-exp2",x:44, y:786,w:170, l:"experiment pipeline", s:["candidate matrix"], wg:[["sld",146,8]],
+   detail:{PHIL:["candidate evaluation · continuous learning","autonomous experimentation"]}},
+  // -- digitization
+  {id:"n-dig", x:474,y:722,w:150, l:"digitization", s:["stitch plan gen"], drill:"digitization", hub:1,
+   detail:{PIPE:["validate→classify→strategy→underlay→pullcomp→optimize→simulate→density→QA→export"]}},
+  {id:"n-is",  x:648,y:722,w:130, l:"ink/stitch", s:["headless"],
+   detail:{PATHS:["VPS extension · Dell python module"]}},
+  {id:"n-trip",x:800,y:722,w:130, l:"EXP·INF·BMP", s:["usb triplet"],
+   detail:{EXPORT:["Bernina USB file triplet"]}},
+  {id:"n-b700",x:948,y:722,w:130, l:"BERNINA B700", s:["machine target"], tag:"HW",
+   detail:{CHECK:["Miranda: format · hoop · machine limits"]}},
+  {id:"n-sat", x:474,y:800,w:150, l:"stitch physics", s:["satin · tatami","pull comp · underlay"],
+   detail:{DOMAIN:["satin columns · tatami fill","pull compensation · node economy"]}},
+  {id:"n-sim", x:648,y:800,w:130, l:"simulation", s:["density map"], wg:[["mtr",112,8,0.45]],
+   detail:{QA:["stitch simulation + density analysis"]}},
+  {id:"n-deliv",x:800,y:800,w:278, l:"customer delivery", s:["approval → ship"],
+   detail:{CHAIN:["raster→mask→SVG→plan→stitch→QA→compat→delivery"]}},
+  // -- terraform
+  {id:"n-tf",  x:1128,y:524,w:130, l:"terraform/", s:["11 modules"], drill:"terraform", hub:1,
+   detail:{FILES:["providers·variables·dynamodb·sqs·s3","lambda·ssm·vpc·cloudwatch·xray·outputs"]}},
+  {id:"n-wr",  x:1272,y:524,w:130, l:"wrangler.toml", s:["edge bindings"],
+   detail:{BIND:["SESSION_STORE · DB · IMAGES","observability.traces = aws_xray"]}},
+  {id:"n-bld", x:1128,y:600,w:130, l:"build-lambdas.sh", s:["zip packager"],
+   detail:{STEP:["npm install --production → zip"]}},
+  {id:"n-depl",x:1272,y:600,w:130, l:"deploy flow", s:["tf apply → pages"],
+   detail:{ORDER:["build → terraform apply → bind secrets → wrangler deploy"]}},
+  {id:"n-sec", x:1128,y:676,w:274, l:"secret bindings", s:["STRIPE_* · TURNSTILE","AWS access pair"], wg:[["tgl",236,10],["tgl",252,10]],
+   detail:{ENV:["STRIPE_SECRET_KEY · STRIPE_WEBHOOK_SECRET","TURNSTILE_SECRET_KEY · AWS key pair"]}},
+  // -- hosts
+  {id:"n-vps", x:1128,y:812,w:130, l:"contabo VPS", s:["vmi3178359","ubuntu 24.04"],
+   detail:{ROLE:["live self-healing pipeline · MCP server 3×JSON-RPC"]}},
+  {id:"n-dell",x:1272,y:812,w:130, l:"dell RTX2000", s:["ultra9 285H","8GB blackwell"],
+   detail:{ROLE:["replication + GPU acceleration"]}},
+  {id:"n-tail",x:1128,y:878,w:274, l:"tailscale mesh", s:["subnet router bridge"],
+   detail:{ROLE:["LAN ↔ VPS bridge via wall mini-PC"]}},
+  // -- utility clusters
+  {id:"n-panic",x:44,y:966,w:90, l:"PANIC", s:["halt all"], tag:"SYS", wg:[["tgl",70,20]],
+   detail:{ACTION:["drain queues · halt agents · freeze exports"]}},
+  {id:"n-nuke",x:148,y:966,w:90, l:"NUKE", s:["dlq purge"], tag:"SYS", wg:[["tgl",70,20]],
+   detail:{ACTION:["purge dead-letter queue"]}},
+  {id:"n-lock",x:252,y:966,w:90, l:"LOCK", s:["87%"], tag:"SYS", wg:[["mtr",8,34,0.87]],
+   detail:{STATE:["edit lock"]}},
+ ],
+ cables:[
+  ["n-cust","n-pages"],["n-pages","n-mw"],["n-mw","n-kv"],["n-mw","n-api"],
+  ["n-api","n-sig"],["n-sig","n-sqs"],["n-api","n-r2"],["n-api","n-d1"],["n-ts","n-api",{d:1}],
+  ["n-str","n-api",{d:1}],["n-sqs","n-dlq",{d:1}],["n-sqs","n-lam"],["n-lam","n-ddb"],["n-lam","n-ses"],["n-lam","n-s3"],
+  ["n-ssm","n-lam",{d:1}],["n-vpc","n-lam",{d:1}],
+  ["n-lam","n-xray",{d:1}],["n-mw","n-xray",{d:1}],["n-xray","n-scope"],["n-cw","n-scope"],["n-scope","n-alert"],["n-scope","n-audit"],
+  ["n-mail","n-e2j"],["n-e2j","n-jobs"],["n-jobs","n-cmplx"],["n-mail","n-artid"],["n-artid","n-canon"],
+  ["n-cmplx","n-route"],["n-canon","n-route"],["n-tun","n-mail",{d:1}],
+  ["n-route","n-maya"],["n-slk","n-maya"],["n-oc","n-maya",{d:1}],["n-maya","n-mila"],["n-maya","n-mer"],["n-mila","n-qa"],
+  ["n-do","n-mer",{d:1}],["n-do","n-mila",{d:1}],["n-mila","n-r2o"],["n-kg","n-mila",{d:1}],["n-kg","n-mer",{d:1}],["n-ros","n-do",{d:1}],
+  ["n-maya","n-ih"],["n-ih","n-p1"],["n-p1","n-p2"],["n-p2","n-p3"],["n-vt","n-ih",{d:1}],["n-hs","n-ih",{d:1}],["n-ih","n-exp2",{d:1}],
+  ["n-p3","n-dig"],["n-dig","n-is"],["n-is","n-trip"],["n-trip","n-b700"],
+  ["n-sat","n-dig",{d:1}],["n-dig","n-sim"],["n-sim","n-deliv"],["n-b700","n-deliv"],
+  ["n-tf","n-bld"],["n-bld","n-depl"],["n-wr","n-depl"],["n-depl","n-sec",{d:1}],
+  ["n-tf","n-cw",{d:1}],["n-vps","n-tail"],["n-dell","n-tail"],["n-tail","n-tun",{d:1}],
+  ["n-mer","n-dig",{d:1}],["n-qa","n-deliv",{d:1}],
+ ],
+},
+
+/* ------------------------------------------- L1 CLOUDFLARE */
+cloudflare:{
+ title:"CLOUDFLARE EDGE LAYER", depth:1, w:1500, h:900,
+ comments:[
+  {x:40,y:44,t:"read topology: cache-hit terminates in KV · cache-miss crosses to datastore",bright:1},
+  {x:40,y:860,t:"write topology: payload assertions → SigV4 headers → SQS handoff · zero native writes at edge"},
+ ],
+ frames:[
+  {x:34,y:60,w:640,h:360,t:"REQUEST PATH"},
+  {x:700,y:60,w:420,h:360,t:"BINDINGS"},
+  {x:34,y:450,w:1086,h:340,t:"FUNCTIONS TREE"},
+ ],
+ nodes:[
+  {id:"cf-in", x:50,y:84,w:110,l:"inbound req",s:["GET · POST","OPTIONS"],tag:"IO",
+   detail:{FLOW:["all traffic enters at edge PoP"]}},
+  {id:"cf-mw2",x:190,y:84,w:180,l:"_middleware.js",s:["global interception","4-stage chain"],drill:"cf-middleware",hub:1,
+   detail:{STAGES:["CORS preflight 204","X-Ray trace gen/propagate","Bearer→KV session attach","OWASP header injection"]}},
+  {id:"cf-spa",x:400,y:84,w:130,l:"public/ SPA",s:["index.html","css · js · assets"],
+   detail:{ASSETS:["static vectors + identity icons"]}},
+  {id:"cf-fn", x:400,y:170,w:130,l:"pages functions",s:["route match"],hub:1,
+   detail:{DISPATCH:["/api/* · /images/* · /message"]}},
+  {id:"cf-msg",x:560,y:170,w:96,l:"message.js",s:["hello world","legacy flat"],
+   detail:{CODE:["200 text/plain — legacy entry point"]}},
+  {id:"cf-img",x:190,y:170,w:180,l:"images/[...path].js",s:["r2 blob proxy","etag + immutable"],
+   detail:{FLOW:["env.IMAGES.get(key) → stream","Cache-Control max-age=31536000 immutable","404 JSON on miss"]}},
+  {id:"cf-csp",x:190,y:256,w:180,l:"edge shield",s:["CSP · nosniff","frame DENY · referrer"],
+   detail:{HEADERS:["CSP default-src self + js.stripe.com","X-Frame-Options DENY · nosniff","Referrer strict-origin-when-cross-origin"]}},
+  {id:"cf-trace",x:400,y:256,w:130,l:"trace id gen",s:["Root=1-{t}-{r12}"],
+   detail:{FORMAT:["epoch hex 8 + random hex 24","Sampled=1"]}},
+  {id:"cf-sess",x:50,y:256,w:110,l:"session read",s:["Bearer token"],
+   detail:{FLOW:["session:{token} → context.data.user"]}},
+  // bindings
+  {id:"cf-kv2",x:716,y:84,w:120,l:"KV",s:["SESSION_STORE"],wg:[["led",106,8,1]],
+   detail:{TOML:["binding SESSION_STORE","id: production namespace"]}},
+  {id:"cf-d12",x:852,y:84,w:120,l:"D1",s:["jupiter_embroidery_db"],
+   detail:{TABLES:["users · orders · inquiries · products"]}},
+  {id:"cf-r22",x:988,y:84,w:120,l:"R2",s:["images bucket"],
+   detail:{TOML:["binding IMAGES","jupiter-embroidery-images"]}},
+  {id:"cf-vars",x:716,y:170,w:256,l:"[vars]",s:["AWS_REGION us-east-1","AWS_SQS_URL …event-stream"],
+   detail:{TOML:["compat 2026-07-08","observability.traces = aws_xray"]}},
+  {id:"cf-secx",x:716,y:256,w:392,l:"dashboard secrets",s:["STRIPE_SECRET_KEY · STRIPE_WEBHOOK_SECRET","TURNSTILE_SECRET_KEY · AWS_ACCESS/SECRET"],wg:[["tgl",352,10],["tgl",368,10]],
+   detail:{RULE:["bound via Pages dashboard env only"]}},
+  {id:"cf-obs",x:988,y:170,w:120,l:"traces→xray",s:["provider bind"],
+   detail:{TOML:["[observability.traces] provider aws_xray"]}},
+  // functions tree
+  {id:"cf-api2",x:50,y:478,w:170,l:"functions/api ▸",s:["business controllers"],drill:"cf-api",hub:1,
+   detail:{TREE:["contact/ · stripe/ · auth/ · admin/"]}},
+  {id:"cf-ct",x:250,y:478,w:130,l:"api/contact",s:["turnstile gate"],
+   detail:{FLOW:["validate fields → verify token → SQS"]}},
+  {id:"cf-stc",x:250,y:552,w:130,l:"stripe/checkout",s:["session map"],
+   detail:{FLOW:["server-side checkout session creation"]}},
+  {id:"cf-stw",x:250,y:626,w:130,l:"stripe/webhook",s:["sig verify"],
+   detail:{FLOW:["immutable payments audit","verifies Stripe payloads"]}},
+  {id:"cf-au",x:410,y:478,w:130,l:"api/auth",s:["register · login","me"],
+   detail:{KV:["login → KV-backed session engines"]}},
+  {id:"cf-adm",x:410,y:585,w:130,l:"api/admin",s:["perimeter mw","5 controllers"],
+   detail:{MW:["high-clearance verification check"],ROUTES:["dashboard·orders·contacts·products·upload"]}},
+  {id:"cf-up",x:570,y:585,w:150,l:"admin/upload",s:["→ R2 pipeline"],
+   detail:{FLOW:["arbitrary design asset upload → IMAGES"]}},
+  {id:"cf-lib",x:570,y:478,w:150,l:"lib/aws.js",s:["SigV4 attach"],
+   detail:{CHAIN:["sha256 canonical req → scope string","HMAC chain → Authorization header"]}},
+  {id:"cf-sqs2",x:760,y:478,w:140,l:"→ AMAZON SQS",s:["signed handoff"],tag:"IO",
+   detail:{NOTE:["instant decoupled handoff — no edge writes"]}},
+  {id:"cf-turn",x:760,y:585,w:140,l:"turnstile verify",s:["challenge api"],
+   detail:{GATE:["form processing gateway token check"]}},
+  {id:"cf-note",x:940,y:478,w:160,l:"routing note",s:["reads=edge","writes=queue"],tag:"DOC",
+   detail:{DOCTRINE:["no write operations natively through the front-end layer"]}},
+ ],
+ cables:[
+  ["cf-in","cf-mw2"],["cf-mw2","cf-spa"],["cf-mw2","cf-fn"],["cf-fn","cf-msg"],["cf-fn","cf-img",{if:.7}],
+  ["cf-mw2","cf-sess"],["cf-sess","cf-kv2",{d:1}],["cf-mw2","cf-trace"],["cf-mw2","cf-csp"],
+  ["cf-img","cf-r22",{d:1}],["cf-fn","cf-api2"],
+  ["cf-api2","cf-ct"],["cf-api2","cf-stc"],["cf-api2","cf-stw"],["cf-api2","cf-au"],["cf-api2","cf-adm"],
+  ["cf-ct","cf-turn",{d:1}],["cf-ct","cf-lib"],["cf-stc","cf-lib"],["cf-lib","cf-sqs2"],
+  ["cf-au","cf-kv2",{d:1}],["cf-adm","cf-up"],["cf-up","cf-r22",{d:1}],["cf-au","cf-d12",{d:1}],
+  ["cf-trace","cf-obs",{d:1}],
+ ],
+},
+
+/* --------------------------------------- L2 CF MIDDLEWARE */
+"cf-middleware":{
+ title:"EDGE MIDDLEWARE — 4 STAGE CHAIN", depth:2, w:1200, h:760,
+ comments:[{x:40,y:44,t:"functions/_middleware.js — every request passes this chain before route dispatch",bright:1}],
+ nodes:[
+  {id:"mw-in",x:60,y:80,w:110,l:"onRequest",s:["ctx {request,next}"],tag:"IO",
+   detail:{SIG:["export async function onRequest(context)"]}},
+  {id:"mw-1",x:210,y:80,w:200,l:"① preflight intercept",s:["OPTIONS → 204","allow * methods+hdrs"],hub:1,
+   detail:{HEADERS:["Allow-Origin * · Max-Age 86400","Allow-Headers: Content-Type, Authorization, X-Amz-Trace-Id"]}},
+  {id:"mw-2",x:450,y:80,w:200,l:"② trace propagation",s:["X-Amz-Trace-Id","gen if absent"],hub:1,
+   detail:{GEN:["Root=1-{epochHex8}-{rand12B hex}","Sampled=1 · stored on context.data"]}},
+  {id:"mw-3",x:690,y:80,w:200,l:"③ session attach",s:["Bearer → KV lookup","context.data.user"],hub:1,
+   detail:{FLOW:["Authorization Bearer {t}","SESSION_STORE.get('session:'+t)","JSON.parse → user | null"]}},
+  {id:"mw-nx",x:930,y:80,w:130,l:"await next()",s:["route stack"],
+   detail:{FLOW:["executes remaining routing stacks"]}},
+  {id:"mw-4",x:450,y:220,w:340,l:"④ edge shield injection",s:["OWASP hardening on response"],hub:1,
+   detail:{SET:["Access-Control-Allow-Origin *","X-Frame-Options DENY","X-Content-Type-Options nosniff","Referrer-Policy strict-origin-when-cross-origin","CSP: self + js.stripe.com · img self data: https:","X-Amz-Trace-Id echo"]}},
+  {id:"mw-out",x:850,y:220,w:120,l:"response",s:["→ client"],tag:"IO",
+   detail:{NOTE:["headers set post-next()"]}},
+  {id:"mw-gen",x:210,y:220,w:200,l:"generateXRayTraceId()",s:["time hex + 12B random"],
+   detail:{CODE:["Date.now()/1000 → hex pad 8","crypto.getRandomValues(Uint8Array 12)"]}},
+  {id:"mw-kv",x:690,y:220,w:120,l:"KV",s:["SESSION_STORE"],wg:[["led",106,8,1]],
+   detail:{KEY:["session:{token}"]}},
+  {id:"mw-fail",x:60,y:220,w:110,l:"no session",s:["user = null"],
+   detail:{NOTE:["anonymous continues — admin mw rejects later"]}},
+  {id:"mw-scope",x:60,y:360,w:1000,l:"request lifecycle scope",s:[""],wg:[["scp",10,28,980]],
+   detail:{VIEW:["intercept → trace → session → dispatch → shield"]}},
+ ],
+ cables:[
+  ["mw-in","mw-1"],["mw-1","mw-2"],["mw-2","mw-3"],["mw-3","mw-nx"],["mw-nx","mw-4",{d:1}],["mw-4","mw-out"],
+  ["mw-2","mw-gen",{d:1}],["mw-3","mw-kv",{d:1}],["mw-3","mw-fail",{d:1}],
+  ["mw-1","mw-scope",{d:1}],["mw-4","mw-scope",{d:1}],
+ ],
+},
+
+/* --------------------------------------------- L2 CF API */
+"cf-api":{
+ title:"FUNCTIONS/API — BUSINESS CONTROLLERS", depth:2, w:1400, h:860,
+ frames:[
+  {x:34,y:60,w:420,h:300,t:"PUBLIC"},
+  {x:480,y:60,w:420,h:300,t:"PAYMENTS"},
+  {x:34,y:400,w:420,h:300,t:"IDENTITY"},
+  {x:480,y:400,w:640,h:300,t:"ADMIN PERIMETER"},
+ ],
+ comments:[{x:40,y:44,t:"event routers — payload assertion → SigV4 → SQS for all writes",bright:1}],
+ nodes:[
+  {id:"a-ct",x:50,y:84,w:180,l:"contact/index.js",s:["onRequestPost"],hub:1,
+   detail:{VALIDATE:["name·email·message·turnstileToken required","400 on defective input"],FLOW:["→ transmitToAwsSqs(PROCESS_CONTACT_FORM)"]}},
+  {id:"a-tv",x:260,y:84,w:170,l:"turnstile verify",s:["challenge check"],
+   detail:{GATE:["token verified before enqueue"]}},
+  {id:"a-ctq",x:50,y:180,w:180,l:"enqueue lead",s:["action:PROCESS_","CONTACT_FORM"],
+   detail:{PAYLOAD:["name·email·subject·message + traceId"]}},
+  {id:"a-msg",x:260,y:180,w:170,l:"message.js",s:["legacy flat route"],
+   detail:{CODE:["Hello, World! 200"]}},
+  {id:"a-chk",x:496,y:84,w:180,l:"stripe/checkout.js",s:["session mapping"],hub:1,
+   detail:{FLOW:["server-side transactional checkout sessions"]}},
+  {id:"a-wh",x:700,y:84,w:180,l:"stripe/webhook.js",s:["payload verify"],hub:1,
+   detail:{FLOW:["immutable payments auditing","verifies Stripe signatures"]}},
+  {id:"a-ord",x:496,y:180,w:180,l:"enqueue order",s:["COMMIT_SETTLED_","ORDER"],
+   detail:{PAYLOAD:["customerEmail·orderId·totalCents·timestamp"]}},
+  {id:"a-sq",x:700,y:180,w:180,l:"→ SQS signed",s:["SigV4 headers"],tag:"IO",
+   detail:{LIB:["lib/aws.js HMAC chain"]}},
+  {id:"a-reg",x:50,y:424,w:180,l:"auth/register.js",s:["identity create"],
+   detail:{ROLE:["identity registration endpoint"]}},
+  {id:"a-log",x:260,y:424,w:170,l:"auth/login.js",s:["KV session engine"],
+   detail:{ROLE:["active session mgmt backed by KV caches"]}},
+  {id:"a-me",x:50,y:520,w:180,l:"auth/me.js",s:["credential check"],
+   detail:{ROLE:["active security credentials validation"]}},
+  {id:"a-kv",x:260,y:520,w:170,l:"KV sessions",s:["SESSION_STORE"],wg:[["led",156,8,1]],
+   detail:{KEY:["session:{token} → user"]}},
+  {id:"a-amw",x:496,y:424,w:190,l:"admin/_middleware",s:["high-clearance","perimeter check"],hub:1,
+   detail:{GATE:["verifies elevated credentials before all admin routes"]}},
+  {id:"a-dash",x:710,y:424,w:130,l:"dashboard.js",s:["analytics agg"],
+   detail:{ROLE:["summary payload aggregator"]}},
+  {id:"a-ord2",x:855,y:424,w:120,l:"orders.js",s:["order log"],
+   detail:{ROLE:["internal order log state config"]}},
+  {id:"a-con",x:990,y:424,w:118,l:"contacts.js",s:["inquiry view"],
+   detail:{ROLE:["customer communication intake viewer"]}},
+  {id:"a-prd",x:710,y:520,w:130,l:"products.js",s:["catalog compile"],
+   detail:{ROLE:["digital asset catalog content compiler"]}},
+  {id:"a-upl",x:855,y:520,w:253,l:"upload/index.js",s:["→ R2 asset pipeline"],
+   detail:{ROLE:["arbitrary design asset upload targeting R2"]}},
+  {id:"a-r2",x:710,y:614,w:180,l:"R2 IMAGES",s:["bucket"],
+   detail:{BUCKET:["jupiter-embroidery-images"]}},
+ ],
+ cables:[
+  ["a-ct","a-tv",{d:1}],["a-ct","a-ctq"],["a-ctq","a-sq"],["a-chk","a-ord"],["a-wh","a-ord",{d:1}],["a-ord","a-sq"],
+  ["a-reg","a-kv",{d:1}],["a-log","a-kv"],["a-me","a-kv",{d:1}],
+  ["a-amw","a-dash"],["a-amw","a-ord2"],["a-amw","a-con"],["a-amw","a-prd"],["a-amw","a-upl"],
+  ["a-upl","a-r2"],
+ ],
+},
+
+/* --------------------------------------------------- L1 AWS */
+aws:{
+ title:"AWS TRANSACTIONAL CORE", depth:1, w:1500, h:900,
+ comments:[
+  {x:40,y:44,t:"async event-driven compute — SQS triggers λ · λ fans to ddb/ses/s3 · all under X-Ray",bright:1},
+ ],
+ frames:[
+  {x:34,y:60,w:520,h:340,t:"QUEUEING"},
+  {x:580,y:60,w:520,h:340,t:"COMPUTE"},
+  {x:34,y:430,w:1066,h:340,t:"STATE · MAIL · VAULT · NETWORK"},
+ ],
+ nodes:[
+  {id:"w-in",x:50,y:84,w:130,l:"edge writes",s:["SigV4 signed"],tag:"IO",
+   detail:{SOURCE:["Cloudflare functions → SQS"]}},
+  {id:"w-q",x:210,y:84,w:200,l:"event-stream queue",s:["delay 0 · 256KB max","retain 4d · poll 20s"],hub:1,
+   detail:{CFG:["visibility_timeout 30s","receive_wait 20s long-poll"]}},
+  {id:"w-rd",x:210,y:190,w:200,l:"redrive policy",s:["maxReceive 3"],
+   detail:{JSON:["deadLetterTargetArn → dlq.arn"]}},
+  {id:"w-dlq",x:440,y:190,w:96,l:"DLQ",s:["dead letters"],wg:[["led",82,8,0]],
+   detail:{NAME:["jupiter-embroidery-dead-letter-queue"]}},
+  {id:"w-esm",x:440,y:84,w:96,l:"ESM",s:["batch 5"],
+   detail:{MAP:["event_source_mapping sqs→λ · batch_size 5"]}},
+  {id:"w-lam",x:596,y:84,w:210,l:"λ order-processor",s:["nodejs20.x · 256MB","timeout 30 · tracing Active"],drill:"aws-lambda",hub:1,
+   detail:{ENV:["DYNAMODB_TABLE · AWS_REGION · SES_FROM_EMAIL"]}},
+  {id:"w-iamr",x:596,y:190,w:210,l:"iam exec role",s:["lambda-execution-profile"],
+   detail:{TRUST:["sts:AssumeRole ← lambda.amazonaws.com"]}},
+  {id:"w-iamp",x:836,y:84,w:240,l:"policy matrix",s:["ddb·sqs·s3·ses·logs·xray"],
+   detail:{ALLOW:["dynamodb Get/Put/Update/Query/Scan","sqs Receive/Delete/GetAttrs","s3 Put/Get on vault/*","ses SendEmail/SendRawEmail","logs Create*/Put · xray PutTrace/Telemetry"]}},
+  {id:"w-xr",x:836,y:190,w:240,l:"x-ray active",s:["segment + subsegments"],
+   detail:{RULE:["catch-all · fixed_rate .05 · reservoir 10"]}},
+  {id:"w-ddb",x:50,y:454,w:200,l:"dynamodb single-table",s:["PK/SK · GSI1 · TTL"],drill:"aws-ddb",hub:1,
+   detail:{MODE:["PAY_PER_REQUEST · projection ALL"]}},
+  {id:"w-ses",x:280,y:454,w:170,l:"SES",s:["confirmation mail"],
+   detail:{FROM:["admin@jupiterembroideryco.com"],SUBJ:["Jupiter Embroidery Co. Confirmation Directive"]}},
+  {id:"w-s3",x:480,y:454,w:170,l:"s3 archival vault",s:["force_destroy false"],
+   detail:{LIFECYCLE:["archive_old_images: 30d → GLACIER"]}},
+  {id:"w-ssm",x:680,y:454,w:180,l:"ssm SecureString",s:["jwt_secret","stripe_secret"],
+   detail:{LIFECYCLE:["ignore_changes[value] — rotate via console"]}},
+  {id:"w-vpc",x:890,y:454,w:186,l:"vpc core",s:["10.0.0.0/16 dns on"],
+   detail:{SUBNET:["10.0.1.0/24 @ {region}a"]}},
+  {id:"w-sg",x:890,y:560,w:186,l:"sg tunnel-perimeter",s:["zero ingress","egress 443/tcp only"],
+   detail:{DESC:["restricts to outbound HTTPS layers"]}},
+  {id:"w-cw",x:50,y:560,w:200,l:"cloudwatch grid",s:["2 metric widgets"],
+   detail:{W1:["λ Invocations+Errors · Sum 300s"],W2:["SQS visible msgs · Avg 60s"]}},
+  {id:"w-out",x:280,y:560,w:170,l:"tf outputs",s:["queue url · table id","bucket id"],
+   detail:{USE:["paste into wrangler.toml bindings"]}},
+  {id:"w-ttl",x:480,y:560,w:170,l:"ttl reaper",s:["expires_at"],
+   detail:{ATTR:["ttl attribute expires_at enabled"]}},
+  {id:"w-meter",x:680,y:560,w:180,l:"ingress load",s:[""],wg:[["mtr",8,30,0.32],["mtr",8,40,0.61]],
+   detail:{VIEW:["ApproximateNumberOfMessagesVisible"]}},
+ ],
+ cables:[
+  ["w-in","w-q"],["w-q","w-rd",{d:1}],["w-rd","w-dlq"],["w-q","w-esm"],["w-esm","w-lam"],
+  ["w-iamr","w-lam",{d:1}],["w-iamr","w-iamp",{d:1}],["w-lam","w-xr",{d:1}],
+  ["w-lam","w-ddb"],["w-lam","w-ses"],["w-lam","w-s3"],["w-ssm","w-lam",{d:1}],
+  ["w-vpc","w-sg",{d:1}],["w-ddb","w-ttl",{d:1}],["w-q","w-cw",{d:1}],["w-lam","w-cw",{d:1}],
+  ["w-cw","w-meter",{d:1}],["w-ddb","w-out",{d:1}],
+ ],
+},
+
+/* -------------------------------------------- L2 AWS LAMBDA */
+"aws-lambda":{
+ title:"λ ORDER-PROCESSOR — HANDLER GRAPH", depth:2, w:1300, h:800,
+ comments:[{x:40,y:44,t:"lambda/order-processor/index.js — per-record subsegment, TraceId annotation, throw re-drives",bright:1}],
+ nodes:[
+  {id:"l-ev",x:50,y:84,w:150,l:"event.Records[]",s:["sqs batch ≤5"],tag:"IO",
+   detail:{LOOP:["for (record of event.Records)"]}},
+  {id:"l-seg",x:230,y:84,w:190,l:"xray segment",s:["getSegment()","subsegment/record"],hub:1,
+   detail:{SUB:["'|| Process Backend Pipeline Event ||'","addAnnotation('TraceId', traceId)"]}},
+  {id:"l-par",x:450,y:84,w:170,l:"JSON.parse(body)",s:["action switch"],
+   detail:{FIELDS:["action · payload · traceId"]}},
+  {id:"l-a1",x:230,y:210,w:230,l:"COMMIT_SETTLED_ORDER",s:["order persist + notify"],hub:1,
+   detail:{ITEM:["PK USER#{email} · SK ORDER#{id}","TotalVolumeCents · FulfillmentState pending","CreationTimestamp"]}},
+  {id:"l-a2",x:500,y:210,w:230,l:"PROCESS_CONTACT_FORM",s:["lead persist"],hub:1,
+   detail:{ITEM:["PK LEAD#INCOMING","SK INQUIRY#{ts}#{uuid8}","SenderName·Email·Subject·Message"]}},
+  {id:"l-put1",x:180,y:330,w:150,l:"ddb PutCommand",s:["order item"],
+   detail:{CLIENT:["DynamoDBDocumentClient + XRay capture"]}},
+  {id:"l-ses",x:350,y:330,w:170,l:"ses SendEmail",s:["confirmation"],
+   detail:{MSG:["'Transaction Settled Successfully. Registration ID: {orderId}'"]}},
+  {id:"l-put2",x:560,y:330,w:150,l:"ddb PutCommand",s:["lead item"],
+   detail:{CLIENT:["captured client — traced write"]}},
+  {id:"l-ok",x:350,y:440,w:170,l:"subsegment.close()",s:["→ {success:true}"],
+   detail:{RET:["return { success: true }"]}},
+  {id:"l-err",x:560,y:440,w:170,l:"catch → addError",s:["close · throw"],
+   detail:{EFFECT:["throw re-queues → redrive ×3 → DLQ"]}},
+  {id:"l-deps",x:790,y:84,w:210,l:"deps",s:["@aws-sdk v3.500","xray-sdk-core 3.5.3"],
+   detail:{PKG:["client-dynamodb · client-ses · client-sqs · lib-dynamodb"]}},
+  {id:"l-env",x:790,y:190,w:210,l:"env",s:["DYNAMODB_TABLE","AWS_REGION · SES_FROM"],
+   detail:{SRC:["terraform lambda environment block"]}},
+  {id:"l-zip",x:790,y:296,w:210,l:"build-lambdas.sh",s:["npm ci prod → zip"],
+   detail:{OUT:["order-processor.zip: index.js + node_modules + package.json"]}},
+  {id:"l-scope",x:50,y:560,w:950,l:"invocation scope",s:[""],wg:[["scp",10,28,930]],
+   detail:{VIEW:["segment → subsegment[record] → aws sdk spans"]}},
+ ],
+ cables:[
+  ["l-ev","l-seg"],["l-seg","l-par"],["l-par","l-a1"],["l-par","l-a2"],
+  ["l-a1","l-put1"],["l-a1","l-ses"],["l-a2","l-put2"],
+  ["l-put1","l-ok"],["l-ses","l-ok"],["l-put2","l-ok"],["l-a1","l-err",{d:1}],["l-a2","l-err",{d:1}],
+  ["l-deps","l-par",{d:1}],["l-env","l-a1",{d:1}],["l-zip","l-deps",{d:1}],
+  ["l-seg","l-scope",{d:1}],["l-ok","l-scope",{d:1}],
+ ],
+},
+
+/* ----------------------------------------------- L2 DDB */
+"aws-ddb":{
+ title:"DYNAMODB SINGLE-TABLE MODEL", depth:2, w:1200, h:700,
+ comments:[{x:40,y:44,t:"one table, entity-prefixed keys — GSI1 projection ALL · TTL reaper on expires_at",bright:1}],
+ nodes:[
+  {id:"d-t",x:60,y:84,w:220,l:"jupiter-embroidery-single-table",s:["PAY_PER_REQUEST"],hub:1,
+   detail:{TAGS:["Environment production · Project jupiter-embroidery"]}},
+  {id:"d-pk",x:320,y:84,w:150,l:"hash PK (S)",s:["entity prefix"],
+   detail:{EX:["USER#{email} · LEAD#INCOMING"]}},
+  {id:"d-sk",x:490,y:84,w:150,l:"range SK (S)",s:["item prefix"],
+   detail:{EX:["ORDER#{orderId} · INQUIRY#{ts}#{uuid8}"]}},
+  {id:"d-gsi",x:320,y:190,w:320,l:"GSI1",s:["GSI1PK / GSI1SK · projection ALL"],
+   detail:{USE:["secondary access patterns"]}},
+  {id:"d-ttl",x:680,y:84,w:150,l:"TTL",s:["expires_at"],
+   detail:{ATTR:["enabled — session/ephemeral expiry"]}},
+  {id:"d-u",x:60,y:300,w:250,l:"USER#{email}",s:["ORDER#{id}","TotalVolumeCents · state"],
+   detail:{FIELDS:["FulfillmentState pending · CreationTimestamp"]}},
+  {id:"d-l",x:340,y:300,w:250,l:"LEAD#INCOMING",s:["INQUIRY#{ts}#{u8}","sender · subject · msg"],
+   detail:{FIELDS:["SenderName · SenderEmail · SubjectText · MessageText"]}},
+  {id:"d-d1",x:620,y:300,w:250,l:"D1 fallback mirror",s:["schema.sql"],
+   detail:{TABLES:["users(id,email,pass,admin) · orders(stripe ids,totals,status)","inquiries(name,email,msg) · products(title,price_cents,asset_key)"]}},
+ ],
+ cables:[
+  ["d-t","d-pk"],["d-t","d-sk"],["d-pk","d-gsi",{d:1}],["d-sk","d-gsi",{d:1}],["d-t","d-ttl",{d:1}],
+  ["d-pk","d-u"],["d-pk","d-l"],["d-t","d-d1",{d:1}],
+ ],
+},
+
+/* ------------------------------------------- L1 TERRAFORM */
+terraform:{
+ title:"INFRASTRUCTURE AS CODE — TERRAFORM", depth:1, w:1400, h:820,
+ comments:[
+  {x:40,y:44,t:"terraform ≥1.5 · aws ~>5.0 · cloudflare ~>4.0 — apply then paste outputs into wrangler.toml",bright:1},
+  {x:40,y:780,t:"deploy: build-lambdas.sh → terraform apply → dashboard secrets → wrangler pages deploy"},
+ ],
+ nodes:[
+  {id:"t-pr",x:60,y:84,w:170,l:"providers.tf",s:["aws + cloudflare"],hub:1,
+   detail:{REQ:["required_version >= 1.5.0","hashicorp/aws ~>5.0 · cloudflare ~>4.0"]}},
+  {id:"t-va",x:260,y:84,w:170,l:"variables.tf",s:["region · tokens","project_name"],
+   detail:{VARS:["aws_region us-east-1 · project jupiter-embroidery","cloudflare token/account (sensitive)","admin_email default"]}},
+  {id:"t-dd",x:60,y:200,w:170,l:"dynamodb.tf",s:["single table"],
+   detail:{RES:["aws_dynamodb_table.main + GSI1 + TTL"]}},
+  {id:"t-sq",x:260,y:200,w:170,l:"sqs.tf",s:["events + dlq"],
+   detail:{RES:["events queue + redrive ×3 → dlq"]}},
+  {id:"t-s3",x:460,y:200,w:170,l:"s3.tf",s:["vault + lifecycle"],
+   detail:{RES:["backup bucket · 30d → GLACIER rule"]}},
+  {id:"t-la",x:60,y:316,w:170,l:"lambda.tf",s:["role·policy·fn·esm"],
+   detail:{RES:["exec role · policy matrix · order_processor fn","tracing Active · esm batch 5"]}},
+  {id:"t-ss",x:260,y:316,w:170,l:"ssm.tf",s:["2 SecureStrings"],
+   detail:{RES:["jwt_secret · stripe_secret — ignore value drift"]}},
+  {id:"t-vp",x:460,y:316,w:170,l:"vpc.tf",s:["vpc·subnet·sg"],
+   detail:{RES:["core /16 · isolated /24 · egress-443 sg"]}},
+  {id:"t-cw",x:60,y:432,w:170,l:"cloudwatch.tf",s:["metrics dashboard"],
+   detail:{RES:["operational_grid: λ + sqs widgets"]}},
+  {id:"t-xr",x:260,y:432,w:170,l:"xray.tf",s:["sampling rule"],
+   detail:{RES:["catch-all-traces p10 · rate .05 · reservoir 10"]}},
+  {id:"t-ou",x:460,y:432,w:170,l:"outputs.tf",s:["queue url · ids"],
+   detail:{OUT:["sqs_queue_url · dynamodb_table_id · s3_bucket_identifier"]}},
+  {id:"t-plan",x:700,y:84,w:200,l:"terraform apply",s:["-var tokens"],hub:1,
+   detail:{CMD:["terraform init && terraform apply","-var cloudflare_api_token/-account_id"]}},
+  {id:"t-wr",x:700,y:200,w:200,l:"wrangler.toml",s:["binding update"],
+   detail:{STEP:["paste output ids into bindings"]}},
+  {id:"t-secb",x:700,y:316,w:200,l:"pages secrets",s:["5 env tokens"],wg:[["tgl",166,10],["tgl",182,10]],
+   detail:{ENV:["STRIPE keys · TURNSTILE key · AWS key pair"]}},
+  {id:"t-dep",x:700,y:432,w:200,l:"wrangler deploy",s:["pages → prod"],
+   detail:{CMD:["npx wrangler pages deploy public --project-name=jupiterembroideryco"]}},
+  {id:"t-bl",x:940,y:84,w:200,l:"build-lambdas.sh",s:["zip archive step"],
+   detail:{CMD:["npm install --production · zip -r order-processor.zip"]}},
+  {id:"t-state",x:940,y:200,w:200,l:"state graph",s:[""],wg:[["scp",10,28,180]],
+   detail:{VIEW:["resource dependency dag"]}},
+ ],
+ cables:[
+  ["t-pr","t-va"],["t-va","t-dd"],["t-va","t-sq"],["t-va","t-s3"],["t-va","t-la"],["t-va","t-ss"],["t-va","t-vp"],
+  ["t-dd","t-la",{d:1}],["t-sq","t-la",{d:1}],["t-s3","t-la",{d:1}],
+  ["t-la","t-cw",{d:1}],["t-la","t-xr",{d:1}],["t-dd","t-ou",{d:1}],["t-sq","t-ou",{d:1}],["t-s3","t-ou",{d:1}],
+  ["t-bl","t-plan"],["t-pr","t-plan"],["t-plan","t-wr"],["t-ou","t-wr",{d:1}],["t-wr","t-secb"],["t-secb","t-dep"],
+  ["t-plan","t-state",{d:1}],
+ ],
+},
+
+/* ---------------------------------------------- L1 AGENTS */
+agents:(()=>{
+ // ring layout around Maya
+ const nodes=[], cables=[];
+ nodes.push({id:"g-maya",x:640,y:400,w:170,l:"MAYA",s:["ORCHESTRATOR","canonical job record"],drill:"agent:Maya",hub:1,
+  detail:{MISSION:[AG.Maya.m],AUTH:[AG.Maya.auth]}});
+ const ring=AGENTS.filter(a=>a.n!=="Maya");
+ const cx=725, cy=430, rx=560, ry=310;
+ ring.forEach((a,i)=>{
+   const ang=-Math.PI/2 + i*(2*Math.PI/ring.length);
+   const x=Math.round(cx+rx*Math.cos(ang)-70), y=Math.round(cy+ry*Math.sin(ang)-20);
+   nodes.push({id:"g-"+a.n,x,y,w:140,l:a.n.toUpperCase(),s:[a.r.toLowerCase()],drill:"agent:"+a.n,
+     detail:{MISSION:[a.m]}});
+ });
+ AG.Maya.routes.forEach(t=>cables.push(["g-maya","g-"+t]));
+ // pipeline chain highlights
+ [["g-Madeline","g-Morgan"],["g-Mila","g-Melanie"],["g-Melanie","g-Mackenzie"],["g-Mckenna","g-Meredith"],
+  ["g-Meredith","g-Margaret"],["g-Margaret","g-Miranda"],["g-Marina","g-Maeve"],["g-Michaela","g-Maeve"],
+  ["g-Miriam","g-Mallory"]].forEach(c=>cables.push([c[0],c[1],{d:1}]));
+ // bus
+ nodes.push({id:"g-bus",x:565,y:806,w:320,l:"slack bus — #all-agent-network",s:["C0BAC73F4RY · mirrored via Mallory"],
+  detail:{RULES:["hashtag discipline · no-secrets sanitation","state publication for every transition"]}});
+ cables.push(["g-Mallory","g-bus"]);cables.push(["g-maya","g-bus",{d:1}]);
+ nodes.push({id:"g-note",x:60,y:60,w:230,l:"chain of responsibility",s:["raster→mask→SVG→plan→","stitch→QA→compat→deliver"],tag:"DOC",
+  detail:{RULE:["no method, rule, risk, or check left orphaned outside an accountable agent"]}});
+ return {title:"AGENT NETWORK — NAMED ROSTER (18×M)",depth:1,w:1460,h:900,
+  comments:[{x:60,y:48,t:"every agent shares one operating structure: responsibilities · handoffs · quality gates · approvals · escalation · knowledge capture",bright:1}],
+  nodes,cables};
+})(),
+
+/* ----------------------------------------------- L1 I-HIVE */
+ihive:{
+ title:"I-HIVE — INTEGRATED HEAVILY-ITERATED VECTORIZATION ENGINE", depth:1, w:1400, h:820,
+ comments:[
+  {x:40,y:44,t:"recursive improvement loop — every pass reads prior run artifacts and makes one focused improvement",bright:1},
+  {x:40,y:780,t:"observable evidence required: raw command output or direct source quote backs every claim"},
+ ],
+ frames:[
+  {x:34,y:64,w:400,h:250,t:"PHASE 1 — VECTOR BASE CONVERGENCE"},
+  {x:460,y:64,w:400,h:250,t:"PHASE 2 — STRUCTURAL VERIFICATION"},
+  {x:886,y:64,w:400,h:250,t:"PHASE 3 — HEADLESS PRODUCTION OUTPUT"},
+ ],
+ nodes:[
+  {id:"h-src",x:50,y:92,w:120,l:"raster in",s:["customer png"],tag:"IO",
+   detail:{CANARY:["cmbp_logo.png regression case"]}},
+  {id:"h-vt",x:190,y:92,w:120,l:"vtracer",s:["param sweep"],
+   detail:{ROLE:["vectorization candidate engine"]}},
+  {id:"h-cand",x:190,y:180,w:120,l:"candidates",s:["ranked matrix"],
+   detail:{PHIL:["candidate evaluation philosophy — score, don't assume"]}},
+  {id:"h-conv",x:330,y:136,w:90,l:"converge",s:["best base"],
+   detail:{OUT:["stable vector base → phase 2"]}},
+  {id:"h-val",x:476,y:92,w:150,l:"structural checks",s:["topology · geometry"],
+   detail:{CHECKS:["structural · geometry · visual validation"]}},
+  {id:"h-sc",x:646,y:92,w:150,l:"honest_scorer.py",s:["kmeans + SSIM","hard caps"],
+   detail:{HIST:["replaced fraudulent scorer returning false highs on all-black SVGs"]}},
+  {id:"h-gate",x:560,y:196,w:150,l:"pass gate",s:["score ≥ threshold"],wg:[["mtr",126,8,0.78]],
+   detail:{FAIL:["fail → next pass with one focused improvement"]}},
+  {id:"h-head",x:902,y:92,w:160,l:"headless export",s:["inkscape cli"],
+   detail:{MODE:["no-GUI production output"]}},
+  {id:"h-out",x:1090,y:92,w:160,l:"artifacts → R2",s:["svg + report + score"],
+   detail:{LOOP:["read by next I-HIVE pass"]}},
+  {id:"h-flow",x:60,y:380,w:240,l:"mila workflow ▸ 10 steps",s:["operating contract §5"],drill:"ihive-flow",hub:1,
+   detail:{STEPS:["intake→classify→retrieve→strategy→preprocess→vector→cleanup→validate→score→report"]}},
+  {id:"h-loop",x:340,y:380,w:220,l:"improvement loop",s:["read artifacts →","1 focused change"],hub:1,
+   detail:{CONTRACT:["autonomous improvement loop §11","failure analysis §12 · learning §13"]}},
+  {id:"h-know",x:600,y:380,w:220,l:"knowledge library",s:["24-folder canon","mandatory retrieval"],
+   detail:{RISK:["static library risk — Michaela refresh duty"]}},
+  {id:"h-budget",x:860,y:380,w:200,l:"token governor",s:["$2/wk hard ceiling"],wg:[["mtr",8,44,0.4]],
+   detail:{SRC:["MILA_HANDOFF.md standing directive"]}},
+  {id:"h-risk",x:60,y:500,w:1000,l:"engineering risks register",s:["large heredoc risk · static knowledge risk · slack notification-only risk"],
+   detail:{MITIG:["chunked commands · scheduled refresh · state persisted outside Slack"]}},
+  {id:"h-status",x:60,y:600,w:240,l:"job status mgmt",s:["state machine"],
+   detail:{STATES:["queued→processing→scored→passed/failed→exported"]}},
+  {id:"h-inkval",x:340,y:600,w:240,l:"ink/stitch validation",s:["pre-handoff gate"],
+   detail:{GATE:["SVG must survive Ink/Stitch load before downstream"]}},
+  {id:"h-down",x:620,y:600,w:240,l:"→ downstream pipeline",s:["digitization handoff"],
+   detail:{NEXT:["Mckenna plan → Meredith export"]}},
+ ],
+ cables:[
+  ["h-src","h-vt"],["h-vt","h-cand"],["h-cand","h-conv"],["h-vt","h-conv"],
+  ["h-conv","h-val"],["h-val","h-sc"],["h-sc","h-gate"],["h-val","h-gate",{d:1}],
+  ["h-gate","h-head"],["h-head","h-out"],
+  ["h-out","h-loop",{d:1}],["h-loop","h-flow",{d:1}],["h-know","h-flow",{d:1}],["h-budget","h-loop",{d:1}],
+  ["h-flow","h-status",{d:1}],["h-status","h-inkval"],["h-inkval","h-down"],["h-gate","h-risk",{d:1}],
+ ],
+},
+
+/* ------------------------------------------ L2 IHIVE FLOW */
+"ihive-flow":{
+ title:"MILA OPERATING CONTRACT — 10-STEP TRANSFORMATION WORKFLOW", depth:2, w:1560, h:760,
+ comments:[{x:40,y:44,t:"raster pixel image → SVG vector artwork · hard rules: accuracy · nodes · pixels · corners · curves · shapes · svg · identity",bright:1}],
+ nodes:(()=>{
+  const steps=[
+   ["s1","① intake",["file inspection"],{DO:["dimensions · color count · alpha check"]}],
+   ["s2","② classify",["artwork class"],{DO:["logo / sketch / photo / lineart classification"]}],
+   ["s3","③ retrieve",["knowledge pull"],{DO:["mandatory bundle + filtered objects §2"]}],
+   ["s4","④ strategy ▸",["5 approaches"],{DO:["approach selected before any trace"]},"ihive-strategy"],
+   ["s5","⑤ preprocess",["raster prep"],{DO:["background · noise · quantization"]}],
+   ["s6","⑥ vector gen",["initial trace"],{DO:["vtracer parameterized run"]}],
+   ["s7","⑦ cleanup",["node·shape·bezier"],{DO:["node optimization · shape cleanup","bezier optimization · topology validation","visual cleanup"]}],
+   ["s8","⑧ validate",["struct·geo·visual"],{DO:["structural · geometry · visual validation"]}],
+   ["s9","⑨ score",["quality gate"],{DO:["honest scoring — no self-graded inflation"]}],
+   ["s10","⑩ report",["final report"],{DO:["completion standard §15 · success criteria §16"]}],
+  ];
+  const nodes=steps.map((s,i)=>({
+    id:"f-"+s[0], x:60+(i%5)*300, y:100+Math.floor(i/5)*190, w:240,
+    l:s[1], s:s[2], detail:s[3], drill:s[4], hub:!!s[4]
+  }));
+  nodes.push({id:"f-rules",x:60,y:480,w:1440,l:"hard rules bus",s:["accuracy · node economy · pixel fidelity · corner integrity · curve smoothness · shape closure · svg validity · visual identity"],
+   detail:{PRIORITY:["decision hierarchy §10: accuracy > identity > economy > style"]}});
+  nodes.push({id:"f-emb",x:60,y:580,w:700,l:"embroidery-specific requirements §7",s:["flat color · closed paths · stitchable geometry · knockout whites"],
+   detail:{REQ:["output must survive Ink/Stitch object classification"]}});
+  nodes.push({id:"f-log",x:800,y:580,w:700,l:"logging requirements §14",s:["every decision traced · every claim evidence-backed"],
+   detail:{REQ:["raw command output or direct source quote"]}});
+  return nodes;
+ })(),
+ cables:(()=>{
+  const c=[];
+  for(let i=1;i<10;i++) c.push(["f-s"+i,"f-s"+(i+1)]);
+  ["f-s4","f-s7","f-s8","f-s9"].forEach(n=>c.push([n,"f-rules",{d:1}]));
+  c.push(["f-rules","f-emb",{d:1}]);c.push(["f-rules","f-log",{d:1}]);
+  return c;
+ })(),
+},
+
+/* -------------------------------------- L3 IHIVE STRATEGY */
+"ihive-strategy":{
+ title:"STEP ④ — TRANSFORMATION STRATEGY SELECTOR", depth:3, w:1200, h:640,
+ comments:[{x:40,y:44,t:"one approach selected per job before any trace runs — selection recorded in decision trace",bright:1}],
+ nodes:[
+  {id:"st-in",x:60,y:90,w:140,l:"classified art",s:["from step ②"],tag:"IO",detail:{IN:["class + complexity"]}},
+  {id:"st-sel",x:240,y:90,w:180,l:"strategy selector",s:["decision node"],hub:1,
+   detail:{RULE:["knowledge-informed choice, logged with rationale"]}},
+  {id:"st-1",x:480,y:70,w:200,l:"edge / contour trace",s:["clean lineart"],detail:{FIT:["high-contrast bounded shapes"]}},
+  {id:"st-2",x:480,y:150,w:200,l:"manual reconstruction",s:["rebuild geometry"],detail:{FIT:["degraded or noisy source"]}},
+  {id:"st-3",x:480,y:230,w:200,l:"hybrid trace + cleanup",s:["trace then repair"],detail:{FIT:["mixed-quality raster"]}},
+  {id:"st-4",x:480,y:310,w:200,l:"stylized interpretation",s:["intent-preserving"],detail:{FIT:["hand-drawn customer art"]}},
+  {id:"st-5",x:480,y:390,w:200,l:"reject literal trace",s:["escalate"],detail:{FIT:["source unusable — route to Morgan/customer"]}},
+  {id:"st-out",x:740,y:230,w:180,l:"selected strategy",s:["→ step ⑤"],detail:{TRACE:["decision + rationale logged"]}},
+ ],
+ cables:[
+  ["st-in","st-sel"],["st-sel","st-1"],["st-sel","st-2"],["st-sel","st-3"],["st-sel","st-4"],["st-sel","st-5"],
+  ["st-1","st-out"],["st-2","st-out"],["st-3","st-out"],["st-4","st-out"],["st-5","st-out",{d:1}],
+ ],
+},
+
+/* ----------------------------------------------- L1 INTAKE */
+intake:{
+ title:"CUSTOMER ARTWORK INTAKE & INTELLIGENT ANALYSIS", depth:1, w:1400, h:800,
+ comments:[{x:40,y:44,t:"intake sources → extraction → identification → review → complexity → routing — customer source raster preserved as truth",bright:1}],
+ nodes:[
+  {id:"i-em",x:50,y:90,w:150,l:"email",s:["cloudflare email"],tag:"IO",detail:{ROUTE:["→ POST /cloudflare-email"]}},
+  {id:"i-sl",x:50,y:170,w:150,l:"slack DM",s:["direct intake"],tag:"IO",detail:{OWNER:["Maya / Madeline"]}},
+  {id:"i-fm",x:50,y:250,w:150,l:"order forms",s:["web storefront"],tag:"IO",detail:{SRC:["cf pages contact/checkout"]}},
+  {id:"i-wh",x:240,y:170,w:180,l:"POST /cloudflare-email",s:["webhook · via tunnel"],hub:1,
+   detail:{HOST:["VPS behind Cloudflare Tunnel"]}},
+  {id:"i-e2j",x:460,y:170,w:200,l:"cloudflare_email_to_job.py",s:["job creation"],
+   detail:{OUT:["canonical job record created"]}},
+  {id:"i-ext",x:700,y:90,w:180,l:"attachment extraction",s:["raster pull"],
+   detail:{DO:["extract + preserve source-of-truth raster"]}},
+  {id:"i-id",x:700,y:170,w:180,l:"artwork identification",s:["what is it"],
+   detail:{DO:["identify subject · medium · intent"]}},
+  {id:"i-rev",x:700,y:250,w:180,l:"artwork review",s:["quality read"],
+   detail:{DO:["usability review before pipeline entry"]}},
+  {id:"i-cx",x:920,y:130,w:180,l:"complexity analysis",s:["score"],wg:[["mtr",156,8,0.55]],
+   detail:{OUT:["complexity drives quote + strategy"]}},
+  {id:"i-mi",x:920,y:210,w:180,l:"missing-info detect",s:["gap flags"],
+   detail:{OUT:["ambiguity → Morgan · quote gaps → Madeline"]}},
+  {id:"i-comm",x:920,y:290,w:180,l:"customer comms",s:["clarification loop"],
+   detail:{AUTH:["Maya: customer contact needs no human approval"]}},
+  {id:"i-kn",x:460,y:290,w:200,l:"knowledge retrieval",s:["during intake"],
+   detail:{RULE:["retrieve before deciding"]}},
+  {id:"i-art",x:460,y:400,w:280,l:"canonical intake artifacts",s:["job record + preserved raster + spec"],
+   detail:{FIELDS:["image·garment·placement·size·threads·deadline","quote/SVG/stitch/QA/compat states"]}},
+  {id:"i-rt",x:780,y:400,w:280,l:"autonomous routing → MAYA",s:["no human-in-the-loop"],hub:1,drill:"agents",
+   detail:{ROUTES:["Mila vector · Melanie optimize · Mckenna plan","Meredith export · Mackenzie/Margaret QA"]}},
+  {id:"i-japi",x:240,y:290,w:180,l:"GET /api/jobs",s:["job API"],
+   detail:{VIEW:["job list + state for oversight"]}},
+  {id:"i-ver",x:50,y:500,w:1010,l:"intake verification requirements",s:["every intake claim backed by observable evidence · final report standard applies"],
+   detail:{STD:["verification §Intake · final report §Intake"]}},
+ ],
+ cables:[
+  ["i-em","i-wh"],["i-sl","i-wh",{d:1}],["i-fm","i-wh",{d:1}],["i-wh","i-e2j"],["i-e2j","i-ext"],["i-e2j","i-id"],["i-e2j","i-rev"],
+  ["i-ext","i-cx"],["i-id","i-cx"],["i-id","i-mi"],["i-rev","i-mi"],["i-mi","i-comm",{d:1}],
+  ["i-kn","i-id",{d:1}],["i-e2j","i-japi",{d:1}],
+  ["i-cx","i-rt"],["i-ext","i-art"],["i-art","i-rt"],["i-rt","i-ver",{d:1}],["i-comm","i-rt",{d:1}],
+ ],
+},
+
+/* ---------------------------------------- L1 DIGITIZATION */
+digitization:{
+ title:"EMBROIDERY DIGITIZATION & STITCH PLAN GENERATION", depth:1, w:1560, h:820,
+ comments:[
+  {x:40,y:44,t:"approved SVG → stitch plan → simulation → QA → EXP/INF/BMP export → B700 compatibility → delivery",bright:1},
+  {x:40,y:780,t:"domain physics: satin columns · tatami fill · pull compensation · underlay · node economy · compound paths"},
+ ],
+ nodes:(()=>{
+  const chain=[
+   ["z1","svg validation",["struct integrity"],{DO:["paths closed · no raster remnants · layer order"]}],
+   ["z2","suitability",["embroiderability"],{DO:["feature size vs thread · fabric interaction"]}],
+   ["z3","classification",["object types"],{DO:["satin candidates vs fill regions vs runs"]}],
+   ["z4","stitch strategy",["per-object plan"],{DO:["satin column · tatami fill · running stitch"]}],
+   ["z5","underlay plan",["stabilize"],{DO:["edge-walk · zigzag · mesh underlay selection"]}],
+   ["z6","pull comp",["distortion offset"],{DO:["compensate fabric pull per stitch direction"]}],
+   ["z7","optimization",["path economy"],{DO:["trim jumps · order objects · node economy"]}],
+   ["z8","simulation",["virtual sew"],{DO:["stitch-out preview render"]}],
+   ["z9","density analysis",["thread load"],{DO:["density map — no over/under-fill"]}],
+   ["z10","production QA",["margaret gate"],{DO:["defect detection · compliance check"]}],
+  ];
+  const nodes=chain.map((s,i)=>({
+    id:"z-"+s[0],x:60+(i%5)*296,y:96+Math.floor(i/5)*180,w:240,l:s[1],s:s[2],detail:s[3],
+    hub:i===3||i===9
+  }));
+  nodes.push({id:"z-exp",x:60,y:470,w:300,l:"production export",s:["EXP + INF + BMP triplet"],hub:1,
+   detail:{OUT:["Bernina USB file triplet — all three or fail"]}});
+  nodes.push({id:"z-mir",x:400,y:470,w:300,l:"MIRANDA — B700 gate",s:["format · hoop · machine limits"],drill:"agent:Miranda",
+   detail:{CHECK:["EXP validity · hoop bounds · machine constraints"]}});
+  nodes.push({id:"z-del",x:740,y:470,w:300,l:"customer delivery prep",s:["maya approval packet"],
+   detail:{SLACK:["approval msg: what checked · how · why passed · files"]}});
+  nodes.push({id:"z-learn",x:1080,y:470,w:300,l:"historical learning",s:["marina + maeve capture"],
+   detail:{DO:["methodology → knowledge base · regression framework"]}});
+  nodes.push({id:"z-ink",x:60,y:590,w:460,l:"ink/stitch invocation matrix",s:["VPS: extension @ ~/.config/inkscape/extensions/inkstitch","Dell: python /opt/inkstitch/inkstitch.py"],
+   detail:{NOTE:["invocation differs per machine — both headless"]}});
+  nodes.push({id:"z-sim2",x:560,y:590,w:220,l:"density scope",s:[""],wg:[["scp",10,30,200]],
+   detail:{VIEW:["per-region thread density trace"]}});
+  return nodes;
+ })(),
+ cables:(()=>{
+  const c=[];for(let i=1;i<10;i++)c.push(["z-z"+i,"z-z"+(i+1)]);
+  c.push(["z-z10","z-exp"]);c.push(["z-exp","z-mir"]);c.push(["z-mir","z-del"]);c.push(["z-del","z-learn",{d:1}]);
+  c.push(["z-ink","z-z4",{d:1}]);c.push(["z-ink","z-exp",{d:1}]);c.push(["z-z9","z-sim2",{d:1}]);
+  return c;
+ })(),
+},
+
+/* -------------------------------------- L1 OBSERVABILITY */
+observability:{
+ title:"OBSERVABILITY — X-RAY · CLOUDWATCH · OVERSIGHT", depth:1, w:1400, h:800,
+ comments:[{x:40,y:44,t:"single trace id crosses edge → queue → λ → stores · dashboards answer state without asking agents",bright:1}],
+ nodes:[
+  {id:"o-tid",x:50,y:90,w:200,l:"X-Amz-Trace-Id",s:["Root=1-{hex8}-{hex24}","Sampled=1"],hub:1,
+   detail:{ORIGIN:["minted at edge middleware if absent"]}},
+  {id:"o-prop",x:290,y:90,w:180,l:"propagation",s:["hdr → sqs msg →","λ annotation"],
+   detail:{PATH:["header → message.traceId → subsegment annotation"]}},
+  {id:"o-rule",x:510,y:90,w:200,l:"sampling rule",s:["p10 · rate .05 · res 10","* on all matchers"],
+   detail:{TF:["aws_xray_sampling_rule.global_tracing"]}},
+  {id:"o-map",x:750,y:90,w:220,l:"service map",s:["edge→sqs→λ→ddb/ses/s3"],
+   detail:{VIEW:["distributed trace waterfall"]}},
+  {id:"o-w1",x:50,y:230,w:280,l:"widget: λ engine state",s:["Invocations + Errors · Sum 300s"],wg:[["mtr",8,46,0.62],["mtr",8,56,0.08]],
+   detail:{TITLE:["Order Processor Engine State Analysis"]}},
+  {id:"o-w2",x:370,y:230,w:280,l:"widget: sqs ingress",s:["visible msgs · Avg 60s"],wg:[["mtr",8,46,0.31]],
+   detail:{TITLE:["SQS Ingress Buffer Load Distribution"]}},
+  {id:"o-areas",x:690,y:230,w:280,l:"dashboard areas (BRD)",s:["jobs · agents · rewards","failures · alerts · history"],
+   detail:{PRINCIPLE:["operational visibility + human oversight without HITL gates"]}},
+  {id:"o-scope",x:50,y:360,w:920,l:"trace scope",s:[""],wg:[["scp",10,30,900]],
+   detail:{VIEW:["segment waterfall — edge to store"]}},
+  {id:"o-alert",x:50,y:470,w:280,l:"operational alerts",s:["slack notify pipeline"],
+   detail:{PIPE:["infra notification bash → Slack"]}},
+  {id:"o-fail",x:370,y:470,w:280,l:"failure analysis",s:["failure→training (Miriam)"],
+   detail:{LOOP:["every failure converted to eval/training case"]}},
+  {id:"o-hist",x:690,y:470,w:280,l:"historical dashboards",s:["reward + improvement track"],
+   detail:{VIEW:["score trajectory across I-HIVE passes"]}},
+  {id:"o-logs",x:50,y:580,w:280,l:"log surfaces",s:["λ groups · vps journald","agent run artifacts"],
+   detail:{IAM:["logs:CreateLogGroup/Stream · PutLogEvents"]}},
+  {id:"o-ver",x:370,y:580,w:600,l:"verification standard",s:["claims require raw output — I DON'T KNOW otherwise"],
+   detail:{STD:["BRD verification + final report standards"]}},
+ ],
+ cables:[
+  ["o-tid","o-prop"],["o-prop","o-rule",{d:1}],["o-prop","o-map"],["o-rule","o-map",{d:1}],
+  ["o-map","o-scope",{d:1}],["o-w1","o-scope",{d:1}],["o-w2","o-scope",{d:1}],
+  ["o-scope","o-alert"],["o-scope","o-fail"],["o-scope","o-hist"],
+  ["o-alert","o-logs",{d:1}],["o-fail","o-ver",{d:1}],["o-areas","o-hist",{d:1}],
+ ],
+},
+
+};
+
+// ---- generated agent detail levels (L2) ----
+AGENTS.forEach(a=>{
+  const nodes=[
+   {id:"ad-id",x:60,y:90,w:210,l:a.n.toUpperCase(),s:[a.r,"named agent"],hub:1,
+    detail:{MISSION:[a.m], ...(a.auth?{AUTHORITY:[a.auth]}:{}) }},
+   {id:"ad-mis",x:310,y:90,w:520,l:"primary mission",s:splitLines(a.m,64,3),
+    detail:{FULL:[a.m]}},
+  ];
+  const cables=[["ad-id","ad-mis"]];
+  (a.inp||[]).forEach((t,i)=>{
+    nodes.push({id:"ad-in"+i,x:60,y:210+i*66,w:250,l:"in ▸ "+shortHead(t),s:[t.length>34?t.slice(0,34)+"…":""].filter(Boolean),tag:"IO",detail:{INPUT:[t]}});
+    cables.push(["ad-in"+i,"ad-id",{if:.2}]);
+  });
+  (a.out||[]).forEach((t,i)=>{
+    nodes.push({id:"ad-out"+i,x:880,y:210+i*66,w:260,l:"out ▸ "+shortHead(t),s:[t.length>34?t.slice(0,34)+"…":""].filter(Boolean),tag:"IO",detail:{OUTPUT:[t]}});
+    cables.push(["ad-mis","ad-out"+i]);
+  });
+  (a.gates||[]).forEach((t,i)=>{
+    nodes.push({id:"ad-g"+i,x:340+(i%3)*250,y:250+Math.floor(i/3)*90,w:220,l:"gate "+(i+1),s:splitLines(t,30,2),detail:{GATE:[t]}});
+    cables.push(["ad-mis","ad-g"+i,{d:1}]);
+  });
+  if(a.routes){
+    nodes.push({id:"ad-rt",x:340,y:250+Math.ceil((a.gates||[]).length/3)*90+60,w:720,l:"routing fan-out — 15 agents",
+      s:[a.routes.join(" · ")],detail:{ROUTES:a.routes}});
+    cables.push(["ad-mis","ad-rt"]);
+  }
+  nodes.push({id:"ad-slk",x:60,y:560,w:1080,l:"slack discipline",s:["approval: what checked · how · why passed · which files    //    rejection: gate · defect · cause · file · next agent"],
+    detail:{RULE:["all posts mirrored + sanitized via Mallory → #all-agent-network"]}});
+  cables.push(["ad-id","ad-slk",{d:1}]);
+  LEVELS["agent:"+a.n]={title:"AGENT — "+a.n.toUpperCase()+" ["+a.r+"]",depth:2,w:1200,h:680,
+   comments:[{x:60,y:48,t:"standardized operating structure — single source of truth roster entry",bright:1}],
+   nodes,cables};
+});
+
+function splitLines(t,n,max){
+  const w=t.split(" · ").join(" · ").split(" ");let lines=[],cur="";
+  for(const word of w){ if((cur+" "+word).trim().length>n){lines.push(cur.trim());cur=word;} else cur+=" "+word; }
+  if(cur.trim())lines.push(cur.trim());
+  return lines.slice(0,max);
+}
+function shortHead(t){const h=t.split(" ").slice(0,2).join(" ");return h.length>18?h.slice(0,18):h;}
+
+</script>
+<script>
+/* ============================================================
+   EMBIZ MATRIX — RENDERER & NAVIGATION ENGINE
+   ============================================================ */
+const svg=document.getElementById("svg"), world=document.getElementById("world"),
+      stage=document.getElementById("stage");
+const NS="http://www.w3.org/2000/svg";
+function el(t,at={},parent){const e=document.createElementNS(NS,t);for(const k in at)e.setAttribute(k,at[k]);if(parent)parent.appendChild(e);return e;}
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+
+// ---------- geometry helpers ----------
+function nodeH(n){
+  let h=22 + (n.s?n.s.length*9.5:0);
+  if(n.wg){ let extra=0; n.wg.forEach(w=>{ if(w[0]==="scp") extra=Math.max(extra,44); else if(w[0]==="mtr"&&w[2]>h-14) extra=Math.max(extra,10);}); h+=extra? (n.wg.some(w=>w[0]==="scp")?50:8):6;}
+  return Math.max(30,Math.ceil(h)+6);
+}
+const geom={}; // per level: id -> {x,y,w,h}
+function computeGeom(id){
+  const L=LEVELS[id], g={};
+  L.nodes.forEach(n=>{ g[n.id]={x:n.x,y:n.y,w:n.w,h:nodeH(n)}; });
+  geom[id]=g; return g;
+}
+
+// ---------- navigation state ----------
+let stack=["root"], selected=null, view={x:0,y:0,k:1};
+const PARENT={};
+(function buildParents(){
+  for(const lid in LEVELS){ LEVELS[lid].nodes.forEach(n=>{ if(n.drill && !(n.drill in PARENT) && n.drill!==lid) PARENT[n.drill]={level:lid,node:n.id}; }); }
+})();
+function pathTo(levelId){
+  const p=[levelId]; let cur=levelId, guard=0;
+  while(cur!=="root" && PARENT[cur] && guard++<10){ cur=PARENT[cur].level; p.unshift(cur); }
+  if(p[0]!=="root") p.unshift("root");
+  return p;
+}
+
+// ---------- widgets ----------
+function drawWidget(g,w,n,gm){
+  const [t,dx,dy,v]=w, x=gm.x+dx, y=gm.y+dy;
+  if(t==="tgl"){ el("rect",{class:"wtoggle",x,y,width:12,height:12},g);
+    el("line",{class:"wtoggle-x",x1:x+2,y1:y+2,x2:x+10,y2:y+10},g);
+    el("line",{class:"wtoggle-x",x1:x+10,y1:y+2,x2:x+2,y2:y+10},g);}
+  else if(t==="sld"){ el("rect",{class:"wslider",x,y,width:14,height:34},g);
+    el("rect",{class:"wslider-k",x:x+2,y:y+((hash(n.id)%20)+4),width:10,height:5},g);}
+  else if(t==="mtr"){ const wd=(gm.w-dx-8); el("rect",{class:"wmeter",x,y,width:wd,height:5},g);
+    el("rect",{class:"wmeter-f",x:x+1,y:y+1,width:Math.max(1,(wd-2)*(v??.5)),height:3},g);}
+  else if(t==="led"){ const c=el("circle",{class:"led"+(v?" on":""),cx:x,cy:y,r:2.6},g); if(v)c.classList.add("blink",n.id);}
+  else if(t==="num"){ el("rect",{class:"wnum",x,y,width:34,height:13},g);
+    el("text",{class:"wnum-t",x:x+4,y:y+9.5},g).textContent=(hash(n.id)%900+100)/10;}
+  else if(t==="scp"){ const wd=v||120, h2=34; el("rect",{class:"wmeter",x,y,width:wd,height:h2},g);
+    let d="M"+x+" "+(y+h2/2), seed=hash(n.id);
+    for(let i=1;i<=40;i++){ seed=Math.imul(seed,48271)%2147483647; const yy=y+h2/2+((seed%1000)/1000-0.5)*(h2-8)*Math.sin(i/4);
+      d+=" L"+(x+(wd/40)*i).toFixed(1)+" "+yy.toFixed(1);}
+    el("path",{class:"wscope",d},g);}
+}
+
+// ---------- cable path ----------
+function cablePath(a,b,of=.5,inf=.5){
+  const x1=a.x+a.w*of, y1=a.y+a.h, x2=b.x+b.w*inf, y2=b.y;
+  const dy=Math.max(24,Math.abs(y2-y1)*.5), extra=(y2<y1)?Math.max(40,(y1-y2)*.35+40):0;
+  return `M${x1} ${y1} C ${x1} ${y1+dy+extra}, ${x2} ${y2-dy-extra}, ${x2} ${y2}`;
+}
+
+// ---------- render level ----------
+let cableEls=[], nodeIndex={};
+function render(levelId){
+  const L=LEVELS[levelId]; if(!L){console.warn("missing level",levelId);return;}
+  world.innerHTML=""; cableEls=[]; nodeIndex={}; selected=null; hideInspector();
+  const gm=computeGeom(levelId);
+
+  // frames
+  (L.frames||[]).forEach(f=>{
+    el("rect",{class:"frame",x:f.x,y:f.y,width:f.w,height:f.h},world);
+    if(f.t) el("text",{class:"frametitle",x:f.x+ (f.b?34:8), y:f.y-6},world).textContent=f.t;
+    if(f.b){ const bg=el("g",{class:"badge"},world);
+      el("circle",{cx:f.x+14,cy:f.y-11,r:11},bg);
+      el("text",{x:f.x+14,y:f.y-7},bg).textContent=f.b; }
+  });
+  // level headline
+  el("text",{x:36,y:26,fill:"#e6e6e6","font-size":"13","letter-spacing":".3em"},world).textContent=L.title;
+  el("line",{class:"rule",x1:36,y1:33,x2:36+L.title.length*10.5,y2:33},world);
+  // comments
+  (L.comments||[]).forEach(c=>{ el("text",{class:"comment"+(c.bright?" bright":""),x:c.x,y:c.y},world).textContent=c.t; });
+
+  // cables (under nodes)
+  const cg=el("g",{},world);
+  (L.cables||[]).forEach(([a,b,o={}])=>{
+    if(!gm[a]||!gm[b])return;
+    const p=el("path",{class:"cable"+(o.d?" dash":""),d:cablePath(gm[a],gm[b],o.of,o.if)},cg);
+    cableEls.push({a,b,el:p});
+  });
+
+  // nodes
+  L.nodes.forEach(n=>{
+    const g=geom[levelId][n.id];
+    const grp=el("g",{class:"node"+(n.hub?" hub":"")+(n.drill?" drillable":"")},world);
+    el("rect",{class:"body",x:g.x,y:g.y,width:g.w,height:g.h},grp);
+    if(n.drill){ el("rect",{class:"drillmark",x:g.x+2,y:g.y+2,width:g.w-4,height:g.h-4},grp);
+      el("text",{x:g.x+g.w-11,y:g.y+12,fill:"#8f8f8f","font-size":"8"},grp).textContent="▸";}
+    // ports
+    [[.18,0],[.5,0],[.82,0]].forEach(([f])=>el("rect",{class:"port",x:g.x+g.w*f-2.5,y:g.y-1.5,width:5,height:3},grp));
+    [[.18],[.5],[.82]].forEach(([f])=>el("rect",{class:"port",x:g.x+g.w*f-2.5,y:g.y+g.h-1.5,width:5,height:3},grp));
+    // label
+    el("text",{class:"lbl",x:g.x+7,y:g.y+13},grp).textContent=n.l;
+    (n.s||[]).forEach((s,i)=>{ if(s) el("text",{class:"sub",x:g.x+7,y:g.y+23.5+i*9.5},grp).textContent=s; });
+    if(n.tag) el("text",{class:"tag",x:g.x+g.w-7-n.tag.length*5.2,y:g.y+g.h-5},grp).textContent=n.tag;
+    // deterministic corner led
+    if(!n.wg||!n.wg.some(w=>w[0]==="led")){ const on=(hash(n.id)%5===0);
+      el("circle",{class:"led"+(on?" on":""),cx:g.x+g.w-8,cy:g.y+g.h-8,r:2.2},grp).dataset&&0;}
+    (n.wg||[]).forEach(w=>drawWidget(grp,w,n,g));
+    // interactions
+    grp.addEventListener("mouseenter",()=>hoverNode(n,true));
+    grp.addEventListener("mouseleave",()=>hoverNode(n,false));
+    grp.addEventListener("click",e=>{e.stopPropagation(); selectNode(levelId,n,grp);});
+    grp.addEventListener("dblclick",e=>{e.stopPropagation(); if(n.drill) drill(n);});
+    nodeIndex[n.id]={n,grp};
+  });
+
+  // chrome
+  document.getElementById("st-level").textContent="L"+L.depth;
+  document.getElementById("st-name").textContent=L.title.split("—")[0].trim();
+  document.getElementById("st-nodes").textContent=L.nodes.length;
+  document.getElementById("st-cables").textContent=(L.cables||[]).length;
+  document.getElementById("st-depth").textContent=stack.length-1;
+  renderCrumbs(); markRail(levelId);
+  fit();
+}
+
+function hoverNode(n,on){
+  cableEls.forEach(c=>{
+    const hit=(c.a===n.id||c.b===n.id);
+    c.el.classList.toggle("hi",on&&hit);
+    c.el.classList.toggle("dim",on&&!hit);
+  });
+  const info=document.getElementById("hoverinfo");
+  info.textContent=on? (n.l+"  ·  "+((n.s||[]).join(" / ")||"")+(n.drill?"  ·  [dbl-click ⤓ drill]":"")) : "—";
+}
+
+// ---------- selection / inspector ----------
+const insp=document.getElementById("inspector");
+function selectNode(levelId,n,grp){
+  world.querySelectorAll(".node.sel").forEach(x=>x.classList.remove("sel"));
+  grp.classList.add("sel"); selected=n;
+  document.getElementById("insp-title").textContent=n.l;
+  document.getElementById("insp-kind").textContent=(n.tag||"NODE")+" · "+LEVELS[levelId].title;
+  const body=document.getElementById("insp-body"); body.innerHTML="";
+  if(n.s&&n.s.filter(Boolean).length){ body.appendChild(sec("SIGNAL",n.s.filter(Boolean))); }
+  if(n.detail) for(const k in n.detail) body.appendChild(sec(k,n.detail[k]));
+  const btn=document.getElementById("insp-drill");
+  btn.style.display=n.drill?"block":"none";
+  btn.onclick=()=>drill(n);
+  insp.classList.add("open");
+}
+function sec(title,lines){
+  const d=document.createElement("div");d.className="insp-sec";
+  const h=document.createElement("h4");h.textContent=title;d.appendChild(h);
+  lines.forEach(t=>{const p=document.createElement("div");p.className="insp-line";p.textContent=t;d.appendChild(p);});
+  return d;
+}
+function hideInspector(){insp.classList.remove("open");}
+document.getElementById("insp-x").onclick=hideInspector;
+
+// ---------- drill / navigation ----------
+function drill(n){
+  if(!n.drill||!LEVELS[n.drill])return;
+  const lid=stack[stack.length-1], g=geom[lid][n.id];
+  zoomInto(g,()=>{ stack.push(n.drill); render(n.drill); flashIn(); });
+}
+function up(){
+  if(stack.length<=1){hideInspector();return;}
+  stack.pop(); render(stack[stack.length-1]); flashIn();
+}
+function goTo(levelId){
+  if(!LEVELS[levelId])return;
+  stack=pathTo(levelId); render(levelId); flashIn();
+}
+function zoomInto(g,done){
+  const r=stage.getBoundingClientRect();
+  const cx=g.x+g.w/2, cy=g.y+g.h/2, targetK=view.k*4;
+  const sx=r.width/2-cx*targetK, sy=r.height/2-cy*targetK;
+  const t0=performance.now(), v0={...view};
+  (function step(t){
+    const p=Math.min(1,(t-t0)/200), e=p*p*(3-2*p);
+    view={x:v0.x+(sx-v0.x)*e, y:v0.y+(sy-v0.y)*e, k:v0.k+(targetK-v0.k)*e};
+    apply(); world.style.opacity=String(1-e*.85);
+    if(p<1)requestAnimationFrame(step); else {world.style.opacity="1";done();}
+  })(t0);
+}
+function flashIn(){
+  world.style.opacity="0";
+  requestAnimationFrame(()=>{world.style.transition="opacity .16s";world.style.opacity="1";
+    setTimeout(()=>world.style.transition="",180);});
+}
+
+// crumbs / rail
+function renderCrumbs(){
+  const c=document.getElementById("crumbs"); c.innerHTML="";
+  stack.forEach((lid,i)=>{
+    const d=document.createElement("div");d.className="crumb"+(i===stack.length-1?" cur":"");
+    d.innerHTML=LEVELS[lid].title.split("—")[0].trim()+(i<stack.length-1?'<span class="sep">▸</span>':"");
+    d.onclick=()=>{stack=stack.slice(0,i+1);render(lid);flashIn();};
+    c.appendChild(d);
+  });
+}
+function markRail(lid){
+  document.querySelectorAll(".railtab").forEach(t=>{
+    t.classList.toggle("on",t.dataset.go===lid||(t.dataset.go==="root"&&lid==="root"));
+  });
+}
+document.querySelectorAll(".railtab[data-go]").forEach(t=>t.onclick=()=>goTo(t.dataset.go));
+
+// ---------- pan / zoom ----------
+function apply(){
+  world.setAttribute("transform",`translate(${view.x},${view.y}) scale(${view.k})`);
+  document.getElementById("st-zoom").textContent=Math.round(view.k*100)+"%";
+  document.getElementById("st-zm").style.width=Math.min(100,view.k*50)+"%";
+}
+function fit(){
+  const L=LEVELS[stack[stack.length-1]], r=stage.getBoundingClientRect();
+  const k=Math.min(r.width/(L.w+40), r.height/(L.h+40), 1.15);
+  view={x:(r.width-L.w*k)/2, y:(r.height-L.h*k)/2+6, k}; apply();
+}
+let pan=null;
+stage.addEventListener("mousedown",e=>{ if(e.target.closest(".node"))return;
+  pan={x:e.clientX,y:e.clientY,vx:view.x,vy:view.y}; stage.classList.add("panning");});
+window.addEventListener("mousemove",e=>{ if(!pan)return;
+  view.x=pan.vx+(e.clientX-pan.x); view.y=pan.vy+(e.clientY-pan.y); apply();});
+window.addEventListener("mouseup",()=>{pan=null;stage.classList.remove("panning");});
+stage.addEventListener("wheel",e=>{ e.preventDefault();
+  const r=stage.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+  const dk=Math.exp(-e.deltaY*0.0012), nk=Math.min(4,Math.max(.15,view.k*dk));
+  view.x=mx-(mx-view.x)*(nk/view.k); view.y=my-(my-view.y)*(nk/view.k); view.k=nk; apply();
+},{passive:false});
+stage.addEventListener("dblclick",e=>{ if(!e.target.closest(".node")) up(); });
+window.addEventListener("resize",fit);
+
+// ---------- search ----------
+const SIDX=[];
+for(const lid in LEVELS){ LEVELS[lid].nodes.forEach(n=>{
+  SIDX.push({lid,nid:n.id,l:n.l,s:(n.s||[]).join(" "),t:LEVELS[lid].title,
+    hay:(n.l+" "+(n.s||[]).join(" ")+" "+JSON.stringify(n.detail||{})+" "+LEVELS[lid].title).toLowerCase()});
+});}
+const searchEl=document.getElementById("search"), qEl=document.getElementById("q"), resEl=document.getElementById("results");
+let resList=[],resK=0;
+function openSearch(){searchEl.classList.add("open");qEl.value="";runSearch("");qEl.focus();}
+function closeSearch(){searchEl.classList.remove("open");}
+function runSearch(q){
+  q=q.toLowerCase().trim();
+  resList=(q?SIDX.filter(r=>r.hay.includes(q)):SIDX.slice(0,40)).slice(0,40); resK=0;
+  resEl.innerHTML="";
+  resList.forEach((r,i)=>{
+    const d=document.createElement("div");d.className="res"+(i===0?" k":"");
+    d.innerHTML=`<span>${r.l}<span style="color:#5d5d5d">  ${r.s.slice(0,44)}</span></span><span class="path">${r.t.split("—")[0].trim()}</span>`;
+    d.onclick=()=>jump(r); resEl.appendChild(d);
+  });
+}
+function jump(r){
+  closeSearch(); goTo(r.lid);
+  const rec=nodeIndex[r.nid]; if(rec){ selectNode(r.lid,rec.n,rec.grp);
+    const g=geom[r.lid][r.nid], rct=stage.getBoundingClientRect();
+    view.x=rct.width/2-(g.x+g.w/2)*view.k; view.y=rct.height/2-(g.y+g.h/2)*view.k; apply(); }
+}
+qEl.addEventListener("input",()=>runSearch(qEl.value));
+qEl.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){closeSearch();e.stopPropagation();}
+  if(e.key==="ArrowDown"){resK=Math.min(resList.length-1,resK+1);paintK();e.preventDefault();}
+  if(e.key==="ArrowUp"){resK=Math.max(0,resK-1);paintK();e.preventDefault();}
+  if(e.key==="Enter"&&resList[resK])jump(resList[resK]);
+});
+function paintK(){[...resEl.children].forEach((c,i)=>c.classList.toggle("k",i===resK));}
+searchEl.addEventListener("click",e=>{if(e.target===searchEl)closeSearch();});
+
+// ---------- keyboard ----------
+const REGION_KEYS={"1":"cloudflare","2":"aws","3":"agents","4":"ihive","5":"intake","6":"digitization","7":"observability","8":"terraform"};
+window.addEventListener("keydown",e=>{
+  if(searchEl.classList.contains("open"))return;
+  if(e.key==="/"||((e.ctrlKey||e.metaKey)&&e.key==="k")){e.preventDefault();openSearch();}
+  else if(e.key==="Escape"||e.key==="Backspace"){ if(insp.classList.contains("open")&&e.key==="Escape"&&selected){hideInspector();selected=null;} else up(); }
+  else if(e.key==="f"||e.key==="F")fit();
+  else if(REGION_KEYS[e.key])goTo(REGION_KEYS[e.key]);
+  else if(e.key==="0")goTo("root");
+});
+
+// ---------- ambient bus LEDs ----------
+const bus=document.getElementById("busleds");
+for(let i=0;i<8;i++){const s=document.createElement("i");bus.appendChild(s);}
+setInterval(()=>{ [...bus.children].forEach((s,i)=>s.classList.toggle("on",Math.random()<0.35)); },700);
+
+// boot
+render("root");
+
+</script>
+</body>
+</html>
