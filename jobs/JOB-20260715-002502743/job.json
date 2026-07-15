@@ -1,0 +1,26 @@
+{
+  "job_id": "JOB-20260715-002502743",
+  "status": "needs_customer_info",
+  "created": "2026-07-15T00:25:02.743378+00:00",
+  "source": "email",
+  "customer": "a",
+  "email": "a@b.c",
+  "subject": "12 polos left chest 3 in white thread due 9/1",
+  "customer_image": "/home/user/Bernina-Stitch-Master-MVA/jobs/JOB-20260715-002502743/artwork/1_original_on_ruler.jpg",
+  "garment": "polo",
+  "garment_color": "",
+  "placement": "left chest",
+  "size": "3",
+  "thread_colors": [
+    "due"
+  ],
+  "quantity": "12",
+  "deadline": "",
+  "quote_state": "not_quoted",
+  "svg_state": "none",
+  "stitch_file_state": "none",
+  "qa_state": "none",
+  "machine_compatibility_state": "none",
+  "owner": "maya",
+  "updated": "2026-07-15T00:25:03.252375+00:00"
+}

@@ -104,30 +104,30 @@
     "updated": "2026-07-15T00:17:22Z"
   },
   "logo|c2|e0": {
-    "composite": 0.953319,
+    "composite": 0.957646,
     "features": {
-      "aspect": 1.0435,
+      "aspect": 1.0,
       "distinct_colors": 9,
-      "edge_density": 0.01712,
-      "foreground_fraction": 0.51862,
-      "height": 575,
+      "edge_density": 0.02421,
+      "foreground_fraction": 0.19317,
+      "height": 1415,
       "is_line_art": false,
-      "width": 600
+      "width": 1415
     },
     "params": {
-      "color_precision": 5,
+      "color_precision": 8,
       "colormode": "color",
-      "corner_threshold": 40,
+      "corner_threshold": 50,
       "filter_speckle": 0,
-      "hierarchical": "cutout",
-      "layer_difference": 48,
+      "hierarchical": "stacked",
+      "layer_difference": 4,
       "length_threshold": 4.0,
       "mode": "polygon",
       "path_precision": 8,
-      "splice_threshold": 30
+      "splice_threshold": 45
     },
-    "ssim_color": 0.979302,
-    "updated": "2026-07-07T18:37:26Z"
+    "ssim_color": 0.95867,
+    "updated": "2026-07-15T00:24:58Z"
   },
   "multicolor|c3|e0": {
     "composite": 0.928263,

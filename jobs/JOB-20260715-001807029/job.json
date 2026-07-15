@@ -1,6 +1,6 @@
 {
   "job_id": "JOB-20260715-001807029",
-  "status": "artwork_review",
+  "status": "blocked",
   "created": "2026-07-15T00:18:07.029820+00:00",
   "source": "file_drop",
   "customer": "file_drop",
@@ -20,5 +20,6 @@
   "qa_state": "none",
   "machine_compatibility_state": "none",
   "owner": "maya",
-  "updated": "2026-07-15T00:18:07.384494+00:00"
+  "updated": "2026-07-15T00:25:12.925330+00:00",
+  "held_status": "artwork_review"
 }
