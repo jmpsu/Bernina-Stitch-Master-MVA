@@ -25,6 +25,32 @@
     "ssim_color": 0.982416,
     "updated": "2026-07-07T13:26:17Z"
   },
+  "line_art|c0|e1": {
+    "composite": 0.704704,
+    "features": {
+      "aspect": 0.6744,
+      "distinct_colors": 3,
+      "edge_density": 0.07928,
+      "foreground_fraction": 0.12989,
+      "height": 344,
+      "is_line_art": true,
+      "width": 232
+    },
+    "params": {
+      "color_precision": 6,
+      "colormode": "color",
+      "corner_threshold": 40,
+      "filter_speckle": 0,
+      "hierarchical": "cutout",
+      "layer_difference": 16,
+      "length_threshold": 4.0,
+      "mode": "polygon",
+      "path_precision": 8,
+      "splice_threshold": 30
+    },
+    "ssim_color": 0.740915,
+    "updated": "2026-07-15T00:16:36Z"
+  },
   "line_art|c1|e0": {
     "composite": 0.968064,
     "features": {
@@ -50,6 +76,32 @@
     },
     "ssim_color": 0.993346,
     "updated": "2026-07-07T13:30:35Z"
+  },
+  "line_art|c1|e1": {
+    "composite": 0.753909,
+    "features": {
+      "aspect": 0.5436,
+      "distinct_colors": 4,
+      "edge_density": 0.05447,
+      "foreground_fraction": 0.09646,
+      "height": 344,
+      "is_line_art": true,
+      "width": 187
+    },
+    "params": {
+      "color_precision": 5,
+      "colormode": "color",
+      "corner_threshold": 40,
+      "filter_speckle": 0,
+      "hierarchical": "cutout",
+      "layer_difference": 48,
+      "length_threshold": 4.0,
+      "mode": "polygon",
+      "path_precision": 8,
+      "splice_threshold": 30
+    },
+    "ssim_color": 0.829027,
+    "updated": "2026-07-15T00:17:22Z"
   },
   "logo|c2|e0": {
     "composite": 0.953319,

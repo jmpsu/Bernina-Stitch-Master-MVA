@@ -1,0 +1,2908 @@
+{
+  "generated_at": "2026-07-15T00:19:09.896436+00:00",
+  "repo_root": "/home/user/Bernina-Stitch-Master-MVA",
+  "git": {
+    "root": "/home/user/Bernina-Stitch-Master-MVA",
+    "remote": {
+      "cmd": [
+        "git",
+        "config",
+        "--get",
+        "remote.origin.url"
+      ],
+      "returncode": 0,
+      "stdout": "http://local_proxy@127.0.0.1:41729/git/jmpsu/Bernina-Stitch-Master-MVA",
+      "stderr": "",
+      "ok": true
+    },
+    "status": {
+      "cmd": [
+        "git",
+        "status",
+        "--short",
+        "--branch"
+      ],
+      "returncode": 0,
+      "stdout": "## claude/trusting-hawking-mizv2d...origin/claude/trusting-hawking-mizv2d [ahead 13]\n M digitizer.py\n M local_agents/personas.py\n M parameter_correlation_index_vec.json\n M reports/retrieval_log.jsonl\n M vectorization_attempts.jsonl\n?? dashboard/\n?? docs/requirements/SPEC_COVERAGE.md\n?? ihive.py\n?? jobs/\n?? knowledge/library/10-machine-integration/\n?? knowledge/library/12-quality-assurance/\n?? knowledge/library/14-ink-stitch-automation-framework/documents/\n?? local_agents/agent_bus.py\n?? local_agents/dashboard.py\n?? local_agents/intake.py\n?? local_agents/jobs.py\n?? local_agents/webhook_api.py\n?? production_pipeline.py\n?? production_runs/beach_strip_cabana/\n?? production_runs/beach_strip_crab/\n?? production_runs/beach_strip_lighthouse/\n?? production_runs/beach_strip_surfboard/\n?? production_runs/bikini_bikini/\n?? production_runs/squirrel_logo/\n?? reports/alerts.jsonl\n?? reports/e2e/\n?? reports/embiz_deep_inventory.json\n?? reports/embiz_deep_inventory.md\n?? scripts/regression_check.py\n?? scripts/seed_missing_corpora.py\n?? stitch_plans/squirrel_logo_logo.bmp\n?? stitch_plans/squirrel_logo_logo.exp\n?? stitch_plans/squirrel_logo_logo.inf\n?? stitch_plans/squirrel_logo_logo.json\n?? stitch_plans/squirrel_logo_logo.pes\n?? stitch_plans/squirrel_logo_logo_5in.bmp\n?? stitch_plans/squirrel_logo_logo_5in.exp\n?? stitch_plans/squirrel_logo_logo_5in.inf\n?? stitch_plans/squirrel_logo_logo_5in.json\n?? stitch_plans/squirrel_logo_logo_5in.pes\n?? stitch_plans/squirrel_logo_logo_5in_preview.png\n?? stitch_plans/squirrel_logo_logo_preview.png\n?? svg_topology_qa.py\n?? vectorized_svg/beach_strip_cabana.svg\n?? vectorized_svg/beach_strip_cabana_compare.png\n?? vectorized_svg/beach_strip_crab.svg\n?? vectorized_svg/beach_strip_crab_compare.png\n?? vectorized_svg/beach_strip_lighthouse.svg\n?? vectorized_svg/beach_strip_lighthouse_compare.png\n?? vectorized_svg/beach_strip_surfboard.svg\n?? vectorized_svg/beach_strip_surfboard_compare.png\n?? vectorized_svg/bikini_bikini.svg\n?? vectorized_svg/bikini_bikini_compare.png",
+      "stderr": "",
+      "ok": true
+    },
+    "branch": {
+      "cmd": [
+        "git",
+        "branch",
+        "--show-current"
+      ],
+      "returncode": 0,
+      "stdout": "claude/trusting-hawking-mizv2d",
+      "stderr": "",
+      "ok": true
+    },
+    "head": {
+      "cmd": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "returncode": 0,
+      "stdout": "73b47664d41c43c16a4df1f38d3d23c0e477e1c7",
+      "stderr": "",
+      "ok": true
+    },
+    "main": {
+      "cmd": [
+        "git",
+        "rev-parse",
+        "main"
+      ],
+      "returncode": 0,
+      "stdout": "61ece338303fa462fef0224fcdd2ee2a61a6a105",
+      "stderr": "",
+      "ok": true
+    },
+    "origin_main": {
+      "cmd": [
+        "git",
+        "rev-parse",
+        "origin/main"
+      ],
+      "returncode": 0,
+      "stdout": "61ece338303fa462fef0224fcdd2ee2a61a6a105",
+      "stderr": "",
+      "ok": true
+    },
+    "recent_log": {
+      "cmd": [
+        "git",
+        "--no-pager",
+        "log",
+        "--oneline",
+        "--decorate",
+        "-n",
+        "20"
+      ],
+      "returncode": 0,
+      "stdout": "73b4766 (HEAD -> claude/trusting-hawking-mizv2d) Merge remote-tracking branch 'origin/assistant/embiz-deep-inventory-audit-20260708' into claude/trusting-hawking-mizv2d\n506a84f Merge remote-tracking branch 'origin/claude/embiz-paused-run-inspect-r5x91e' into claude/trusting-hawking-mizv2d\n9e4db4b (origin/claude/trusting-hawking-mizv2d) EMBIZ BRD canonicalization: skills/ per SKILL.md spec, 18-agent roster compiled to runtime contracts, validator + gap analysis\ne2e5783 (origin/claude/embiz-paused-run-inspect-r5x91e) Add solidify stage + enforce EMBIZ_LOCAL_ONLY for cost control\n77f980e Add continuous doctrine run entrypoint\n77dc54b Add visible doctrine run harness\n08331b7 (origin/assistant/embiz-deep-inventory-audit-20260708) Log EMBIZ audit follow-up findings\n67a1984 Make EMBIZ audit tolerate unreadable knowledge roots\n7e095a5 Include Cloudflare AWS directive surface in audit\n8422607 Add EMBIZ deep inventory audit tool\n1cb811c E2E sequential-order batch: orders 0001-0002 finalized, 0003 in progress\n6f7af86 WIP: sequential-order run artifacts (order_0001 epochs in progress)\n2c897d3 Sequential customer-order mode + first-person named-agent Slack voice\nc4a4165 Proven-config transplant: seed stalled and first-epoch images from validated donors\n0e358c8 Merge pull request #4 from jmpsu/claude/slack-session-kgbmsg\n07cdefc System Atlas: exhaustive graph-documented status, replication guide, knowledge-library deep dive with real retrieval evidence\n79beceb Knowledge library production layer: multimodal ingestion (PDFs + web), spec-compliant retrieval router with gates + proof, wired into finalization\n9f62bf3 Complete first production cycle: all images finalized with satin/density validation + final Slack previews\n20c96ca Stall-break exploration + production-run finalization: satin fill w/ density guardrails, knowledge-fetch pass, final Slack preview message (native JPEG uploads)\nd73038e WIP: stall-break + finalization work in progress",
+      "stderr": "",
+      "ok": true
+    },
+    "repo_slug": "http://local_proxy@127.0.0.1:41729/git/jmpsu/Bernina-Stitch-Master-MVA",
+    "gh_available": false
+  },
+  "knowledge": {
+    "env_EMBIZ_KNOWLEDGE_ROOTS": "",
+    "roots": [
+      {
+        "path": "/root/web-archive/ai_agents_skills_library",
+        "exists": false,
+        "is_dir": false,
+        "readable": false,
+        "writable": false
+      },
+      {
+        "path": "/root/EMBIZ_EXPORTS",
+        "exists": false,
+        "is_dir": false,
+        "readable": false,
+        "writable": false
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library",
+        "exists": true,
+        "is_dir": true,
+        "readable": true,
+        "writable": true,
+        "jsonl_count": 10,
+        "jsonl_total_lines": 137,
+        "global_files": [
+          "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/global_knowledge_objects.jsonl",
+          "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/global_knowledge_objects.multimodal.jsonl"
+        ]
+      }
+    ],
+    "corpora": {
+      "raster-to-vector": {
+        "present": true,
+        "files": [
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/5-agent-architecture/raster-to-vector-agent/knowledge_objects.jsonl",
+            "exists": true,
+            "lines": 36,
+            "valid_json": 36,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          }
+        ],
+        "records": 36
+      },
+      "vector-design": {
+        "present": true,
+        "files": [
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/5-agent-architecture/vector-design-agent/knowledge_objects.jsonl",
+            "exists": true,
+            "lines": 4,
+            "valid_json": 4,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          }
+        ],
+        "records": 4
+      },
+      "visual-semantics": {
+        "present": false,
+        "files": [],
+        "records": 0
+      },
+      "svg-specification": {
+        "present": true,
+        "files": [
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/9-knowledge-management-architecture/svg-specification-corpus/knowledge_objects.jsonl",
+            "exists": true,
+            "lines": 10,
+            "valid_json": 10,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          }
+        ],
+        "records": 10
+      },
+      "inkscape": {
+        "present": false,
+        "files": [],
+        "records": 0
+      },
+      "svg-conformance": {
+        "present": false,
+        "files": [],
+        "records": 0
+      },
+      "ink-stitch-docs": {
+        "present": true,
+        "files": [
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/14-ink-stitch-automation-framework/documents/knowledge_objects.jsonl",
+            "exists": true,
+            "lines": 5,
+            "valid_json": 5,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          }
+        ],
+        "records": 5
+      },
+      "embroidery-techniques": {
+        "present": true,
+        "files": [
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/14-ink-stitch-automation-framework/embroidery-techniques/visual_captions.jsonl",
+            "exists": true,
+            "lines": 1,
+            "valid_json": 1,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          }
+        ],
+        "records": 1
+      },
+      "bernina-b700": {
+        "present": true,
+        "files": [
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/10-machine-integration/bernina-b700-corpus/knowledge_objects.jsonl",
+            "exists": true,
+            "lines": 4,
+            "valid_json": 4,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          }
+        ],
+        "records": 4
+      },
+      "visual-qa": {
+        "present": true,
+        "files": [
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/12-quality-assurance/visual-qa-corpus/knowledge_objects.jsonl",
+            "exists": true,
+            "lines": 4,
+            "valid_json": 4,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          }
+        ],
+        "records": 4
+      },
+      "global": {
+        "present": true,
+        "files": [
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/global_knowledge_objects.jsonl",
+            "exists": true,
+            "lines": 50,
+            "valid_json": 50,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          },
+          {
+            "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/global_knowledge_objects.multimodal.jsonl",
+            "exists": true,
+            "lines": 15,
+            "valid_json": 15,
+            "invalid_json": 0,
+            "sample_keys": [
+              "agent_relevance",
+              "caption",
+              "chunk",
+              "created_at",
+              "id",
+              "image_path",
+              "page",
+              "related_objects",
+              "retrieval_modes",
+              "section",
+              "source_path",
+              "source_type",
+              "summary",
+              "tags",
+              "text",
+              "title",
+              "visual_summary"
+            ]
+          }
+        ],
+        "records": 65
+      }
+    },
+    "agent_gates": {
+      "mila": {
+        "required": [
+          "raster-to-vector",
+          "vector-design"
+        ],
+        "optional": [
+          "visual-semantics",
+          "global"
+        ],
+        "present_required": [
+          "raster-to-vector",
+          "vector-design"
+        ],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "melanie": {
+        "required": [
+          "vector-design",
+          "svg-specification"
+        ],
+        "optional": [
+          "inkscape",
+          "svg-conformance",
+          "global"
+        ],
+        "present_required": [
+          "vector-design",
+          "svg-specification"
+        ],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "mckenna": {
+        "required": [
+          "ink-stitch-docs",
+          "embroidery-techniques"
+        ],
+        "optional": [
+          "bernina-b700",
+          "global"
+        ],
+        "present_required": [
+          "ink-stitch-docs",
+          "embroidery-techniques"
+        ],
+        "present_optional": [
+          "bernina-b700",
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "meredith": {
+        "required": [
+          "ink-stitch-docs",
+          "embroidery-techniques"
+        ],
+        "optional": [
+          "global"
+        ],
+        "present_required": [
+          "ink-stitch-docs",
+          "embroidery-techniques"
+        ],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "miranda": {
+        "required": [
+          "bernina-b700"
+        ],
+        "optional": [
+          "embroidery-techniques",
+          "global"
+        ],
+        "present_required": [
+          "bernina-b700"
+        ],
+        "present_optional": [
+          "embroidery-techniques",
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "mackenzie": {
+        "required": [
+          "visual-qa"
+        ],
+        "optional": [
+          "visual-semantics",
+          "global"
+        ],
+        "present_required": [
+          "visual-qa"
+        ],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "monica": {
+        "required": [
+          "global"
+        ],
+        "optional": [
+          "raster-to-vector",
+          "vector-design",
+          "visual-semantics",
+          "svg-specification",
+          "inkscape",
+          "svg-conformance",
+          "ink-stitch-docs",
+          "embroidery-techniques",
+          "bernina-b700",
+          "visual-qa",
+          "global"
+        ],
+        "present_required": [
+          "global"
+        ],
+        "present_optional": [
+          "raster-to-vector",
+          "vector-design",
+          "svg-specification",
+          "ink-stitch-docs",
+          "embroidery-techniques",
+          "bernina-b700",
+          "visual-qa",
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "maya": {
+        "required": [
+          "raster-to-vector",
+          "vector-design"
+        ],
+        "optional": [
+          "visual-semantics",
+          "global"
+        ],
+        "present_required": [
+          "raster-to-vector",
+          "vector-design"
+        ],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "marnie": {
+        "required": [
+          "ink-stitch-docs",
+          "embroidery-techniques",
+          "bernina-b700"
+        ],
+        "optional": [
+          "global"
+        ],
+        "present_required": [
+          "ink-stitch-docs",
+          "embroidery-techniques",
+          "bernina-b700"
+        ],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "mercy": {
+        "required": [
+          "visual-qa"
+        ],
+        "optional": [
+          "visual-semantics",
+          "global"
+        ],
+        "present_required": [
+          "visual-qa"
+        ],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "mabel": {
+        "required": [
+          "global"
+        ],
+        "optional": [
+          "raster-to-vector",
+          "vector-design",
+          "visual-semantics",
+          "svg-specification",
+          "inkscape",
+          "svg-conformance",
+          "ink-stitch-docs",
+          "embroidery-techniques",
+          "bernina-b700",
+          "visual-qa",
+          "global"
+        ],
+        "present_required": [
+          "global"
+        ],
+        "present_optional": [
+          "raster-to-vector",
+          "vector-design",
+          "svg-specification",
+          "ink-stitch-docs",
+          "embroidery-techniques",
+          "bernina-b700",
+          "visual-qa",
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "mira": {
+        "required": [],
+        "optional": [
+          "global"
+        ],
+        "present_required": [],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "margo": {
+        "required": [],
+        "optional": [
+          "global"
+        ],
+        "present_required": [],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      },
+      "minerva": {
+        "required": [],
+        "optional": [
+          "global"
+        ],
+        "present_required": [],
+        "present_optional": [
+          "global"
+        ],
+        "missing_required": [],
+        "gate": "ok"
+      }
+    },
+    "all_jsonl_files": [
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/10-machine-integration/bernina-b700-corpus/knowledge_objects.jsonl",
+        "exists": true,
+        "lines": 4,
+        "valid_json": 4,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/12-quality-assurance/visual-qa-corpus/knowledge_objects.jsonl",
+        "exists": true,
+        "lines": 4,
+        "valid_json": 4,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/14-ink-stitch-automation-framework/documents/knowledge_objects.jsonl",
+        "exists": true,
+        "lines": 5,
+        "valid_json": 5,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/14-ink-stitch-automation-framework/embroidery-techniques/visual_captions.jsonl",
+        "exists": true,
+        "lines": 1,
+        "valid_json": 1,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/5-agent-architecture/raster-to-vector-agent/knowledge_objects.jsonl",
+        "exists": true,
+        "lines": 36,
+        "valid_json": 36,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/5-agent-architecture/vector-design-agent/knowledge_objects.jsonl",
+        "exists": true,
+        "lines": 4,
+        "valid_json": 4,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/9-knowledge-management-architecture/svg-specification-corpus/knowledge_objects.jsonl",
+        "exists": true,
+        "lines": 10,
+        "valid_json": 10,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/global_knowledge_objects.jsonl",
+        "exists": true,
+        "lines": 50,
+        "valid_json": 50,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/global_knowledge_objects.multimodal.jsonl",
+        "exists": true,
+        "lines": 15,
+        "valid_json": 15,
+        "invalid_json": 0,
+        "sample_keys": [
+          "agent_relevance",
+          "caption",
+          "chunk",
+          "created_at",
+          "id",
+          "image_path",
+          "page",
+          "related_objects",
+          "retrieval_modes",
+          "section",
+          "source_path",
+          "source_type",
+          "summary",
+          "tags",
+          "text",
+          "title",
+          "visual_summary"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/library/ingestion_log.jsonl",
+        "exists": true,
+        "lines": 8,
+        "valid_json": 8,
+        "invalid_json": 0,
+        "sample_keys": [
+          "attempted_at",
+          "corpus",
+          "error",
+          "fetch_error",
+          "image_saved",
+          "objects",
+          "output",
+          "source"
+        ]
+      },
+      {
+        "path": "/home/user/Bernina-Stitch-Master-MVA/knowledge/vectorization/stall_break_wins.jsonl",
+        "exists": true,
+        "lines": 2,
+        "valid_json": 2,
+        "invalid_json": 0,
+        "sample_keys": [
+          "epoch",
+          "event",
+          "feature_bucket",
+          "image",
+          "new_best_composite",
+          "new_best_ssim",
+          "prev_best_composite",
+          "timestamp",
+          "winning_params",
+          "winning_start"
+        ]
+      }
+    ]
+  },
+  "runtime": {
+    "files": {
+      "vectorizer.py": {
+        "exists": true,
+        "size": 44601,
+        "lines": 996
+      },
+      "digitizer.py": {
+        "exists": true,
+        "size": 41815,
+        "lines": 1033
+      },
+      "run_iteration.py": {
+        "exists": true,
+        "size": 62719,
+        "lines": 1418
+      },
+      "metrics.py": {
+        "exists": true,
+        "size": 18061,
+        "lines": 528
+      },
+      "local_agents/continuous_run.py": {
+        "exists": true,
+        "size": 61011,
+        "lines": 1301
+      },
+      "local_agents/knowledge_ingest.py": {
+        "exists": true,
+        "size": 24033,
+        "lines": 602
+      },
+      "local_agents/knowledge_retrieval.py": {
+        "exists": true,
+        "size": 13621,
+        "lines": 354
+      },
+      "local_agents/model_router.py": {
+        "exists": true,
+        "size": 12875,
+        "lines": 316
+      },
+      "local_agents/qwen_client.py": {
+        "exists": true,
+        "size": 6183,
+        "lines": 171
+      },
+      "local_agents/slack_daemon.py": {
+        "exists": true,
+        "size": 20115,
+        "lines": 466
+      },
+      "local_agents/agent_loop.py": {
+        "exists": true,
+        "size": 17683,
+        "lines": 418
+      },
+      "local_agents/personas.py": {
+        "exists": true,
+        "size": 13535,
+        "lines": 353
+      }
+    },
+    "patterns": {
+      "knowledge_root_discovery": {
+        "files_scanned": 310,
+        "matches": {
+          "discover_library_roots": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/knowledge_ingest.py",
+            "local_agents/knowledge_retrieval.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/knowledge_audit.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "EMBIZ_KNOWLEDGE_ROOTS": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/continuous_doctrine_run.py",
+            "local_agents/doctrine_visible_run.py",
+            "local_agents/knowledge_ingest.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory_followup_log_20260708.md",
+            "reports/knowledge_audit.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "global_knowledge_objects.multimodal.jsonl": [
+            "local_agents/continuous_doctrine_run.py",
+            "local_agents/doctrine_visible_run.py",
+            "local_agents/knowledge_ingest.py",
+            "local_agents/knowledge_retrieval.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory.md",
+            "reports/knowledge_audit.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ]
+        }
+      },
+      "retrieval_gate_enforcement": {
+        "files_scanned": 310,
+        "matches": {
+          "MISSING_REQUIRED_CORPUS": [
+            "OUTPUTS.md",
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/continuous_run.py",
+            "local_agents/knowledge_retrieval.py",
+            "reports/agent_meetings.jsonl",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory.md",
+            "reports/knowledge_audit.md",
+            "reports/retrieval_log.jsonl",
+            "reports/slack_messages/cr_img_0293_final_production_message.json",
+            "reports/slack_messages/order_0001_drink_v2_final_production_message.json",
+            "reports/slack_messages/order_0002_img_0331_final_production_message.json",
+            "scripts/seed_missing_corpora.py",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "KnowledgeGateError": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/knowledge_retrieval.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/knowledge_audit.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "strict=True": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/knowledge_retrieval.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "retrieval_log.jsonl": [
+            "OUTPUTS.md",
+            "docs/SYSTEM_ATLAS.md",
+            "docs/requirements/SPEC_COVERAGE.md",
+            "local_agents/continuous_run.py",
+            "local_agents/dashboard.py",
+            "local_agents/knowledge_retrieval.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory.md",
+            "reports/knowledge_audit.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ]
+        }
+      },
+      "finalization_retrieval_wiring": {
+        "files_scanned": 310,
+        "matches": {
+          "_finalization_retrievals": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/continuous_run.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/knowledge_audit.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "mabel_knowledge_pass": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/continuous_run.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/knowledge_audit.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "knowledge_fetch": [
+            "local_agents/continuous_run.py",
+            "reports/agent_meetings.jsonl",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "route(": [
+            "OUTPUTS.md",
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/README.md",
+            "local_agents/agent_loop.py",
+            "local_agents/continuous_run.py",
+            "local_agents/intake.py",
+            "local_agents/knowledge_retrieval.py",
+            "local_agents/model_router.py",
+            "local_agents/slack_daemon.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/knowledge_audit.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ]
+        }
+      },
+      "vectorizer_learning": {
+        "files_scanned": 310,
+        "matches": {
+          "parameter_correlation_index_vec.json": [
+            "OUTPUTS.md",
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/continuous_run.py",
+            "reports/agent_meetings.jsonl",
+            "reports/embiz_deep_inventory.json",
+            "reports/slack_messages/cr_img_0263_final_production_message.json",
+            "reports/slack_messages/cr_img_0293_final_production_message.json",
+            "reports/slack_messages/cr_img_0322_final_production_message.json",
+            "reports/slack_messages/cr_img_0331_final_production_message.json",
+            "reports/slack_messages/cr_img_1126_final_production_message.json",
+            "reports/slack_messages/order_0001_drink_v2_final_production_message.json",
+            "reports/slack_messages/order_0002_img_0331_final_production_message.json",
+            "reports/vectorizer_v1.md",
+            "reports/vectorizer_v2.md",
+            "reports/vectorizer_v3.md",
+            "reports/vectorizer_v5_promotion.md",
+            "skills/embroidery-vector-generation/SKILL.md",
+            "tools/embiz_deep_inventory_audit.py",
+            "vectorizer.py"
+          ],
+          "vectorization_attempts.jsonl": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "OUTPUTS.md",
+            "README.md",
+            "docs/SYSTEM_ATLAS.md",
+            "ihive.py",
+            "knowledge/library_coverage.json",
+            "local_agents/continuous_run.py",
+            "local_agents/dashboard.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/knowledge_audit.md",
+            "reports/library_utilization_coverage.md",
+            "reports/vectorizer_v1.md",
+            "reports/vectorizer_v2.md",
+            "reports/vectorizer_v3.md",
+            "skills/embroidery-vector-generation/SKILL.md",
+            "tools/embiz_deep_inventory_audit.py",
+            "vectorizer.py"
+          ],
+          "_seed_from_index": [
+            "local_agents/continuous_run.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/vectorizer_v5_promotion.md",
+            "tools/embiz_deep_inventory_audit.py",
+            "vectorizer.py"
+          ],
+          "_log_attempt": [
+            "knowledge/library_coverage.json",
+            "reports/embiz_deep_inventory.json",
+            "reports/library_utilization_coverage.md",
+            "tools/embiz_deep_inventory_audit.py",
+            "vectorizer.py"
+          ]
+        }
+      },
+      "cross_order_transplant_pr5": {
+        "files_scanned": 310,
+        "matches": {
+          "plan_config_transplant": [
+            "local_agents/continuous_run.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "TRANSPLANT_MIN_COMPOSITE": [
+            "local_agents/continuous_run.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "extra_starts": [
+            "docs/SYSTEM_ATLAS.md",
+            "docs/requirements/SPEC_COVERAGE.md",
+            "local_agents/continuous_doctrine_run.py",
+            "local_agents/continuous_run.py",
+            "production_pipeline.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py",
+            "vectorizer.py"
+          ],
+          "skip_preset_starts": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/continuous_run.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py",
+            "vectorizer.py"
+          ]
+        }
+      },
+      "qwen_local_first": {
+        "files_scanned": 310,
+        "matches": {
+          "qwen3:8b": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "OUTPUTS.md",
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/README.md",
+            "local_agents/agent_loop.py",
+            "local_agents/continuous_run.py",
+            "local_agents/model_router.py",
+            "local_agents/qwen_client.py",
+            "local_agents/slack_daemon.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "Ollama": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/README.md",
+            "local_agents/agent_loop.py",
+            "local_agents/continuous_run.py",
+            "local_agents/model_router.py",
+            "local_agents/qwen_client.py",
+            "local_agents/slack_daemon.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "model_router": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "OUTPUTS.md",
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/README.md",
+            "local_agents/agent_loop.py",
+            "local_agents/continuous_run.py",
+            "local_agents/model_router.py",
+            "local_agents/slack_daemon.py",
+            "reports/agent_meetings.jsonl",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory.md",
+            "reports/embiz_deep_inventory_followup_log_20260708.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "EMBIZ_LOCAL_MODEL": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/README.md",
+            "local_agents/qwen_client.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ]
+        }
+      },
+      "slack_operation": {
+        "files_scanned": 310,
+        "matches": {
+          "Socket Mode": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/README.md",
+            "local_agents/slack_daemon.py",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "SLACK_BOT_TOKEN": [
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/README.md",
+            "local_agents/agent_loop.py",
+            "local_agents/model_router.py",
+            "local_agents/personas.py",
+            "local_agents/slack_daemon.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/slack_utilization_report.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "files_upload_v2": [
+            "OUTPUTS.md",
+            "docs/SYSTEM_ATLAS.md",
+            "local_agents/continuous_run.py",
+            "local_agents/personas.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/slack_messages/cr_img_0263_final_production_message.json",
+            "reports/slack_messages/cr_img_0293_final_production_message.json",
+            "reports/slack_messages/cr_img_0322_final_production_message.json",
+            "reports/slack_messages/cr_img_0331_final_production_message.json",
+            "reports/slack_messages/cr_img_1126_final_production_message.json",
+            "reports/slack_messages/order_0001_drink_v2_final_production_message.json",
+            "reports/slack_messages/order_0002_img_0331_final_production_message.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "reports/slack_messages": [
+            "OUTPUTS.md",
+            "docs/SYSTEM_ATLAS.md",
+            "docs/requirements/SPEC_COVERAGE.md",
+            "local_agents/continuous_run.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory.md",
+            "reports/slack_utilization_report.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ]
+        }
+      },
+      "cloudflare_customer_surface": {
+        "files_scanned": 310,
+        "matches": {
+          "wrangler": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+            "docs/requirements/EMBIZ_BRD.md",
+            "docs/requirements/GAP_ANALYSIS.md",
+            "docs/requirements/SPEC_COVERAGE.md",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory.md",
+            "reports/embiz_deep_inventory_followup_log_20260708.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "cloudflare": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "agents/contracts/mallory.json",
+            "docs/SYSTEM_ATLAS.md",
+            "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+            "docs/requirements/EMBIZ_BRD.md",
+            "docs/requirements/GAP_ANALYSIS.md",
+            "docs/requirements/SPEC_COVERAGE.md",
+            "local_agents/intake.py",
+            "local_agents/webhook_api.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory.md",
+            "reports/embiz_deep_inventory_followup_log_20260708.md",
+            "skills/agent-contract-compliance/SKILL.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "DurableObject": [
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "Worker": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "agents/contracts/mallory.json",
+            "docs/SYSTEM_ATLAS.md",
+            "docs/requirements/EMBIZ_BRD.md",
+            "docs/requirements/GAP_ANALYSIS.md",
+            "docs/requirements/SPEC_COVERAGE.md",
+            "local_agents/agent_loop.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/vectorizer_v3.md",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "D1": [
+            "docs/SYSTEM_ATLAS.md",
+            "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+            "knowledge/library/5-agent-architecture/raster-to-vector-agent/knowledge_objects.jsonl",
+            "knowledge/library/global_knowledge_objects.jsonl",
+            "knowledge/library/global_knowledge_objects.multimodal.jsonl",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "R2": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "agents/contracts/mallory.json",
+            "docs/SYSTEM_ATLAS.md",
+            "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+            "docs/requirements/EMBIZ_BRD.md",
+            "docs/requirements/SPEC_COVERAGE.md",
+            "knowledge/vectorization/stall_break_wins.jsonl",
+            "reports/agent_meetings.jsonl",
+            "reports/embiz_deep_inventory.json",
+            "tools/embiz_deep_inventory_audit.py"
+          ],
+          "Vectorize": [
+            "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+            "OUTPUTS.md",
+            "agents/contracts/maya.json",
+            "agents/contracts/morgan.json",
+            "digitizer.py",
+            "docs/SYSTEM_ATLAS.md",
+            "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+            "docs/requirements/EMBIZ_BRD.md",
+            "docs/requirements/GAP_ANALYSIS.md",
+            "docs/requirements/SPEC_COVERAGE.md",
+            "experiment_harness.py",
+            "ihive.py",
+            "knowledge/library/12-quality-assurance/visual-qa-corpus/knowledge_objects.jsonl",
+            "knowledge/library/5-agent-architecture/raster-to-vector-agent/knowledge_objects.jsonl",
+            "knowledge/library/global_knowledge_objects.jsonl",
+            "knowledge/library_coverage.json",
+            "knowledge/vectorization/INDEX.md",
+            "knowledge/vectorization/color_agent/color_delta_e_merge_tolerance.json",
+            "knowledge/vectorization/color_agent/hierarchical_color_layering.json",
+            "knowledge/vectorization/color_agent/hsl_perceptual_color_matching.json",
+            "knowledge/vectorization/color_agent/max_thread_color_budget.json",
+            "knowledge/vectorization/curve_agent/alphamax_corner_threshold.json",
+            "knowledge/vectorization/curve_agent/opticurve_bezier_vs_polygon.json",
+            "knowledge/vectorization/curve_agent/opttolerance_curve_smoothness.json",
+            "knowledge/vectorization/curve_agent/opttolerance_segment_joining.json",
+            "knowledge/vectorization/edge_agent/corner_sharpness_edge_fidelity.json",
+            "knowledge/vectorization/edge_agent/max_path_deviation_fidelity.json",
+            "knowledge/vectorization/edge_agent/node_count_topology_target.json",
+            "knowledge/vectorization/edge_agent/turnpolicy_topology_resolution.json",
+            "knowledge/vectorization/noise_agent/blacklevel_bilevel_cutoff.json",
+            "knowledge/vectorization/noise_agent/mkbitmap_highpass_background_gradient.json",
+            "knowledge/vectorization/noise_agent/mkbitmap_lowpass_foreground_smoothing.json",
+            "knowledge/vectorization/noise_agent/turdsize_speckle_suppression.json",
+            "knowledge_agents/__init__.py",
+            "knowledge_experiments.jsonl",
+            "local_agents/README.md",
+            "local_agents/agent_bus.py",
+            "local_agents/agent_loop.py",
+            "local_agents/continuous_doctrine_run.py",
+            "local_agents/continuous_run.py",
+            "local_agents/doctrine_visible_run.py",
+            "local_agents/personas.py",
+            "local_agents/state/transcripts/agent_feed.jsonl",
+            "production_pipeline.py",
+            "reports/embiz_deep_inventory.json",
+            "reports/embiz_deep_inventory.md",
+            "reports/embiz_deep_inventory_followup_log_20260708.md",
+            "reports/knowledge_audit.md",
+            "reports/knowledge_experiments.md",
+            "reports/library_utilization_coverage.md",
+            "reports/production_visuals.md",
+            "reports/vectorizer_v1.md",
+            "reports/vectorizer_v2.md",
+            "reports/vectorizer_v3.md",
+            "reports/vectorizer_v5_promotion.md",
+            "run_iteration.py",
+            "scripts/seed_missing_corpora.py",
+            "skills/embroidery-vector-generation/SKILL.md",
+            "skills/svg-topology-qa/SKILL.md",
+            "solidify.py",
+            "tools/embiz_deep_inventory_audit.py",
+            "vectorizer.py"
+          ]
+        }
+      }
+    }
+  },
+  "cloudflare": {
+    "matched_files": [
+      {
+        "path": ".github/workflows/blank.yml",
+        "size": 1171
+      },
+      {
+        "path": "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+        "size": 112547
+      },
+      {
+        "path": "OUTPUTS.md",
+        "size": 9175
+      },
+      {
+        "path": "README.md",
+        "size": 4269
+      },
+      {
+        "path": "agents/contracts/mackenzie.json",
+        "size": 12165
+      },
+      {
+        "path": "agents/contracts/madeline.json",
+        "size": 13686
+      },
+      {
+        "path": "agents/contracts/maeve.json",
+        "size": 8887
+      },
+      {
+        "path": "agents/contracts/mallory.json",
+        "size": 15005
+      },
+      {
+        "path": "agents/contracts/margaret.json",
+        "size": 9048
+      },
+      {
+        "path": "agents/contracts/marina.json",
+        "size": 10936
+      },
+      {
+        "path": "agents/contracts/matilda.json",
+        "size": 6927
+      },
+      {
+        "path": "agents/contracts/maya.json",
+        "size": 16352
+      },
+      {
+        "path": "agents/contracts/mckenna.json",
+        "size": 9178
+      },
+      {
+        "path": "agents/contracts/melanie.json",
+        "size": 12331
+      },
+      {
+        "path": "agents/contracts/melody.json",
+        "size": 9639
+      },
+      {
+        "path": "agents/contracts/meredith.json",
+        "size": 10861
+      },
+      {
+        "path": "agents/contracts/michaela.json",
+        "size": 7280
+      },
+      {
+        "path": "agents/contracts/mila.json",
+        "size": 14304
+      },
+      {
+        "path": "agents/contracts/miranda.json",
+        "size": 7309
+      },
+      {
+        "path": "agents/contracts/miriam.json",
+        "size": 8684
+      },
+      {
+        "path": "agents/contracts/monica.json",
+        "size": 8687
+      },
+      {
+        "path": "agents/contracts/morgan.json",
+        "size": 8866
+      },
+      {
+        "path": "dashboard/index.html",
+        "size": 24512
+      },
+      {
+        "path": "decision_trace.jsonl",
+        "size": 26363
+      },
+      {
+        "path": "digitizer.py",
+        "size": 41815
+      },
+      {
+        "path": "docs/SYSTEM_ATLAS.md",
+        "size": 50398
+      },
+      {
+        "path": "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "size": 90585
+      },
+      {
+        "path": "docs/requirements/EMBIZ_BRD.md",
+        "size": 281797
+      },
+      {
+        "path": "docs/requirements/GAP_ANALYSIS.md",
+        "size": 4406
+      },
+      {
+        "path": "docs/requirements/SPEC_COVERAGE.md",
+        "size": 10273
+      },
+      {
+        "path": "experiment_harness.py",
+        "size": 28465
+      },
+      {
+        "path": "ihive.py",
+        "size": 7187
+      },
+      {
+        "path": "knowledge/library/12-quality-assurance/visual-qa-corpus/knowledge_objects.jsonl",
+        "size": 3802
+      },
+      {
+        "path": "knowledge/library/5-agent-architecture/raster-to-vector-agent/knowledge_objects.jsonl",
+        "size": 54447
+      },
+      {
+        "path": "knowledge/library/9-knowledge-management-architecture/svg-specification-corpus/knowledge_objects.jsonl",
+        "size": 13401
+      },
+      {
+        "path": "knowledge/library/global_knowledge_objects.jsonl",
+        "size": 74186
+      },
+      {
+        "path": "knowledge/library/global_knowledge_objects.multimodal.jsonl",
+        "size": 22694
+      },
+      {
+        "path": "knowledge/library_coverage.json",
+        "size": 14218
+      },
+      {
+        "path": "knowledge/vectorization/INDEX.md",
+        "size": 7223
+      },
+      {
+        "path": "knowledge/vectorization/color_agent/color_delta_e_merge_tolerance.json",
+        "size": 1546
+      },
+      {
+        "path": "knowledge/vectorization/color_agent/hierarchical_color_layering.json",
+        "size": 1633
+      },
+      {
+        "path": "knowledge/vectorization/color_agent/hsl_perceptual_color_matching.json",
+        "size": 1517
+      },
+      {
+        "path": "knowledge/vectorization/color_agent/max_thread_color_budget.json",
+        "size": 1489
+      },
+      {
+        "path": "knowledge/vectorization/curve_agent/alphamax_corner_threshold.json",
+        "size": 1685
+      },
+      {
+        "path": "knowledge/vectorization/curve_agent/opticurve_bezier_vs_polygon.json",
+        "size": 1410
+      },
+      {
+        "path": "knowledge/vectorization/curve_agent/opttolerance_curve_smoothness.json",
+        "size": 1603
+      },
+      {
+        "path": "knowledge/vectorization/curve_agent/opttolerance_segment_joining.json",
+        "size": 1539
+      },
+      {
+        "path": "knowledge/vectorization/edge_agent/corner_sharpness_edge_fidelity.json",
+        "size": 1620
+      },
+      {
+        "path": "knowledge/vectorization/edge_agent/max_path_deviation_fidelity.json",
+        "size": 1519
+      },
+      {
+        "path": "knowledge/vectorization/edge_agent/node_count_topology_target.json",
+        "size": 1575
+      },
+      {
+        "path": "knowledge/vectorization/edge_agent/turnpolicy_topology_resolution.json",
+        "size": 1749
+      },
+      {
+        "path": "knowledge/vectorization/noise_agent/blacklevel_bilevel_cutoff.json",
+        "size": 1640
+      },
+      {
+        "path": "knowledge/vectorization/noise_agent/mkbitmap_highpass_background_gradient.json",
+        "size": 1535
+      },
+      {
+        "path": "knowledge/vectorization/noise_agent/mkbitmap_lowpass_foreground_smoothing.json",
+        "size": 1750
+      },
+      {
+        "path": "knowledge/vectorization/noise_agent/turdsize_speckle_suppression.json",
+        "size": 1472
+      },
+      {
+        "path": "knowledge/vectorization/stall_break_wins.jsonl",
+        "size": 1087
+      },
+      {
+        "path": "knowledge_agents/__init__.py",
+        "size": 5535
+      },
+      {
+        "path": "knowledge_experiments.jsonl",
+        "size": 98419
+      },
+      {
+        "path": "local_agents/README.md",
+        "size": 6757
+      },
+      {
+        "path": "local_agents/agent_bus.py",
+        "size": 8182
+      },
+      {
+        "path": "local_agents/agent_loop.py",
+        "size": 17683
+      },
+      {
+        "path": "local_agents/continuous_doctrine_run.py",
+        "size": 26004
+      },
+      {
+        "path": "local_agents/continuous_run.py",
+        "size": 61011
+      },
+      {
+        "path": "local_agents/dashboard.py",
+        "size": 11777
+      },
+      {
+        "path": "local_agents/doctrine_visible_run.py",
+        "size": 19327
+      },
+      {
+        "path": "local_agents/intake.py",
+        "size": 20220
+      },
+      {
+        "path": "local_agents/jobs.py",
+        "size": 7858
+      },
+      {
+        "path": "local_agents/knowledge_ingest.py",
+        "size": 24033
+      },
+      {
+        "path": "local_agents/knowledge_retrieval.py",
+        "size": 13621
+      },
+      {
+        "path": "local_agents/model_router.py",
+        "size": 12875
+      },
+      {
+        "path": "local_agents/personas.py",
+        "size": 13535
+      },
+      {
+        "path": "local_agents/qwen_client.py",
+        "size": 6183
+      },
+      {
+        "path": "local_agents/slack_daemon.py",
+        "size": 20115
+      },
+      {
+        "path": "local_agents/state/transcripts/agent_feed.jsonl",
+        "size": 17821
+      },
+      {
+        "path": "local_agents/webhook_api.py",
+        "size": 6212
+      },
+      {
+        "path": "metrics.py",
+        "size": 18061
+      },
+      {
+        "path": "production_layout.py",
+        "size": 9759
+      },
+      {
+        "path": "production_pipeline.py",
+        "size": 13474
+      },
+      {
+        "path": "reports/agent_meetings.jsonl",
+        "size": 93781
+      },
+      {
+        "path": "reports/embiz_deep_inventory.json",
+        "size": 79467
+      },
+      {
+        "path": "reports/embiz_deep_inventory.md",
+        "size": 15555
+      },
+      {
+        "path": "reports/embiz_deep_inventory_followup_log_20260708.md",
+        "size": 7631
+      },
+      {
+        "path": "reports/iteration_10.md",
+        "size": 17085
+      },
+      {
+        "path": "reports/iteration_2.md",
+        "size": 3736
+      },
+      {
+        "path": "reports/iteration_3.md",
+        "size": 4360
+      },
+      {
+        "path": "reports/iteration_4.md",
+        "size": 7324
+      },
+      {
+        "path": "reports/iteration_5.md",
+        "size": 6461
+      },
+      {
+        "path": "reports/iteration_6.md",
+        "size": 6655
+      },
+      {
+        "path": "reports/iteration_7.md",
+        "size": 7328
+      },
+      {
+        "path": "reports/iteration_8.md",
+        "size": 16192
+      },
+      {
+        "path": "reports/iteration_9.md",
+        "size": 17235
+      },
+      {
+        "path": "reports/knowledge_audit.md",
+        "size": 7075
+      },
+      {
+        "path": "reports/knowledge_experiments.md",
+        "size": 11243
+      },
+      {
+        "path": "reports/library_utilization_coverage.md",
+        "size": 9829
+      },
+      {
+        "path": "reports/production_visuals.md",
+        "size": 5590
+      },
+      {
+        "path": "reports/slack_messages/02_transform_sources.txt",
+        "size": 886
+      },
+      {
+        "path": "reports/slack_messages/03_pipeline_build_and_learn.txt",
+        "size": 885
+      },
+      {
+        "path": "reports/slack_messages/07_unused_and_honest_notes.txt",
+        "size": 576
+      },
+      {
+        "path": "reports/vectorizer_v1.md",
+        "size": 7187
+      },
+      {
+        "path": "reports/vectorizer_v2.md",
+        "size": 7459
+      },
+      {
+        "path": "reports/vectorizer_v3.md",
+        "size": 8417
+      },
+      {
+        "path": "reports/vectorizer_v5_promotion.md",
+        "size": 6443
+      },
+      {
+        "path": "run_iteration.py",
+        "size": 62719
+      },
+      {
+        "path": "scripts/regression_check.py",
+        "size": 2449
+      },
+      {
+        "path": "scripts/seed_missing_corpora.py",
+        "size": 9062
+      },
+      {
+        "path": "skills/agent-contract-compliance/SKILL.md",
+        "size": 4613
+      },
+      {
+        "path": "skills/embroidery-vector-generation/SKILL.md",
+        "size": 5089
+      },
+      {
+        "path": "skills/knowledge-retrieval/SKILL.md",
+        "size": 4345
+      },
+      {
+        "path": "skills/stitch-plan-generation/SKILL.md",
+        "size": 4975
+      },
+      {
+        "path": "skills/svg-topology-qa/SKILL.md",
+        "size": 4552
+      },
+      {
+        "path": "solidify.py",
+        "size": 10393
+      },
+      {
+        "path": "tools/embiz_deep_inventory_audit.py",
+        "size": 28059
+      },
+      {
+        "path": "vectorizer.py",
+        "size": 44601
+      }
+    ],
+    "pattern_hits": {
+      "wrangler.toml": [
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "reports/embiz_deep_inventory.json",
+        "reports/embiz_deep_inventory.md",
+        "reports/embiz_deep_inventory_followup_log_20260708.md",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "wrangler.json": [
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "worker.ts": [
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "worker.js": [
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "cloudflare": [
+        "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+        "agents/contracts/mallory.json",
+        "docs/SYSTEM_ATLAS.md",
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "docs/requirements/EMBIZ_BRD.md",
+        "docs/requirements/GAP_ANALYSIS.md",
+        "docs/requirements/SPEC_COVERAGE.md",
+        "local_agents/intake.py",
+        "local_agents/webhook_api.py",
+        "reports/embiz_deep_inventory.json",
+        "reports/embiz_deep_inventory.md",
+        "reports/embiz_deep_inventory_followup_log_20260708.md",
+        "skills/agent-contract-compliance/SKILL.md",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "flue": [
+        "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+        "agents/contracts/mallory.json",
+        "docs/SYSTEM_ATLAS.md",
+        "docs/requirements/EMBIZ_BRD.md",
+        "docs/requirements/GAP_ANALYSIS.md",
+        "docs/requirements/SPEC_COVERAGE.md",
+        "local_agents/continuous_doctrine_run.py",
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "durable": [
+        "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+        "agents/contracts/madeline.json",
+        "agents/contracts/mallory.json",
+        "agents/contracts/marina.json",
+        "docs/SYSTEM_ATLAS.md",
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "docs/requirements/EMBIZ_BRD.md",
+        "docs/requirements/GAP_ANALYSIS.md",
+        "local_agents/README.md",
+        "local_agents/slack_daemon.py",
+        "reports/embiz_deep_inventory.json",
+        "skills/agent-contract-compliance/SKILL.md",
+        "skills/knowledge-retrieval/SKILL.md",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "d1": [
+        "docs/SYSTEM_ATLAS.md",
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "knowledge/library/5-agent-architecture/raster-to-vector-agent/knowledge_objects.jsonl",
+        "knowledge/library/global_knowledge_objects.jsonl",
+        "knowledge/library/global_knowledge_objects.multimodal.jsonl",
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "r2": [
+        "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+        "agents/contracts/mallory.json",
+        "docs/SYSTEM_ATLAS.md",
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "docs/requirements/EMBIZ_BRD.md",
+        "docs/requirements/SPEC_COVERAGE.md",
+        "knowledge/vectorization/stall_break_wins.jsonl",
+        "reports/agent_meetings.jsonl",
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "vectorize": [
+        "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+        "OUTPUTS.md",
+        "agents/contracts/maya.json",
+        "agents/contracts/morgan.json",
+        "digitizer.py",
+        "docs/SYSTEM_ATLAS.md",
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "docs/requirements/EMBIZ_BRD.md",
+        "docs/requirements/GAP_ANALYSIS.md",
+        "docs/requirements/SPEC_COVERAGE.md",
+        "experiment_harness.py",
+        "ihive.py",
+        "knowledge/library/12-quality-assurance/visual-qa-corpus/knowledge_objects.jsonl",
+        "knowledge/library/5-agent-architecture/raster-to-vector-agent/knowledge_objects.jsonl",
+        "knowledge/library/global_knowledge_objects.jsonl",
+        "knowledge/library_coverage.json",
+        "knowledge/vectorization/INDEX.md",
+        "knowledge/vectorization/color_agent/color_delta_e_merge_tolerance.json",
+        "knowledge/vectorization/color_agent/hierarchical_color_layering.json",
+        "knowledge/vectorization/color_agent/hsl_perceptual_color_matching.json",
+        "knowledge/vectorization/color_agent/max_thread_color_budget.json",
+        "knowledge/vectorization/curve_agent/alphamax_corner_threshold.json",
+        "knowledge/vectorization/curve_agent/opticurve_bezier_vs_polygon.json",
+        "knowledge/vectorization/curve_agent/opttolerance_curve_smoothness.json",
+        "knowledge/vectorization/curve_agent/opttolerance_segment_joining.json",
+        "knowledge/vectorization/edge_agent/corner_sharpness_edge_fidelity.json",
+        "knowledge/vectorization/edge_agent/max_path_deviation_fidelity.json",
+        "knowledge/vectorization/edge_agent/node_count_topology_target.json",
+        "knowledge/vectorization/edge_agent/turnpolicy_topology_resolution.json",
+        "knowledge/vectorization/noise_agent/blacklevel_bilevel_cutoff.json",
+        "knowledge/vectorization/noise_agent/mkbitmap_highpass_background_gradient.json",
+        "knowledge/vectorization/noise_agent/mkbitmap_lowpass_foreground_smoothing.json",
+        "knowledge/vectorization/noise_agent/turdsize_speckle_suppression.json",
+        "knowledge_agents/__init__.py",
+        "knowledge_experiments.jsonl",
+        "local_agents/README.md",
+        "local_agents/agent_bus.py",
+        "local_agents/agent_loop.py",
+        "local_agents/continuous_doctrine_run.py",
+        "local_agents/continuous_run.py",
+        "local_agents/doctrine_visible_run.py",
+        "local_agents/personas.py",
+        "local_agents/state/transcripts/agent_feed.jsonl",
+        "production_pipeline.py",
+        "reports/embiz_deep_inventory.json",
+        "reports/embiz_deep_inventory.md",
+        "reports/embiz_deep_inventory_followup_log_20260708.md",
+        "reports/knowledge_audit.md",
+        "reports/knowledge_experiments.md",
+        "reports/library_utilization_coverage.md",
+        "reports/production_visuals.md",
+        "reports/vectorizer_v1.md",
+        "reports/vectorizer_v2.md",
+        "reports/vectorizer_v3.md",
+        "reports/vectorizer_v5_promotion.md",
+        "run_iteration.py",
+        "scripts/seed_missing_corpora.py",
+        "skills/embroidery-vector-generation/SKILL.md",
+        "skills/svg-topology-qa/SKILL.md",
+        "solidify.py",
+        "tools/embiz_deep_inventory_audit.py",
+        "vectorizer.py"
+      ],
+      "terraform": [
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "docs/requirements/GAP_ANALYSIS.md",
+        "docs/requirements/SPEC_COVERAGE.md",
+        "reports/embiz_deep_inventory.json",
+        "reports/embiz_deep_inventory.md",
+        "reports/embiz_deep_inventory_followup_log_20260708.md",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "lambda": [
+        "digitizer.py",
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "experiment_harness.py",
+        "ihive.py",
+        "knowledge/vectorization/color_agent/hsl_perceptual_color_matching.json",
+        "knowledge/vectorization/noise_agent/mkbitmap_highpass_background_gradient.json",
+        "knowledge/vectorization/noise_agent/mkbitmap_lowpass_foreground_smoothing.json",
+        "local_agents/continuous_doctrine_run.py",
+        "local_agents/continuous_run.py",
+        "local_agents/doctrine_visible_run.py",
+        "local_agents/knowledge_retrieval.py",
+        "local_agents/slack_daemon.py",
+        "reports/embiz_deep_inventory.json",
+        "reports/embiz_deep_inventory.md",
+        "reports/embiz_deep_inventory_followup_log_20260708.md",
+        "solidify.py",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "sqs": [
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "ses": [
+        ".github/workflows/blank.yml",
+        "EMBIZ_Jupiter_LOCAL_FIRST_Autonomous_Agent_FULL_VERSION.md",
+        "README.md",
+        "agents/contracts/mackenzie.json",
+        "agents/contracts/madeline.json",
+        "agents/contracts/maeve.json",
+        "agents/contracts/mallory.json",
+        "agents/contracts/margaret.json",
+        "agents/contracts/marina.json",
+        "agents/contracts/matilda.json",
+        "agents/contracts/maya.json",
+        "agents/contracts/mckenna.json",
+        "agents/contracts/melanie.json",
+        "agents/contracts/melody.json",
+        "agents/contracts/meredith.json",
+        "agents/contracts/michaela.json",
+        "agents/contracts/mila.json",
+        "agents/contracts/miranda.json",
+        "agents/contracts/miriam.json",
+        "agents/contracts/monica.json",
+        "agents/contracts/morgan.json",
+        "dashboard/index.html",
+        "decision_trace.jsonl",
+        "digitizer.py",
+        "docs/SYSTEM_ATLAS.md",
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "docs/requirements/EMBIZ_BRD.md",
+        "docs/requirements/GAP_ANALYSIS.md",
+        "docs/requirements/SPEC_COVERAGE.md",
+        "experiment_harness.py",
+        "knowledge/library/5-agent-architecture/raster-to-vector-agent/knowledge_objects.jsonl",
+        "knowledge/library/9-knowledge-management-architecture/svg-specification-corpus/knowledge_objects.jsonl",
+        "knowledge/library/global_knowledge_objects.jsonl",
+        "knowledge/library/global_knowledge_objects.multimodal.jsonl",
+        "knowledge/library_coverage.json",
+        "knowledge/vectorization/INDEX.md",
+        "knowledge/vectorization/color_agent/max_thread_color_budget.json",
+        "knowledge/vectorization/curve_agent/alphamax_corner_threshold.json",
+        "knowledge/vectorization/edge_agent/corner_sharpness_edge_fidelity.json",
+        "knowledge/vectorization/edge_agent/node_count_topology_target.json",
+        "knowledge/vectorization/edge_agent/turnpolicy_topology_resolution.json",
+        "knowledge/vectorization/noise_agent/mkbitmap_lowpass_foreground_smoothing.json",
+        "knowledge/vectorization/noise_agent/turdsize_speckle_suppression.json",
+        "knowledge_agents/__init__.py",
+        "knowledge_experiments.jsonl",
+        "local_agents/README.md",
+        "local_agents/continuous_doctrine_run.py",
+        "local_agents/continuous_run.py",
+        "local_agents/dashboard.py",
+        "local_agents/jobs.py",
+        "local_agents/knowledge_ingest.py",
+        "local_agents/knowledge_retrieval.py",
+        "local_agents/model_router.py",
+        "local_agents/personas.py",
+        "local_agents/qwen_client.py",
+        "local_agents/slack_daemon.py",
+        "metrics.py",
+        "production_layout.py",
+        "production_pipeline.py",
+        "reports/embiz_deep_inventory.json",
+        "reports/embiz_deep_inventory.md",
+        "reports/iteration_10.md",
+        "reports/iteration_2.md",
+        "reports/iteration_3.md",
+        "reports/iteration_4.md",
+        "reports/iteration_5.md",
+        "reports/iteration_6.md",
+        "reports/iteration_7.md",
+        "reports/iteration_8.md",
+        "reports/iteration_9.md",
+        "reports/knowledge_audit.md",
+        "reports/knowledge_experiments.md",
+        "reports/library_utilization_coverage.md",
+        "reports/slack_messages/02_transform_sources.txt",
+        "reports/slack_messages/03_pipeline_build_and_learn.txt",
+        "reports/slack_messages/07_unused_and_honest_notes.txt",
+        "reports/vectorizer_v1.md",
+        "reports/vectorizer_v2.md",
+        "reports/vectorizer_v3.md",
+        "reports/vectorizer_v5_promotion.md",
+        "run_iteration.py",
+        "scripts/regression_check.py",
+        "skills/agent-contract-compliance/SKILL.md",
+        "skills/embroidery-vector-generation/SKILL.md",
+        "skills/stitch-plan-generation/SKILL.md",
+        "skills/svg-topology-qa/SKILL.md",
+        "solidify.py",
+        "tools/embiz_deep_inventory_audit.py",
+        "vectorizer.py"
+      ],
+      "x-ray": [
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "xray": [
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ],
+      "pages functions": [
+        "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+        "reports/embiz_deep_inventory.json",
+        "tools/embiz_deep_inventory_audit.py"
+      ]
+    },
+    "expected_surface": [
+      {
+        "path": "wrangler.toml",
+        "present": false
+      },
+      {
+        "path": "functions/_middleware.ts",
+        "present": false
+      },
+      {
+        "path": "functions/api/quote.ts",
+        "present": false
+      },
+      {
+        "path": "functions/api/order.ts",
+        "present": false
+      },
+      {
+        "path": "functions/api/upload.ts",
+        "present": false
+      },
+      {
+        "path": "functions/api/contact.ts",
+        "present": false
+      },
+      {
+        "path": "terraform/main.tf",
+        "present": false
+      },
+      {
+        "path": "terraform/variables.tf",
+        "present": false
+      },
+      {
+        "path": "terraform/outputs.tf",
+        "present": false
+      },
+      {
+        "path": ".github/workflows/deploy-cloudflare-pages.yml",
+        "present": false
+      },
+      {
+        "path": ".github/workflows/deploy-aws.yml",
+        "present": false
+      },
+      {
+        "path": "aws/lambdas/",
+        "present": false
+      },
+      {
+        "path": "package.json",
+        "present": false
+      }
+    ],
+    "missing_expected_surface": [
+      "wrangler.toml",
+      "functions/_middleware.ts",
+      "functions/api/quote.ts",
+      "functions/api/order.ts",
+      "functions/api/upload.ts",
+      "functions/api/contact.ts",
+      "terraform/main.tf",
+      "terraform/variables.tf",
+      "terraform/outputs.tf",
+      ".github/workflows/deploy-cloudflare-pages.yml",
+      ".github/workflows/deploy-aws.yml",
+      "aws/lambdas/",
+      "package.json"
+    ],
+    "status": "cloudflare_aws_surface_incomplete_or_absent"
+  },
+  "services": {
+    "systemctl_available": true,
+    "user_embiz_units": {
+      "cmd": [
+        "systemctl",
+        "--user",
+        "list-units",
+        "--type=service",
+        "--all",
+        "--no-pager"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "Failed to connect to bus: No medium found",
+      "ok": false,
+      "embiz_lines": []
+    },
+    "system_embiz_units": {
+      "cmd": [
+        "systemctl",
+        "list-units",
+        "--type=service",
+        "--all",
+        "--no-pager"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "System has not been booted with systemd as init system (PID 1). Can't operate.\nFailed to connect to bus: Host is down",
+      "ok": false,
+      "embiz_lines": []
+    }
+  },
+  "urls": {
+    "expected_url_count": 24,
+    "covered_exact_urls": 24,
+    "covered_domains": 24,
+    "rows": [
+      {
+        "url": "http://tavmjong.free.fr/INKSCAPE/MANUAL/html/Glossary.html#svg",
+        "domain": "tavmjong.free.fr",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "http://tavmjong.free.fr/INKSCAPE/MANUAL/html/",
+        "domain": "tavmjong.free.fr",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing1.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing2.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing3.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing3a.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing4.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing5.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing6.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing7.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing8.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing9.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing10.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://sketchpad.net/drawing11.htm",
+        "domain": "sketchpad.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://inkscape.gitlab.io/extensions/documentation/",
+        "domain": "inkscape.gitlab.io",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://inkscape.gitlab.io/extensions/documentation/source/index.html",
+        "domain": "inkscape.gitlab.io",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://github.com/Kauhentus/inkscape-cli",
+        "domain": "github.com",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "OUTPUTS.md",
+          "docs/SYSTEM_ATLAS.md",
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://github.com/The3DSquare/inkscape-cli",
+        "domain": "github.com",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "OUTPUTS.md",
+          "docs/SYSTEM_ATLAS.md",
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://www.npmjs.com/package/inkscape-cli",
+        "domain": "npmjs.com",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://inkscape.org/forums/embroidery/",
+        "domain": "inkscape.org",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "ihive.py",
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://potrace.sourceforge.net/",
+        "domain": "potrace.sourceforge.net",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://www.w3.org/TR/SVG11/",
+        "domain": "w3.org",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+          "ihive.py",
+          "knowledge/library/9-knowledge-management-architecture/svg-specification-corpus/knowledge_objects.jsonl",
+          "knowledge/library/global_knowledge_objects.jsonl",
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      },
+      {
+        "url": "https://www.w3.org/TR/SVG2/",
+        "domain": "w3.org",
+        "exact_in_repo": true,
+        "domain_in_repo": true,
+        "exact_in_jsonl": false,
+        "repo_files": [
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "domain_files": [
+          "docs/requirements/EMBIZ_ARCHITECTURAL_MATRIX_v1.html",
+          "ihive.py",
+          "knowledge/library/9-knowledge-management-architecture/svg-specification-corpus/knowledge_objects.jsonl",
+          "knowledge/library/global_knowledge_objects.jsonl",
+          "reports/embiz_deep_inventory.json",
+          "reports/embiz_deep_inventory.md",
+          "tools/embiz_deep_inventory_audit.py"
+        ],
+        "jsonl_files": []
+      }
+    ]
+  },
+  "verdicts": [
+    {
+      "check": "runtime file vectorizer.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file digitizer.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file run_iteration.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file metrics.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file local_agents/continuous_run.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file local_agents/knowledge_ingest.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file local_agents/knowledge_retrieval.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file local_agents/model_router.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file local_agents/qwen_client.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file local_agents/slack_daemon.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file local_agents/agent_loop.py",
+      "status": "ok"
+    },
+    {
+      "check": "runtime file local_agents/personas.py",
+      "status": "ok"
+    },
+    {
+      "check": "knowledge gate mila",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate melanie",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate mckenna",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate meredith",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate miranda",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate mackenzie",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate monica",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate maya",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate marnie",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate mercy",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate mabel",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate mira",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate margo",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "knowledge gate minerva",
+      "status": "ok",
+      "detail": "ok"
+    },
+    {
+      "check": "attached URL seed coverage",
+      "status": "ok"
+    },
+    {
+      "check": "cloudflare customer-facing surface",
+      "status": "missing",
+      "detail": "cloudflare_aws_surface_incomplete_or_absent"
+    },
+    {
+      "check": "open GitHub PR discovery",
+      "status": "unknown",
+      "detail": "uses gh CLI when authenticated"
+    }
+  ]
+}

@@ -14,3 +14,9 @@ renders/
 # Python
 __pycache__/
 *.pyc
+
+# E2E corpus-run evidence hygiene: keep JSON/SVG/preview evidence, exclude
+# regenerable uncompressed BMPs and per-job artwork copies (duplicates of
+# committed corpus artifacts; originals policy: never commit source art).
+reports/e2e/pass_*/stitch/*.bmp
+jobs/*/artwork/

@@ -56,6 +56,21 @@ MAX_LOCAL_DENSITY_PER_MM2 = 1.2  # local needle-penetration density limit
 DENSITY_CELL_MM = 3.0       # cell size for the local density measurement
 DENSITY_BACKOFF_TRIES = 4   # thin satin/fill up to N times to satisfy limit
 
+# --- BRD I-HIVE production enhancements -------------------------------------
+UNDERLAY_ROW_SPACING_MM = 2.0   # sparse tatami underlay row spacing
+UNDERLAY_INSET_MM = 0.4         # underlay stays inside the region edge
+UNDERLAY_MIN_AREA_MM2 = 25.0    # regions smaller than this skip underlay
+PULL_COMP_MM = 0.2              # pull compensation along the stitch (row) axis
+DUAL_SIZE_MM = (76.2, 127.0)    # dual-size export: 3 in and 5 in tall
+# Bernina B700 hoop table (stitchable field, mm) — Miranda's machine limits.
+B700_HOOPS = {
+    "small_oval": (72.0, 50.0),
+    "medium": (130.0, 100.0),
+    "large_oval": (255.0, 145.0),
+    "maxi": (210.0, 400.0),
+    "jumbo": (260.0, 400.0),
+}
+
 SPECK_FRAC = 0.002          # drop components smaller than 0.2% of image area
 AGGLO_GAP_FRAC = 0.08       # merge components whose bbox gap < this * img_width
 
@@ -518,8 +533,24 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
     if not regions:
         return None, None
 
-    # Process larger / solid regions first, thin outlines last for crisp edges.
-    regions.sort(key=lambda r: (r[2], -r[3]))
+    # Color-block optimization (BRD): order solid regions first and group
+    # identical thread colors together so one thread services all its regions
+    # with a single color change; thin outlines still stitch last for crisp
+    # edges. _emit() skips the color change between same-color blocks.
+    regions.sort(key=lambda r: (r[2], tuple(int(v) for v in r[0]), -r[3]))
+
+    # Pull compensation (BRD): fabric pull shortens fills along the stitch
+    # (scanline/row) axis, so solid regions are widened by PULL_COMP_MM on
+    # each side along that axis before stitch generation.
+    comp_px = max(0, int(round(PULL_COMP_MM / mm_per_px)))
+    if comp_px:
+        comp_kernel = np.ones((1, 2 * comp_px + 1), dtype=bool)
+        regions = [
+            (mean_rgb,
+             rmask if is_line else morphology.binary_dilation(rmask, comp_kernel),
+             is_line, area)
+            for (mean_rgb, rmask, is_line, area) in regions
+        ]
 
     def to_units(x_px, y_px):
         xu = int(round(x_px * units_per_px))
@@ -555,23 +586,41 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
             cell_counts[key] = n + 1
             return True
 
+        underlay_runs_n = 0
+        prev_rgb = None
         for (mean_rgb, rmask, is_line, area) in regions:
-            # Thread for this colour block.
-            th = pe.EmbThread()
             r, g, b = [int(v) for v in mean_rgb]
-            th.set_color(r, g, b)
-            pattern.add_thread(th)
-            thread_rgbs.append([r, g, b])
-
-            if not first:
-                pattern.color_change()
-            first = False
+            # Color-block optimization: same-color consecutive regions share
+            # one thread block — no redundant color change / thread entry.
+            if prev_rgb != (r, g, b):
+                th = pe.EmbThread()
+                th.set_color(r, g, b)
+                pattern.add_thread(th)
+                thread_rgbs.append([r, g, b])
+                if not first:
+                    pattern.color_change()
+                first = False
+                prev_rgb = (r, g, b)
 
             runs = []
             if is_line:
                 runs = _contour_runs(rmask, running_px)
             else:
-                runs = _fill_runs(rmask, row_sp_px, max_stitch_px)
+                # Underlay planning (BRD): a sparse tatami pass on an inset
+                # copy of the region stabilizes the fabric before the top
+                # fill. Skipped for tiny regions where it adds bulk only.
+                if area * mm_per_px * mm_per_px >= UNDERLAY_MIN_AREA_MM2:
+                    inset_px = max(1, int(round(UNDERLAY_INSET_MM / mm_per_px)))
+                    umask = morphology.binary_erosion(
+                        rmask, morphology.disk(inset_px))
+                    if umask.any():
+                        urows = _fill_runs(
+                            umask,
+                            max(1.0, UNDERLAY_ROW_SPACING_MM / mm_per_px),
+                            max_stitch_px)
+                        underlay_runs_n += len(urows)
+                        runs += urows
+                runs += _fill_runs(rmask, row_sp_px, max_stitch_px)
                 # SATIN border columns around the filled region (replaces the
                 # old running-stitch outline as the border treatment).
                 sruns = _satin_border_runs(rmask, mm_per_px,
@@ -616,7 +665,7 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
                 last_xy = prev
 
         pattern.end()
-        return pattern, thread_rgbs, satin_runs_n
+        return pattern, thread_rgbs, satin_runs_n, underlay_runs_n
 
     # Density-guarded emission: if the local penetration density exceeds the
     # B700-safe limit, back off (wider spacing, slightly narrower satin) and
@@ -625,7 +674,7 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
     satin_width_mm = SATIN_BORDER_WIDTH_MM
     row_sp_px = row_spacing_px
     for attempt in range(DENSITY_BACKOFF_TRIES):
-        pattern, thread_rgbs, satin_runs_n = _emit(
+        pattern, thread_rgbs, satin_runs_n, underlay_runs_n = _emit(
             satin_spacing_mm, satin_width_mm, row_sp_px)
         density = _density_report(pattern)
         if density["ok"] or attempt == DENSITY_BACKOFF_TRIES - 1:
@@ -649,6 +698,8 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
         "fill_regions": sum(1 for r in regions if not r[2]),
         "line_regions": sum(1 for r in regions if r[2]),
         "satin_borders": satin_runs_n,
+        "underlay_runs": underlay_runs_n,
+        "pull_compensation_mm": PULL_COMP_MM,
         "satin_width_mm": round(min(max(satin_width_mm, SATIN_MIN_WIDTH_MM),
                                     SATIN_MAX_WIDTH_MM), 3),
         "satin_spacing_mm": round(max(satin_spacing_mm,
@@ -660,6 +711,24 @@ def digitize_object(rgb, obj_mask, bbox, target_h_mm=TARGET_H_MM, name="object")
     stats["width_mm"] = round((maxx - minx) / UNITS_PER_MM, 2)
     stats["height_mm"] = round((maxy - miny) / UNITS_PER_MM, 2)
     return pattern, stats
+
+
+def check_hoop_fit(width_mm, height_mm):
+    """B700 hoop/machine-limit check (BRD / Miranda contract): the smallest
+    hoop whose stitchable field holds the design, in either orientation."""
+    fitting = []
+    for name, (w, h) in B700_HOOPS.items():
+        if ((width_mm <= w and height_mm <= h)
+                or (width_mm <= h and height_mm <= w)):
+            fitting.append((w * h, name, (w, h)))
+    if not fitting:
+        return {"fits": False, "smallest_hoop": None,
+                "design_mm": [width_mm, height_mm],
+                "note": "design exceeds every B700 hoop — REJECT"}
+    fitting.sort()
+    _, name, dims = fitting[0]
+    return {"fits": True, "smallest_hoop": name, "hoop_mm": list(dims),
+            "design_mm": [width_mm, height_mm]}
 
 
 def _pattern_stats(pattern):
@@ -732,6 +801,21 @@ def write_outputs(pattern, stats, stem, obj_label, method):
     pe.write_pes(pattern, pes_path)
     render_preview(pattern, stats["thread_rgb"], png_path)
 
+    # Bernina USB EXP handoff companions (BRD / Miranda contract): the .INF
+    # thread-color file and .BMP preview travel with the .EXP.
+    inf_path = base + ".inf"
+    bmp_path = base + ".bmp"
+    try:
+        pe.write_inf(pattern, inf_path)
+    except Exception:
+        pe.write(pattern, inf_path)
+    try:
+        from PIL import Image as _Img
+        _Img.open(png_path).convert("RGB").save(bmp_path, "BMP")
+    except Exception as e:
+        print(f"  [companions] BMP preview failed for {stem}: {e}")
+        bmp_path = None
+
     sidecar = {
         "object": obj_label,
         "name": stats.get("name"),
@@ -754,10 +838,15 @@ def write_outputs(pattern, stats, stem, obj_label, method):
             "density_floor_mm": SATIN_DENSITY_FLOOR_MM,
         },
         "density": stats.get("density"),
+        "underlay_runs": stats.get("underlay_runs", 0),
+        "pull_compensation_mm": stats.get("pull_compensation_mm", 0),
+        "hoop_fit": check_hoop_fit(stats["width_mm"], stats["height_mm"]),
         "bg_removal_method": method,
         "files": {"exp": os.path.basename(exp_path),
                   "pes": os.path.basename(pes_path),
-                  "preview": os.path.basename(png_path)},
+                  "preview": os.path.basename(png_path),
+                  "inf": os.path.basename(inf_path),
+                  "bmp": os.path.basename(bmp_path) if bmp_path else None},
     }
     with open(json_path, "w") as f:
         json.dump(sidecar, f, indent=2)
@@ -867,6 +956,21 @@ def process_images(paths, target_h_mm=TARGET_H_MM):
             _exp_p, pes_p, _png_p, _js_p = write_outputs(pattern, stats, stem, label, method)
             generate_production_visuals(path, pes_p, stem, label, n)
             rows.append((stem, label, stats))
+            # Dual-size export (BRD I-HIVE): every object also ships at the
+            # second production size (5 in) alongside the 3 in primary.
+            for alt_mm in DUAL_SIZE_MM:
+                if abs(alt_mm - target_h_mm) < 0.1:
+                    continue
+                try:
+                    alt_pat, alt_stats = digitize_object(
+                        rgb, obj_mask, bbox, target_h_mm=alt_mm,
+                        name=f"{label}_{int(round(alt_mm / 25.4))}in")
+                    if alt_pat is not None:
+                        write_outputs(alt_pat, alt_stats, stem,
+                                      f"{label}_{int(round(alt_mm / 25.4))}in",
+                                      method)
+                except Exception as e:
+                    print(f"  [dual-size {alt_mm}mm] {label}: {e}")
             print(f"  {label:8s} {stats['width_mm']:6.1f} x {stats['height_mm']:6.1f} mm "
                   f"stitches={stats['stitch_count']:6d} jumps={stats['jump_count']:4d} "
                   f"trims={stats['trim_count']:3d} colors={stats['color_count']} "
