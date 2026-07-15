@@ -1,0 +1,9 @@
+{
+  "from": "a@b.c",
+  "subject": "12 polos left chest 3 in white thread due 9/1",
+  "body": "quantity 12",
+  "attachments": [
+    "/etc/passwd",
+    "production_runs/crest/1_original_on_ruler.jpg"
+  ]
+}

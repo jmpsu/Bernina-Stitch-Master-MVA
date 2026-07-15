@@ -65,9 +65,15 @@ def _utcnow() -> str:
 
 
 def _job_dir(job_id: str) -> Path:
-    if not re.fullmatch(r"JOB-[A-Za-z0-9_.-]+", job_id):
+    # job_id may arrive from HTTP bodies: strict charset (no separators),
+    # then a resolved-containment check so no constructed path can escape
+    # JOBS_DIR even if the charset rule ever loosens.
+    if not re.fullmatch(r"JOB-[A-Za-z0-9_-]+", job_id) or ".." in job_id:
         raise ValueError(f"bad job_id: {job_id!r}")
-    return JOBS_DIR / job_id
+    d = (JOBS_DIR / job_id).resolve()
+    if not d.is_relative_to(JOBS_DIR.resolve()):
+        raise ValueError(f"job_id escapes jobs dir: {job_id!r}")
+    return d
 
 
 def new_job_id(stamp: str | None = None) -> str:

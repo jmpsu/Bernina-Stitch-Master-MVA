@@ -21,6 +21,7 @@ import datetime
 import email
 import email.policy
 import json
+import os
 import re
 import shutil
 import zipfile
@@ -62,6 +63,32 @@ def _utcnow() -> str:
     return datetime.datetime.now(datetime.timezone.utc).isoformat()
 
 
+# Roots a webhook payload may reference attachments from. Anything outside
+# (after symlink resolution) is rejected — a JSON body must never be able to
+# pull arbitrary host files into job artifacts.
+ALLOWED_ATTACHMENT_ROOTS = [
+    Path(os.environ["EMBIZ_INTAKE_DIR"]).resolve()
+    if os.environ.get("EMBIZ_INTAKE_DIR") else REPO_ROOT.resolve()
+]
+
+
+def _safe_name(name: str) -> str:
+    """Flatten any client-supplied filename to a single safe path component."""
+    name = re.sub(r"[^A-Za-z0-9._-]", "_", Path(name).name)
+    return name.lstrip(".") or "attachment.bin"
+
+
+def _contained(child: Path, base: Path) -> bool:
+    try:
+        return child.resolve().is_relative_to(base.resolve())
+    except OSError:
+        return False
+
+
+def _payload_attachment_ok(p: Path) -> bool:
+    return any(_contained(p, root) for root in ALLOWED_ATTACHMENT_ROOTS)
+
+
 # --- stage 1: attachment extraction -----------------------------------------
 
 def extract_attachments(source: Path, dest: Path) -> list[dict]:
@@ -74,19 +101,19 @@ def extract_attachments(source: Path, dest: Path) -> list[dict]:
         msg = email.message_from_bytes(source.read_bytes(),
                                        policy=email.policy.default)
         for part in msg.iter_attachments():
-            name = re.sub(r"[^A-Za-z0-9._-]", "_",
-                          part.get_filename() or "attachment.bin")
-            payload = part.get_payload(decode=True) or b""
-            out = dest / name
-            out.write_bytes(payload)
+            out = dest / _safe_name(part.get_filename() or "attachment.bin")
+            if not _contained(out, dest):
+                continue  # hostile filename — never escape the job dir
+            out.write_bytes(part.get_payload(decode=True) or b"")
             files.append(out)
     elif source.suffix.lower() in ARCHIVE_EXT:
         with zipfile.ZipFile(source) as zf:
             for info in zf.infolist():
                 if info.is_dir() or info.file_size > 100 * 2**20:
                     continue
-                name = re.sub(r"[^A-Za-z0-9._-]", "_", Path(info.filename).name)
-                out = dest / name
+                out = dest / _safe_name(info.filename)
+                if not _contained(out, dest):
+                    continue
                 out.write_bytes(zf.read(info))
                 files.append(out)
     else:  # direct file drop
@@ -294,9 +321,16 @@ def run_intake(source: Path | dict, actor: str = "madeline") -> dict:
     if isinstance(source, dict):
         inventory = []
         for att in source.get("attachments", []):
-            p = Path(att)
-            if p.exists():
+            p = Path(str(att))
+            # payload-supplied paths are untrusted: resolved containment in
+            # the allowed intake roots or the reference is rejected+recorded
+            if p.exists() and _payload_attachment_ok(p):
                 inventory.extend(extract_attachments(p, art_dir))
+            else:
+                jobs_mod._audit(jid, "attachment_rejected",
+                                {"ref": str(att)[:200],
+                                 "reason": "outside allowed intake roots"},
+                                actor=actor)
     else:
         inventory = extract_attachments(src_path, art_dir)
     status_event(actor, jid, str(src_path or "payload"), "received",
