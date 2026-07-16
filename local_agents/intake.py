@@ -109,25 +109,47 @@ def _out_path(dest: Path, idx: int, original: str) -> Path:
     return dest / f"att_{idx:04d}{_safe_ext(original)}"
 
 
+def _confined_read_path(source: Path) -> str | None:
+    """Canonicalize ``source`` and confirm it is a regular file inside one of
+    the configured intake roots. Returns the realpath (a value CodeQL treats
+    as sanitized by the realpath+prefix barrier) or None to refuse the read.
+    Every filesystem read in extract_attachments goes through this, so no
+    unconfined path ever reaches an open/read sink."""
+    real = os.path.realpath(str(source))
+    for root in ALLOWED_ATTACHMENT_ROOTS:
+        base = os.path.realpath(str(root))
+        if (real == base or real.startswith(base + os.sep)) \
+                and os.path.isfile(real):
+            return real
+    return None
+
+
 # --- stage 1: attachment extraction -----------------------------------------
 
 def extract_attachments(source: Path, dest: Path) -> list[dict]:
     """Extract every attachment from an .eml / archive / direct file into
     ``dest``; returns categorized inventory. Extracted files are permanent
     job artifacts written under server-generated names (att_NNNN.<ext>); the
-    client-supplied filename is preserved as the inventory ``label`` only."""
+    client-supplied filename is preserved as the inventory ``label`` only.
+
+    Reads only from a realpath confined to ALLOWED_ATTACHMENT_ROOTS; writes
+    only server-generated names into the trusted ``dest`` — so neither the
+    read nor the write path carries client-controlled data."""
     dest.mkdir(parents=True, exist_ok=True)
+    safe_src = _confined_read_path(source)
+    if safe_src is None:
+        return []  # refuse to read anything outside the configured roots
     entries: list[tuple[Path, str]] = []  # (written path, original label)
-    if source.suffix.lower() == ".eml":
-        msg = email.message_from_bytes(source.read_bytes(),
+    if safe_src.lower().endswith(".eml"):
+        msg = email.message_from_bytes(Path(safe_src).read_bytes(),
                                        policy=email.policy.default)
         for idx, part in enumerate(msg.iter_attachments()):
             original = part.get_filename() or "attachment.bin"
             out = _out_path(dest, idx, original)
             out.write_bytes(part.get_payload(decode=True) or b"")
             entries.append((out, _safe_label(original)))
-    elif source.suffix.lower() in ARCHIVE_EXT:
-        with zipfile.ZipFile(source) as zf:
+    elif os.path.splitext(safe_src)[1].lower() in ARCHIVE_EXT:
+        with zipfile.ZipFile(safe_src) as zf:
             for idx, info in enumerate(zf.infolist()):
                 if info.is_dir() or info.file_size > 100 * 2**20:
                     continue
@@ -136,9 +158,9 @@ def extract_attachments(source: Path, dest: Path) -> list[dict]:
                 entries.append((out, _safe_label(info.filename)))
     else:  # direct file drop — server-generated name into the trusted dest
         idx = len(list(dest.glob("drop_*")))
-        out = dest / f"drop_{idx:04d}{_safe_ext(source.name)}"
-        if source.resolve() != out.resolve():
-            shutil.copy2(source, out)
+        out = dest / f"drop_{idx:04d}{_safe_ext(safe_src)}"
+        if safe_src != os.path.realpath(str(out)):
+            shutil.copy2(safe_src, out)
         entries.append((out, _safe_label(source.name)))
 
     inventory = []
@@ -314,8 +336,10 @@ def run_intake(source: Path | dict, actor: str = "madeline") -> dict:
     else:
         src_path = Path(source)
         if src_path.suffix.lower() == ".eml":
-            msg = email.message_from_bytes(src_path.read_bytes(),
-                                           policy=email.policy.default)
+            _eml = _confined_read_path(src_path)
+            msg = email.message_from_bytes(
+                Path(_eml).read_bytes() if _eml else b"",
+                policy=email.policy.default)
             sender = str(msg.get("From", ""))
             subject = str(msg.get("Subject", ""))
             body = msg.get_body(preferencelist=("plain", "html"))
