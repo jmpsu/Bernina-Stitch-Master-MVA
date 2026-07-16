@@ -1,0 +1,140 @@
+{
+  "inventory": [
+    {
+      "file": "cr_img_0331_logo.png",
+      "bytes": 10633,
+      "category": "raster",
+      "valid": true
+    }
+  ],
+  "identification": [
+    {
+      "file": "cr_img_0331_logo.png",
+      "artwork_type": "raster",
+      "format": "png",
+      "is_vector": false,
+      "is_embroidery": false,
+      "resolution": [
+        428,
+        348
+      ],
+      "dimensions_px": [
+        428,
+        348
+      ],
+      "has_transparency": false,
+      "background_complexity": 0.0,
+      "num_colors": 3,
+      "dominant_colors": [
+        {
+          "rgb": [
+            250,
+            250,
+            250
+          ],
+          "share": 0.8873
+        },
+        {
+          "rgb": [
+            42,
+            79,
+            53
+          ],
+          "share": 0.081
+        },
+        {
+          "rgb": [
+            243,
+            243,
+            242
+          ],
+          "share": 0.0213
+        },
+        {
+          "rgb": [
+            92,
+            88,
+            80
+          ],
+          "share": 0.0078
+        },
+        {
+          "rgb": [
+            163,
+            142,
+            115
+          ],
+          "share": 0.0027
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "file": "cr_img_0331_logo.png",
+      "image_quality": 0.8083,
+      "noise_level": 0.03,
+      "compression_blockiness": 0.001,
+      "edge_clarity": 0.092,
+      "edge_strength": 0.0852,
+      "thin_line_ratio": 0.0718,
+      "small_feature_density": 0.2601,
+      "text_detected": false,
+      "missing_regions": false,
+      "embroidery_suitability": 0.6468
+    }
+  ],
+  "complexity": {
+    "complexity_score": 0.1809,
+    "band": "low",
+    "color_complexity": 0.1875,
+    "geometric_complexity": 0.0852,
+    "small_feature_density": 0.2601,
+    "experiment_budget_iters": 12,
+    "qa_ssim_floor": 0.97,
+    "estimated_difficulty": "low"
+  },
+  "requirements": {},
+  "missing": [
+    "garment",
+    "garment_color",
+    "placement",
+    "size",
+    "thread_colors",
+    "quantity",
+    "deadline"
+  ],
+  "route": "needs_customer_info",
+  "route_reason": "missing: garment, garment_color, placement, size, thread_colors, quantity, deadline",
+  "retrieval": {
+    "queried": true,
+    "hits": 3,
+    "proof": {
+      "timestamp": "2026-07-16T15:01:13.900606+00:00",
+      "job_id": "JOB-20260716-150113878",
+      "agent": "madeline",
+      "task_type": "intake",
+      "query": "artwork intake low complexity File drop: cr_img_0331_logo.png",
+      "source_file": null,
+      "current_phase": null,
+      "corpora_consulted": [
+        {
+          "corpus": "global",
+          "required": false,
+          "present": true,
+          "records": 50
+        }
+      ],
+      "records_considered": 50,
+      "records_selected": [
+        "raster-to-vector-agent/Potrace#p1c1",
+        "raster-to-vector-agent/Potrace#p1c0",
+        "raster-to-vector-agent/Potrace#p5c0"
+      ],
+      "decision_supported": true,
+      "status": "ok",
+      "gate": "ok"
+    }
+  },
+  "timestamp": "2026-07-16T15:01:13.901536+00:00"
+}
