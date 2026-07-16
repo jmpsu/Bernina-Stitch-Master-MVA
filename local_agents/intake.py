@@ -72,15 +72,29 @@ ALLOWED_ATTACHMENT_ROOTS = [
 ]
 
 
-def _safe_name(name: str) -> str:
-    """Flatten any client-supplied filename to a single safe path component."""
-    name = re.sub(r"[^A-Za-z0-9._-]", "_", os.path.basename(str(name)))
-    return name.lstrip(".") or "attachment.bin"
+def _safe_label(name: str) -> str:
+    """Sanitized ORIGINAL filename, kept only as inventory metadata — never
+    used to build an on-disk path."""
+    label = re.sub(r"[^A-Za-z0-9._-]", "_", os.path.basename(str(name)))
+    return label.lstrip(".") or "attachment.bin"
 
 
-# Containment guards are written inline at every filesystem sink in the
-# normpath+startswith shape (plus a realpath re-check against symlink
-# escapes) so the sanitization is visible in the same scope as the sink.
+def _safe_ext(name: str) -> str:
+    """Allowlisted extension for a server-generated output name. Anything not
+    on the allowlist becomes .bin, so the extension can never carry a path
+    separator, traversal, or surprise type."""
+    ext = os.path.splitext(os.path.basename(str(name)))[1].lower()
+    allowed = (RASTER_EXT | VECTOR_EXT | EMBROIDERY_EXT | OFFICE_EXT
+               | ARCHIVE_EXT)
+    return ext if ext in allowed else ".bin"
+
+
+def _out_path(dest: Path, idx: int, original: str) -> Path:
+    """Destination path built ENTIRELY from server-controlled values: the
+    trusted ``dest`` directory, a sequential index, and an allowlisted
+    extension. No client-supplied byte reaches the path, so there is no path
+    to traverse regardless of how hostile ``original`` is."""
+    return dest / f"att_{idx:04d}{_safe_ext(original)}"
 
 
 # --- stage 1: attachment extraction -----------------------------------------
@@ -88,49 +102,42 @@ def _safe_name(name: str) -> str:
 def extract_attachments(source: Path, dest: Path) -> list[dict]:
     """Extract every attachment from an .eml / archive / direct file into
     ``dest``; returns categorized inventory. Extracted files are permanent
-    job artifacts."""
+    job artifacts written under server-generated names (att_NNNN.<ext>); the
+    client-supplied filename is preserved as the inventory ``label`` only."""
     dest.mkdir(parents=True, exist_ok=True)
-    files: list[Path] = []
+    entries: list[tuple[Path, str]] = []  # (written path, original label)
     if source.suffix.lower() == ".eml":
         msg = email.message_from_bytes(source.read_bytes(),
                                        policy=email.policy.default)
-        base = os.path.normpath(str(dest))
-        for part in msg.iter_attachments():
-            out_n = os.path.normpath(os.path.join(
-                base, _safe_name(part.get_filename() or "attachment.bin")))
-            if not out_n.startswith(base + os.sep):
-                continue  # hostile filename — never escape the job dir
-            out = Path(out_n)
+        for idx, part in enumerate(msg.iter_attachments()):
+            original = part.get_filename() or "attachment.bin"
+            out = _out_path(dest, idx, original)
             out.write_bytes(part.get_payload(decode=True) or b"")
-            files.append(out)
+            entries.append((out, _safe_label(original)))
     elif source.suffix.lower() in ARCHIVE_EXT:
-        base = os.path.normpath(str(dest))
         with zipfile.ZipFile(source) as zf:
-            for info in zf.infolist():
+            for idx, info in enumerate(zf.infolist()):
                 if info.is_dir() or info.file_size > 100 * 2**20:
                     continue
-                out_n = os.path.normpath(os.path.join(
-                    base, _safe_name(info.filename)))
-                if not out_n.startswith(base + os.sep):
-                    continue
-                out = Path(out_n)
+                out = _out_path(dest, idx, info.filename)
                 out.write_bytes(zf.read(info))
-                files.append(out)
-    else:  # direct file drop
-        out = dest / source.name
+                entries.append((out, _safe_label(info.filename)))
+    else:  # direct file drop — dest is trusted, keep the original basename
+        out = dest / _safe_label(source.name)
         if source.resolve() != out.resolve():
             shutil.copy2(source, out)
-        files.append(out)
+        entries.append((out, out.name))
 
     inventory = []
-    for f in sorted(set(files)):
+    for f, label in sorted(set(entries)):
         ext = f.suffix.lower()
         category = ("raster" if ext in RASTER_EXT else
                     "vector" if ext in VECTOR_EXT else
                     "embroidery" if ext in EMBROIDERY_EXT else
                     "office" if ext in OFFICE_EXT else
                     "archive" if ext in ARCHIVE_EXT else "other")
-        inventory.append({"file": f.name, "bytes": f.stat().st_size,
+        inventory.append({"file": f.name, "label": label,
+                          "bytes": f.stat().st_size,
                           "category": category, "valid": f.stat().st_size > 0})
         # nested archives extracted one level deep
         if category == "archive":
@@ -321,12 +328,14 @@ def run_intake(source: Path | dict, actor: str = "madeline") -> dict:
     if isinstance(source, dict):
         inventory = []
         art_dir.mkdir(parents=True, exist_ok=True)
-        for att in source.get("attachments", []):
+        for idx, att in enumerate(source.get("attachments", [])):
             # payload-supplied paths are untrusted: normpath+startswith
             # containment in an allowed intake root (with a realpath re-check
-            # against symlink escapes). The vetted file is copied into the
-            # job's artwork dir HERE — guard and sink share this scope — and
-            # only that trusted local copy enters extract_attachments.
+            # against symlink escapes). The vetted source is copied into the
+            # job's artwork dir under a SERVER-GENERATED name (payload_NNNN
+            # + allowlisted extension) — no client byte reaches either the
+            # read or the write path — and only that trusted local copy
+            # enters extract_attachments.
             copied = None
             for root in ALLOWED_ATTACHMENT_ROOTS:
                 base = os.path.normpath(str(root))
@@ -337,8 +346,8 @@ def run_intake(source: Path | dict, actor: str = "madeline") -> dict:
                 if not (real.startswith(base + os.sep)
                         and os.path.isfile(real)):
                     continue
-                local = art_dir / _safe_name(c)
-                shutil.copy2(c, local)
+                local = art_dir / f"payload_{idx:04d}{_safe_ext(c)}"
+                shutil.copy2(real, local)
                 copied = local
                 break
             if copied is not None:
@@ -461,7 +470,8 @@ def _missing_md(missing) -> str:
 
 def _summary_md(jid, customer, subject, inventory, requirements, missing,
                 complexity, route, route_reason, retrieval) -> str:
-    inv = "\n".join(f"- `{i['file']}` ({i['category']}, {i['bytes']} B)"
+    inv = "\n".join(f"- `{i.get('label', i['file'])}` "
+                    f"→ `{i['file']}` ({i['category']}, {i['bytes']} B)"
                     for i in inventory) or "- (none)"
     req = "\n".join(f"- {k}: {v}" for k, v in requirements.items()) or "- (none)"
     return (f"# Intake Summary — {jid}\n\n"
