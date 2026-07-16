@@ -20,3 +20,7 @@ __pycache__/
 # committed corpus artifacts; originals policy: never commit source art).
 reports/e2e/pass_*/stitch/*.bmp
 jobs/*/artwork/
+# Working SVGs embed the source raster (8+ MB each) and are regenerable from
+# the committed production SVG + input image; the reviewed artifact is
+# *_production.svg (ORGANIZATION_BASIS.md cleanup decision).
+reports/e2e/pass_*/*_work.svg

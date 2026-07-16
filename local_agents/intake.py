@@ -74,7 +74,7 @@ ALLOWED_ATTACHMENT_ROOTS = [
 
 def _safe_name(name: str) -> str:
     """Flatten any client-supplied filename to a single safe path component."""
-    name = re.sub(r"[^A-Za-z0-9._-]", "_", Path(name).name)
+    name = re.sub(r"[^A-Za-z0-9._-]", "_", os.path.basename(str(name)))
     return name.lstrip(".") or "attachment.bin"
 
 
@@ -320,22 +320,29 @@ def run_intake(source: Path | dict, actor: str = "madeline") -> dict:
     # 1) attachment extraction
     if isinstance(source, dict):
         inventory = []
+        art_dir.mkdir(parents=True, exist_ok=True)
         for att in source.get("attachments", []):
             # payload-supplied paths are untrusted: normpath+startswith
             # containment in an allowed intake root (with a realpath re-check
-            # against symlink escapes), or rejected+recorded
-            cand = None
+            # against symlink escapes). The vetted file is copied into the
+            # job's artwork dir HERE — guard and sink share this scope — and
+            # only that trusted local copy enters extract_attachments.
+            copied = None
             for root in ALLOWED_ATTACHMENT_ROOTS:
                 base = os.path.normpath(str(root))
                 c = os.path.normpath(os.path.join(base, str(att)))
-                if not (c == base or c.startswith(base + os.sep)):
+                if not c.startswith(base + os.sep):
                     continue
                 real = os.path.realpath(c)
-                if real == base or real.startswith(base + os.sep):
-                    cand = c
-                    break
-            if cand and os.path.exists(cand):
-                inventory.extend(extract_attachments(Path(cand), art_dir))
+                if not (real.startswith(base + os.sep)
+                        and os.path.isfile(real)):
+                    continue
+                local = art_dir / _safe_name(c)
+                shutil.copy2(c, local)
+                copied = local
+                break
+            if copied is not None:
+                inventory.extend(extract_attachments(copied, art_dir))
             else:
                 jobs_mod._audit(jid, "attachment_rejected",
                                 {"ref": str(att)[:200],

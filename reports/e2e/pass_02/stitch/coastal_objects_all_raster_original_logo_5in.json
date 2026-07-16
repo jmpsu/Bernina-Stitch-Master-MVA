@@ -1,0 +1,88 @@
+{
+  "object": "logo_5in",
+  "name": "logo_5in",
+  "width_mm": 127.6,
+  "height_mm": 127.0,
+  "height_target_mm": 76.2,
+  "height_ok": false,
+  "stitch_count": 7120,
+  "jump_count": 605,
+  "trim_count": 479,
+  "color_count": 6,
+  "thread_rgb": [
+    [
+      150,
+      104,
+      75
+    ],
+    [
+      224,
+      119,
+      132
+    ],
+    [
+      36,
+      29,
+      30
+    ],
+    [
+      123,
+      135,
+      119
+    ],
+    [
+      193,
+      161,
+      159
+    ],
+    [
+      246,
+      244,
+      238
+    ]
+  ],
+  "line_art": false,
+  "satin": {
+    "borders": 84,
+    "width_mm": 1.6,
+    "spacing_mm": 0.35,
+    "width_cap_mm": 7.0,
+    "width_floor_mm": 1.0,
+    "density_floor_mm": 0.35
+  },
+  "density": {
+    "cell_mm": 3.0,
+    "max_local_density_per_mm2": 1.111,
+    "limit_per_mm2": 1.2,
+    "cells_over_limit": 0,
+    "cells_total": 824,
+    "stitch_count": 7120,
+    "max_stitches_warn": 60000,
+    "stitch_count_ok": true,
+    "density_ok": true,
+    "ok": true,
+    "backoff_attempts": 1
+  },
+  "underlay_runs": 112,
+  "pull_compensation_mm": 0.2,
+  "hoop_fit": {
+    "fits": true,
+    "smallest_hoop": "large_oval",
+    "hoop_mm": [
+      255.0,
+      145.0
+    ],
+    "design_mm": [
+      127.6,
+      127.0
+    ]
+  },
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "coastal_objects_all_raster_original_logo_5in.exp",
+    "pes": "coastal_objects_all_raster_original_logo_5in.pes",
+    "preview": "coastal_objects_all_raster_original_logo_5in_preview.png",
+    "inf": "coastal_objects_all_raster_original_logo_5in.inf",
+    "bmp": "coastal_objects_all_raster_original_logo_5in.bmp"
+  }
+}

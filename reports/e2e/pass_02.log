@@ -24,3 +24,34 @@
   [visuals] bikini_bikini: 3 JPEG(s)
   logo       40.4 x   77.1 mm stitches=  1847 jumps=  96 trims= 42 colors=1 FILL
 [pass 2] 6/98 caddie_original.jpg
+
+=== caddie_original  bg=fallback(corner+otsu)  fg_frac=0.198  objects=1 ===
+  [visuals] caddie_original: 3 JPEG(s)
+  logo       76.1 x   76.2 mm stitches=  2748 jumps= 367 trims=245 colors=6 FILL
+[pass 2] 7/98 cape_may_crest_crest.png
+
+=== cape_may_crest_crest  bg=fallback(corner+otsu)  fg_frac=0.366  objects=1 ===
+  [visuals] cape_may_crest_crest: 3 JPEG(s)
+  logo       75.6 x   76.2 mm stitches=  2029 jumps=  79 trims= 70 colors=3 FILL
+[pass 2] 8/98 coastal_objects_all_raster_logo.png
+
+=== coastal_objects_all_raster_logo  bg=fallback(corner+otsu)  fg_frac=0.066  objects=4 ===
+  [visuals] coastal_objects_all_raster_logo_obj1: 3 JPEG(s)
+  obj1       70.4 x   76.2 mm stitches=  1339 jumps= 100 trims= 65 colors=2 FILL
+  [visuals] coastal_objects_all_raster_logo_obj2: 3 JPEG(s)
+  obj2       49.3 x   76.2 mm stitches=   220 jumps=   2 trims=  1 colors=1 LINE
+  [visuals] coastal_objects_all_raster_logo_obj3: 3 JPEG(s)
+  obj3       48.7 x   76.8 mm stitches=  2004 jumps= 181 trims=147 colors=2 FILL
+  [visuals] coastal_objects_all_raster_logo_obj4: 3 JPEG(s)
+  obj4      130.7 x   76.2 mm stitches=  1288 jumps=  45 trims= 41 colors=4 FILL
+[pass 2] 9/98 coastal_objects_all_raster_original.jpg
+
+=== coastal_objects_all_raster_original  bg=fallback(corner+otsu)  fg_frac=0.282  objects=1 ===
+  [visuals] coastal_objects_all_raster_original: 3 JPEG(s)
+  logo       76.5 x   76.2 mm stitches=  3390 jumps= 359 trims=271 colors=6 FILL
+[pass 2] 10/98 cr_img_0263_logo.png
+
+=== cr_img_0263_logo  bg=fallback(corner+otsu)  fg_frac=0.110  objects=1 ===
+  [visuals] cr_img_0263_logo: 3 JPEG(s)
+  logo       63.5 x   76.2 mm stitches=  1098 jumps=  64 trims= 60 colors=3 FILL
+[pass 2] 11/98 cr_img_0263_original.jpg
