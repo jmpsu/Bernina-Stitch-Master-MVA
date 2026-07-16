@@ -1,0 +1,301 @@
+{
+  "source": "docs/requirements/EMBIZ_BRD.md#named-agent-roster",
+  "agents": [
+    {
+      "agent_id": "maya",
+      "role": "Orchestrator Agent",
+      "contract": "agents/contracts/maya.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Madeline",
+        "Maeve",
+        "Mallory",
+        "Margaret",
+        "Marina",
+        "Matilda",
+        "Mckenna",
+        "Melanie",
+        "Meredith",
+        "Michaela",
+        "Mila",
+        "Miranda",
+        "Miriam",
+        "Monica",
+        "Morgan"
+      ]
+    },
+    {
+      "agent_id": "madeline",
+      "role": "Customer Intake Agent",
+      "contract": "agents/contracts/madeline.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Margaret",
+        "Marina",
+        "Mckenna",
+        "Melanie",
+        "Meredith",
+        "Michaela",
+        "Mila",
+        "Miranda",
+        "Miriam",
+        "Morgan"
+      ]
+    },
+    {
+      "agent_id": "morgan",
+      "role": "Requirements Agent",
+      "contract": "agents/contracts/morgan.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Madeline",
+        "Maeve",
+        "Marina",
+        "Melanie",
+        "Michaela",
+        "Mila",
+        "Miriam"
+      ]
+    },
+    {
+      "agent_id": "melody",
+      "role": "Customer Support Specialist",
+      "contract": "agents/contracts/melody.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Margaret",
+        "Marina",
+        "Mckenna",
+        "Melanie",
+        "Meredith",
+        "Michaela",
+        "Mila",
+        "Miranda",
+        "Miriam"
+      ]
+    },
+    {
+      "agent_id": "mila",
+      "role": "Raster-to-Vector Agent",
+      "contract": "agents/contracts/mila.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Marina",
+        "Melanie",
+        "Michaela",
+        "Miriam",
+        "Monica",
+        "Morgan"
+      ]
+    },
+    {
+      "agent_id": "melanie",
+      "role": "Vector Design Agent",
+      "contract": "agents/contracts/melanie.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Marina",
+        "Mckenna",
+        "Meredith",
+        "Michaela",
+        "Mila",
+        "Miriam",
+        "Monica"
+      ]
+    },
+    {
+      "agent_id": "mackenzie",
+      "role": "Artwork Review Agent",
+      "contract": "agents/contracts/mackenzie.json",
+      "handoff_targets": [
+        "Maeve",
+        "Margaret",
+        "Marina",
+        "Mckenna",
+        "Melanie",
+        "Meredith",
+        "Michaela",
+        "Mila",
+        "Miriam",
+        "Morgan"
+      ]
+    },
+    {
+      "agent_id": "marina",
+      "role": "Visual Knowledge Extraction Agent",
+      "contract": "agents/contracts/marina.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Melanie",
+        "Michaela",
+        "Mila",
+        "Miriam",
+        "Monica"
+      ]
+    },
+    {
+      "agent_id": "monica",
+      "role": "Inkscape Automation Agent",
+      "contract": "agents/contracts/monica.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Marina",
+        "Matilda",
+        "Melanie",
+        "Michaela",
+        "Mila",
+        "Miriam"
+      ]
+    },
+    {
+      "agent_id": "meredith",
+      "role": "Ink/Stitch Automation Agent",
+      "contract": "agents/contracts/meredith.json",
+      "handoff_targets": [
+        "Maeve",
+        "Margaret",
+        "Marina",
+        "Mckenna",
+        "Melanie",
+        "Michaela",
+        "Miranda",
+        "Miriam"
+      ]
+    },
+    {
+      "agent_id": "mckenna",
+      "role": "Digitization Agent",
+      "contract": "agents/contracts/mckenna.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Margaret",
+        "Marina",
+        "Melanie",
+        "Meredith",
+        "Michaela",
+        "Miranda",
+        "Miriam",
+        "Morgan"
+      ]
+    },
+    {
+      "agent_id": "margaret",
+      "role": "Stitch QA Agent",
+      "contract": "agents/contracts/margaret.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Marina",
+        "Mckenna",
+        "Melanie",
+        "Melody",
+        "Meredith",
+        "Michaela",
+        "Miranda",
+        "Miriam"
+      ]
+    },
+    {
+      "agent_id": "miranda",
+      "role": "Bernina B700 Compatibility Agent",
+      "contract": "agents/contracts/miranda.json",
+      "handoff_targets": [
+        "Madeline",
+        "Maeve",
+        "Margaret",
+        "Marina",
+        "Mckenna",
+        "Meredith",
+        "Michaela",
+        "Miriam",
+        "Morgan"
+      ]
+    },
+    {
+      "agent_id": "michaela",
+      "role": "Continuous Research Agent",
+      "contract": "agents/contracts/michaela.json",
+      "handoff_targets": [
+        "Maeve",
+        "Marina",
+        "Matilda",
+        "Miriam"
+      ]
+    },
+    {
+      "agent_id": "maeve",
+      "role": "Knowledge Librarian Agent",
+      "contract": "agents/contracts/maeve.json",
+      "handoff_targets": [
+        "Marina",
+        "Matilda",
+        "Melody",
+        "Michaela",
+        "Miriam"
+      ]
+    },
+    {
+      "agent_id": "matilda",
+      "role": "Security Audit Agent",
+      "contract": "agents/contracts/matilda.json",
+      "handoff_targets": [
+        "Maeve",
+        "Mallory",
+        "Marina",
+        "Maya",
+        "Michaela",
+        "Miriam",
+        "Monica"
+      ]
+    },
+    {
+      "agent_id": "miriam",
+      "role": "Agent Training / Evaluation Agent",
+      "contract": "agents/contracts/miriam.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Maeve",
+        "Mallory",
+        "Margaret",
+        "Marina",
+        "Maya",
+        "Mckenna",
+        "Melanie",
+        "Meredith",
+        "Michaela",
+        "Mila",
+        "Miranda",
+        "Monica"
+      ]
+    },
+    {
+      "agent_id": "mallory",
+      "role": "Agent Bus / Slack Collaboration Agent",
+      "contract": "agents/contracts/mallory.json",
+      "handoff_targets": [
+        "Mackenzie",
+        "Madeline",
+        "Maeve",
+        "Margaret",
+        "Marina",
+        "Matilda",
+        "Maya",
+        "Mckenna",
+        "Melanie",
+        "Meredith",
+        "Michaela",
+        "Mila",
+        "Miranda",
+        "Miriam",
+        "Morgan"
+      ]
+    }
+  ]
+}

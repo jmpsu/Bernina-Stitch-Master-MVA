@@ -1,0 +1,99 @@
+# Artwork Review
+
+## cr_img_0293_original.jpg
+
+```json
+{
+  "file": "cr_img_0293_original.jpg",
+  "artwork_type": "raster",
+  "format": "jpg",
+  "is_vector": false,
+  "is_embroidery": false,
+  "resolution": [
+    1415,
+    1415
+  ],
+  "dimensions_px": [
+    1415,
+    1415
+  ],
+  "has_transparency": false,
+  "background_complexity": 0.2975,
+  "num_colors": 16,
+  "dominant_colors": [
+    {
+      "rgb": [
+        255,
+        255,
+        255
+      ],
+      "share": 0.4745
+    },
+    {
+      "rgb": [
+        137,
+        137,
+        137
+      ],
+      "share": 0.0857
+    },
+    {
+      "rgb": [
+        242,
+        238,
+        226
+      ],
+      "share": 0.068
+    },
+    {
+      "rgb": [
+        169,
+        124,
+        102
+      ],
+      "share": 0.0389
+    },
+    {
+      "rgb": [
+        57,
+        120,
+        77
+      ],
+      "share": 0.0374
+    }
+  ]
+}
+```
+
+### Automated review — cr_img_0293_original.jpg
+
+```json
+{
+  "file": "cr_img_0293_original.jpg",
+  "image_quality": 0.9802,
+  "noise_level": 0.0033,
+  "compression_blockiness": 0.0,
+  "edge_clarity": 0.0493,
+  "edge_strength": 0.0368,
+  "thin_line_ratio": 0.0174,
+  "small_feature_density": 0.0234,
+  "text_detected": false,
+  "missing_regions": false,
+  "embroidery_suitability": 0.8018
+}
+```
+
+## Complexity
+
+```json
+{
+  "complexity_score": 0.319,
+  "band": "low",
+  "color_complexity": 1.0,
+  "geometric_complexity": 0.0368,
+  "small_feature_density": 0.0234,
+  "experiment_budget_iters": 12,
+  "qa_ssim_floor": 0.97,
+  "estimated_difficulty": "low"
+}
+```

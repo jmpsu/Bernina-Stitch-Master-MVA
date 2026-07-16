@@ -1,0 +1,91 @@
+# Artwork Review
+
+## bikini_bikini.png
+
+```json
+{
+  "file": "bikini_bikini.png",
+  "artwork_type": "raster",
+  "format": "png",
+  "is_vector": false,
+  "is_embroidery": false,
+  "resolution": [
+    197,
+    344
+  ],
+  "dimensions_px": [
+    197,
+    344
+  ],
+  "has_transparency": false,
+  "background_complexity": 0.0,
+  "num_colors": 4,
+  "dominant_colors": [
+    {
+      "rgb": [
+        250,
+        250,
+        250
+      ],
+      "share": 0.9108
+    },
+    {
+      "rgb": [
+        170,
+        158,
+        152
+      ],
+      "share": 0.0354
+    },
+    {
+      "rgb": [
+        126,
+        126,
+        122
+      ],
+      "share": 0.0345
+    },
+    {
+      "rgb": [
+        197,
+        178,
+        169
+      ],
+      "share": 0.0193
+    }
+  ]
+}
+```
+
+### Automated review — bikini_bikini.png
+
+```json
+{
+  "file": "bikini_bikini.png",
+  "image_quality": 0.8365,
+  "noise_level": 0.0229,
+  "compression_blockiness": 0.0022,
+  "edge_clarity": 0.1474,
+  "edge_strength": 0.1193,
+  "thin_line_ratio": 0.0345,
+  "small_feature_density": 0.3333,
+  "text_detected": false,
+  "missing_regions": false,
+  "embroidery_suitability": 0.7423
+}
+```
+
+## Complexity
+
+```json
+{
+  "complexity_score": 0.2208,
+  "band": "low",
+  "color_complexity": 0.25,
+  "geometric_complexity": 0.1193,
+  "small_feature_density": 0.3333,
+  "experiment_budget_iters": 12,
+  "qa_ssim_floor": 0.97,
+  "estimated_difficulty": "low"
+}
+```

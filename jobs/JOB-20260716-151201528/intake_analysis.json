@@ -1,0 +1,140 @@
+{
+  "inventory": [
+    {
+      "file": "caddie_original.jpg",
+      "bytes": 206374,
+      "category": "raster",
+      "valid": true
+    }
+  ],
+  "identification": [
+    {
+      "file": "caddie_original.jpg",
+      "artwork_type": "raster",
+      "format": "jpg",
+      "is_vector": false,
+      "is_embroidery": false,
+      "resolution": [
+        1415,
+        1415
+      ],
+      "dimensions_px": [
+        1415,
+        1415
+      ],
+      "has_transparency": false,
+      "background_complexity": 0.2975,
+      "num_colors": 16,
+      "dominant_colors": [
+        {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "share": 0.6559
+        },
+        {
+          "rgb": [
+            242,
+            238,
+            226
+          ],
+          "share": 0.0663
+        },
+        {
+          "rgb": [
+            254,
+            255,
+            255
+          ],
+          "share": 0.0335
+        },
+        {
+          "rgb": [
+            255,
+            255,
+            253
+          ],
+          "share": 0.0186
+        },
+        {
+          "rgb": [
+            252,
+            255,
+            255
+          ],
+          "share": 0.0168
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "file": "caddie_original.jpg",
+      "image_quality": 0.9748,
+      "noise_level": 0.0042,
+      "compression_blockiness": 0.0,
+      "edge_clarity": 0.0577,
+      "edge_strength": 0.0422,
+      "thin_line_ratio": 0.021,
+      "small_feature_density": 0.0232,
+      "text_detected": false,
+      "missing_regions": false,
+      "embroidery_suitability": 0.8012
+    }
+  ],
+  "complexity": {
+    "complexity_score": 0.3214,
+    "band": "low",
+    "color_complexity": 1.0,
+    "geometric_complexity": 0.0422,
+    "small_feature_density": 0.0232,
+    "experiment_budget_iters": 12,
+    "qa_ssim_floor": 0.97,
+    "estimated_difficulty": "low"
+  },
+  "requirements": {},
+  "missing": [
+    "garment",
+    "garment_color",
+    "placement",
+    "size",
+    "thread_colors",
+    "quantity",
+    "deadline"
+  ],
+  "route": "needs_customer_info",
+  "route_reason": "missing: garment, garment_color, placement, size, thread_colors, quantity, deadline",
+  "retrieval": {
+    "queried": true,
+    "hits": 3,
+    "proof": {
+      "timestamp": "2026-07-16T15:12:01.863566+00:00",
+      "job_id": "JOB-20260716-151201528",
+      "agent": "madeline",
+      "task_type": "intake",
+      "query": "artwork intake low complexity File drop: caddie_original.jpg",
+      "source_file": null,
+      "current_phase": null,
+      "corpora_consulted": [
+        {
+          "corpus": "global",
+          "required": false,
+          "present": true,
+          "records": 50
+        }
+      ],
+      "records_considered": 50,
+      "records_selected": [
+        "raster-to-vector-agent/Potrace#p1c1",
+        "raster-to-vector-agent/Potrace#p2c0",
+        "raster-to-vector-agent/Potrace#p2c1"
+      ],
+      "decision_supported": true,
+      "status": "ok",
+      "gate": "ok"
+    }
+  },
+  "timestamp": "2026-07-16T15:12:01.865140+00:00"
+}

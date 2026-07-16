@@ -1,0 +1,72 @@
+{
+  "object": "logo",
+  "name": "logo",
+  "width_mm": 39.4,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 1510,
+  "jump_count": 111,
+  "trim_count": 75,
+  "color_count": 6,
+  "thread_rgb": [
+    [
+      238,
+      145,
+      42
+    ],
+    [
+      253,
+      253,
+      253
+    ],
+    [
+      29,
+      23,
+      19
+    ],
+    [
+      125,
+      114,
+      100
+    ],
+    [
+      204,
+      221,
+      222
+    ],
+    [
+      242,
+      210,
+      91
+    ]
+  ],
+  "line_art": false,
+  "satin": {
+    "borders": 9,
+    "width_mm": 1.6,
+    "spacing_mm": 0.35,
+    "width_cap_mm": 7.0,
+    "width_floor_mm": 1.0,
+    "density_floor_mm": 0.35
+  },
+  "density": {
+    "cell_mm": 3.0,
+    "max_local_density_per_mm2": 1.111,
+    "limit_per_mm2": 1.2,
+    "cells_over_limit": 0,
+    "cells_total": 195,
+    "stitch_count": 1510,
+    "max_stitches_warn": 60000,
+    "stitch_count_ok": true,
+    "density_ok": true,
+    "ok": true,
+    "backoff_attempts": 1
+  },
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "order_0001_drink_v2_logo.exp",
+    "pes": "order_0001_drink_v2_logo.pes",
+    "preview": "order_0001_drink_v2_logo_preview.png"
+  }
+}

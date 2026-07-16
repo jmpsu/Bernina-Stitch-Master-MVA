@@ -1,0 +1,10 @@
+{
+  "from": "a@b.c",
+  "subject": "sanitizer round-3 test 12 polos 3 in",
+  "body": "quantity 12",
+  "attachments": [
+    "/etc/passwd",
+    "../../../etc/hosts",
+    "production_runs/crest/1_original_on_ruler.jpg"
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "inventory": [
+    {
+      "file": "crest_original.jpg",
+      "bytes": 230016,
+      "category": "raster",
+      "valid": true
+    }
+  ],
+  "identification": [
+    {
+      "file": "crest_original.jpg",
+      "artwork_type": "raster",
+      "format": "jpg",
+      "is_vector": false,
+      "is_embroidery": false,
+      "resolution": [
+        1415,
+        1415
+      ],
+      "dimensions_px": [
+        1415,
+        1415
+      ],
+      "has_transparency": false,
+      "background_complexity": 0.2975,
+      "num_colors": 15,
+      "dominant_colors": [
+        {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "share": 0.5799
+        },
+        {
+          "rgb": [
+            242,
+            238,
+            226
+          ],
+          "share": 0.0689
+        },
+        {
+          "rgb": [
+            221,
+            59,
+            54
+          ],
+          "share": 0.0434
+        },
+        {
+          "rgb": [
+            248,
+            220,
+            85
+          ],
+          "share": 0.0323
+        },
+        {
+          "rgb": [
+            254,
+            255,
+            255
+          ],
+          "share": 0.0287
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "file": "crest_original.jpg",
+      "image_quality": 0.9769,
+      "noise_level": 0.0038,
+      "compression_blockiness": 0.0,
+      "edge_clarity": 0.0584,
+      "edge_strength": 0.042,
+      "thin_line_ratio": 0.0254,
+      "small_feature_density": 0.0214,
+      "text_detected": false,
+      "missing_regions": false,
+      "embroidery_suitability": 0.7962
+    }
+  ],
+  "complexity": {
+    "complexity_score": 0.3017,
+    "band": "low",
+    "color_complexity": 0.9375,
+    "geometric_complexity": 0.042,
+    "small_feature_density": 0.0214,
+    "experiment_budget_iters": 12,
+    "qa_ssim_floor": 0.97,
+    "estimated_difficulty": "low"
+  },
+  "requirements": {},
+  "missing": [
+    "garment",
+    "garment_color",
+    "placement",
+    "size",
+    "thread_colors",
+    "quantity",
+    "deadline"
+  ],
+  "route": "needs_customer_info",
+  "route_reason": "missing: garment, garment_color, placement, size, thread_colors, quantity, deadline",
+  "retrieval": {
+    "queried": true,
+    "hits": 3,
+    "proof": {
+      "timestamp": "2026-07-15T01:07:09.959686+00:00",
+      "job_id": "JOB-20260715-010709519",
+      "agent": "madeline",
+      "task_type": "intake",
+      "query": "artwork intake low complexity File drop: crest_original.jpg",
+      "source_file": null,
+      "current_phase": null,
+      "corpora_consulted": [
+        {
+          "corpus": "global",
+          "required": false,
+          "present": true,
+          "records": 50
+        }
+      ],
+      "records_considered": 50,
+      "records_selected": [
+        "raster-to-vector-agent/Potrace#p1c1",
+        "raster-to-vector-agent/Potrace#p2c0",
+        "raster-to-vector-agent/Potrace#p2c1"
+      ],
+      "decision_supported": true,
+      "status": "ok",
+      "gate": "ok"
+    }
+  },
+  "timestamp": "2026-07-15T01:07:09.961013+00:00"
+}

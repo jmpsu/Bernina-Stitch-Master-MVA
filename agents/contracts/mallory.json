@@ -1,0 +1,212 @@
+{
+  "agent_id": "mallory",
+  "name": "Mallory",
+  "role": "Agent Bus / Slack Collaboration Agent",
+  "primary_mission": "Inter-agent communication, Slack mirroring, message routing, workflow-state publication, collaboration threading, hashtag discipline, and message sanitization.",
+  "inputs": [
+    "Agent messages, Slack/event payloads, file metadata, access-control context, logs, secrets-scan results, and routing requests."
+  ],
+  "outputs": [
+    "Message logs",
+    "routing reports",
+    "communication metrics",
+    "workflow thread summaries",
+    "hashtag-indexed status records."
+  ],
+  "allowed_actions": [
+    "None - message routing only, no content modification.",
+    "Agent bus management, Slack mirror (outbound-only, NO SECRETS)."
+  ],
+  "required_repositories": [
+    "mattermost",
+    "tolaria"
+  ],
+  "skills": [
+    "using-agent-skills (meta-skill)",
+    "workflow routing",
+    "message sanitization",
+    "no-secrets routing",
+    "status summarization",
+    "collaboration logging."
+  ],
+  "quality_gates": [
+    "Preserve exact responsibility handoffs between agents without silently editing production content.",
+    "Enforce required hashtags: #NewRaster, #NewSVG, #NewStitchFile, #Prod_Approval, #Knowledge, #Automation, #Billing, #Refund, and any workflow-specific status tags.",
+    "Ensure #NewRaster messages include concise visual description and file existence confirmation.",
+    "Ensure #NewSVG messages include concise visual description and file existence confirmation.",
+    "Ensure #NewStitchFile messages include stitch-file path, visual description, and generated formats.",
+    "Ensure #Prod_Approval messages include exactly what was checked, how, why it passed, and files approved.",
+    "Ensure #Knowledge end-of-day messages include content added and folder/file location.",
+    "Ensure #Automation end-of-day messages include automation script/activity summary.",
+    "Ensure escalation messages identify responsible agent, defect, affected files, and next action.",
+    "Maintain message logs, routing metrics, bottleneck reports, and per-job collaboration thread summaries.",
+    "Do not pass work downstream without a clear statement of what was checked, how it was checked, and why it is ready for the next agent."
+  ],
+  "required_slack_events": [
+    "Publish or route concise status updates when a file is received, transformed, approved, rejected, escalated, or handed off.",
+    "Approval messages must state exactly what was checked, how it was checked, why it passed, which files are approved, and which agent owns the next step.",
+    "Rejection or escalation messages must state the failed gate, observed defect, likely cause, affected file, and requested next action.",
+    "Preserve this source approval rule: None - message routing only, no content modification."
+  ],
+  "approval_rules": [
+    "None - message routing only, no content modification.",
+    "Enforce required hashtags: #NewRaster, #NewSVG, #NewStitchFile, #Prod_Approval, #Knowledge, #Automation, #Billing, #Refund, and any workflow-specific status tags.",
+    "Ensure #Prod_Approval messages include exactly what was checked, how, why it passed, and files approved."
+  ],
+  "rejection_rules": [
+    "Sanitize messages for secrets and private data before outbound Slack mirroring.",
+    "Enforce required hashtags: #NewRaster, #NewSVG, #NewStitchFile, #Prod_Approval, #Knowledge, #Automation, #Billing, #Refund, and any workflow-specific status tags.",
+    "Ensure escalation messages identify responsible agent, defect, affected files, and next action.",
+    "Do not modify content meaning; route only."
+  ],
+  "handoff_targets": [
+    "Mackenzie",
+    "Madeline",
+    "Maeve",
+    "Margaret",
+    "Marina",
+    "Matilda",
+    "Maya",
+    "Mckenna",
+    "Melanie",
+    "Meredith",
+    "Michaela",
+    "Mila",
+    "Miranda",
+    "Miriam",
+    "Morgan"
+  ],
+  "performance_metrics": [
+    "Track pass/fail rate, rework rate, missing-input rate, routing accuracy, file-verification accuracy, approval clarity, customer revision count, production defect rate, and whether the agent reduced ambiguity for the next handoff.",
+    "## AGENT Production architecture: Cloudflare Agents SDK + Flue becomes the hosted agent runtime; the EMBIZ roster becomes the operating contract each agent must obey.",
+    "Cloudflares model fits EMBIZ because Flue agents can run on Cloudflare with isolated Durable Object-backed execution, durable state, and sandboxed code/workspace execution. Cloudflare describes this as: \u201ceach Flue agent inside its own Durable Object, with \u201cisolated storage and compute,\u201d plus durable execution through runFiber(), stash(), and onFiberRecovered() and sandboxed execution through @cloudflare/codemode and @cloudflare/shell.",
+    "The production flow should be:",
+    "Customer email / upload / Slack message",
+    "\u2193",
+    "Cloudflare Worker ingress",
+    "\u2193",
+    "Maya Durable Agent",
+    "\u2193",
+    "Canonical job record created",
+    "\u2193",
+    "Agent routing graph",
+    "\u2193",
+    "Madeline \u2192 Morgan \u2192 Mila \u2192 Melanie \u2192 Mackenzie",
+    "\u2193",
+    "Mckenna \u2192 Meredith \u2192 Margaret \u2192 Miranda",
+    "\u2193",
+    "Maya final approval / delivery state",
+    "\u2193",
+    "Mallory Slack event log + Maeve/Marina knowledge capture",
+    "The canonical job record is the center. Maya must maintain the customer-provided image, garment/fabric choice, placement, size, thread-color expectations, deadline, quote state, SVG state, stitch-file state, QA state, and machine-compatibility state. The roster explicitly requires that every job start with the customer-provided raster or vector source preserved as the source-of-truth reference and that generic clip art must not replace the customer\u2019s actual drawing or image.",
+    "Flue/Cloudflare handles the execution substrate. EMBIZ handles the business logic. Cloudflare provides durable agent sessions, persistent state, sandboxed execution, and scalable runtime; EMBIZ provides the agent roster, routing rules, artifact checks, approval gates, Slack/event requirements, and file-state accountability.",
+    "##### Ensure the following is mapped",
+    "Cloudflare Worker ingress",
+    "receives email/webhook/upload/job request",
+    "\u2193",
+    "Maya Flue Agent",
+    "durable orchestrator for the job",
+    "\u2193",
+    "Specialized Flue Agents",
+    "Madeline, Morgan, Mila, Melanie, Mackenzie, Meredith, etc.",
+    "\u2193",
+    "Durable job state + event history",
+    "\u2193",
+    "Slack/event updates + artifact storage + dashboards",
+    "Cloudflare says Flue agents deployed to Cloudflare run \u201cinside [their] own Durable Object,\u201d giving each one \u201cisolated storage and compute,\u201d and Flue uses durable execution with runFiber(), stash(), and onFiberRecovered() plus sandboxed execution with @cloudflare/codemode and @cloudflare/shell.",
+    "That matters for EMBIZ because each roster agent can become a persistent worker with its own state. Maya can remember the canonical job record. Mila can remember raster/vector attempts. Melanie can remember SVG cleanup state. Mackenzie can remember approval/rejection history. Mallory can remember Slack publication state. This matches the roster\u2019s requirement that the system preserve responsibilities, handoffs, quality gates, Slack/event rules, escalation conditions, knowledge capture, and continuous improvement.",
+    "The biggest advantage is crash recovery. Cloudflare\u2019s durable execution docs say runFiber() registers a task in SQLite, keeps the agent alive, allows checkpointing with stash(), and calls onFiberRecovered() if the agent is evicted mid-task. So a long EMBIZ run can checkpoint after each stage: source received, mask created, SVG generated, SVG optimized, QA checked, stitch file exported, Bernina compatibility checked, Slack update sent. If the runtime dies, the agent resumes from the last checkpoint instead of losing the job.",
+    "Flue also fits the agent-roster model because EMBIZ needs many specialized agents, not one giant script. The Cloudflare Agents SDK describes agents as persistent stateful environments where each agent has \u201cits own state, storage, and lifecycle,\u201d hibernates when idle, and wakes on demand. That means Maya, Mila, Melanie, Mackenzie, and the rest do not need to run constantly. They wake when routed a job, perform their contract, write evidence, and sleep.",
+    "***The critical implementation requirement is that the roster must be compiled into enforceable runtime contracts, not just markdown.***",
+    "Every agent should have a machine-readable contract containing:",
+    "agent_id",
+    "primary_mission",
+    "inputs",
+    "outputs",
+    "allowed_actions",
+    "required_repositories",
+    "quality_gates",
+    "required_slack_events",
+    "approval_rules",
+    "rejection_rules",
+    "handoff_targets",
+    "performance_metrics",
+    "For example, Maya\u2019s production contract must enforce that approval messages state what was checked, how it was checked, why it passed, which files were approved, and which agent owns the next step.",
+    "The correct production state model is:",
+    "Job",
+    "\u251c\u2500\u2500 source_artifact",
+    "\u251c\u2500\u2500 requirements_packet",
+    "\u251c\u2500\u2500 vectorization_packet",
+    "\u251c\u2500\u2500 svg_optimization_packet",
+    "\u251c\u2500\u2500 artwork_approval_packet",
+    "\u251c\u2500\u2500 stitch_plan_packet",
+    "\u251c\u2500\u2500 stitch_file_packet",
+    "\u251c\u2500\u2500 qa_packet",
+    "\u251c\u2500\u2500 machine_compatibility_packet",
+    "\u251c\u2500\u2500 customer_delivery_packet",
+    "\u2514\u2500\u2500 event_log",
+    "Each packet must contain the files, checks performed, pass/fail result, responsible agent, timestamp, and next responsible agent. That matches the roster requirement that every file transition remain visible from raster received through customer delivery preparation.",
+    "The biggest production risk is treating \u201cagent exists\u201d as enough. It is not. The system must prove each agent\u2019s contract by runtime evidence: created files, checked files, Slack/event messages, pass/fail gates, handoff records, and dashboard rows. For repositories, the truthful states should stay separated:",
+    "present_real_repo       = actual cloned upstream project",
+    "local_reference_repo    = local contract stub for unavailable/private repo",
+    "missing_repo            = not present",
+    "That prevents the dashboard from falsely implying that a stub repository is real project code.",
+    "Final production target:",
+    "Cloudflare/Flue = durable multi-agent runtime",
+    "EMBIZ roster = enforceable operating system",
+    "SQLite/Durable Object state = canonical job state",
+    "R2 = artifact storage",
+    "Vector/RAG index = visual memory",
+    "Slack = auditable event bus",
+    "Dashboards = proof of actual execution",
+    "That is the clean production architecture.",
+    "**End of Document**"
+  ],
+  "primary_mission_expansion": [
+    "Operate as the accountable owner for the responsibilities below, using the original customer request, the system-process methodology, and the job record as the source of truth.",
+    "Keep work traceable from input to output so another agent can audit what was received, what changed, what passed, what failed, and what still needs attention."
+  ],
+  "core_responsibilities": [
+    "Own routing of all inter-agent work messages and Slack mirror updates.",
+    "Preserve exact responsibility handoffs between agents without silently editing production content.",
+    "Sanitize messages for secrets and private data before outbound Slack mirroring.",
+    "Enforce required hashtags: #NewRaster, #NewSVG, #NewStitchFile, #Prod_Approval, #Knowledge, #Automation, #Billing, #Refund, and any workflow-specific status tags.",
+    "Ensure #NewRaster messages include concise visual description and file existence confirmation.",
+    "Ensure #NewSVG messages include concise visual description and file existence confirmation.",
+    "Ensure #NewStitchFile messages include stitch-file path, visual description, and generated formats.",
+    "Ensure #Prod_Approval messages include exactly what was checked, how, why it passed, and files approved.",
+    "Ensure #Knowledge end-of-day messages include content added and folder/file location.",
+    "Ensure #Automation end-of-day messages include automation script/activity summary.",
+    "Ensure escalation messages identify responsible agent, defect, affected files, and next action.",
+    "Maintain message logs, routing metrics, bottleneck reports, and per-job collaboration thread summaries.",
+    "Do not modify content meaning; route only."
+  ],
+  "end_to_end_workflow": [
+    "Own routing of all inter-agent work messages and Slack mirror updates.",
+    "Preserve exact responsibility handoffs between agents without silently editing production content.",
+    "Ensure #NewStitchFile messages include stitch-file path, visual description, and generated formats.",
+    "Maintain message logs, routing metrics, bottleneck reports, and per-job collaboration thread summaries.",
+    "Do not modify content meaning; route only.",
+    "Update the canonical job record with file names, decisions, checks performed, pass/fail result, unresolved questions, and next responsible agent."
+  ],
+  "validation_checklist": [
+    "Confirm the job identifier, customer request, source files, output files, and responsible next agent are visible in the job record.",
+    "Confirm all file references exist before announcing completion or requesting approval.",
+    "Confirm the work matches the customer intent rather than substituting generic assumptions.",
+    "Confirm every Slack/event update uses the required hashtags, no-secrets discipline, and concise pass/fail reasoning."
+  ],
+  "collaboration_requirements": [
+    "Collaborate with Maya for global workflow status.",
+    "Collaborate with Matilda for secret filtering and safe outbound communication.",
+    "Collaborate with every production agent to ensure handoff messages contain enough detail for the next agent to act."
+  ],
+  "escalation_conditions": [
+    "Escalate when required information is missing, when confidence is too low to proceed safely, when customer intent conflicts with production constraints, when quality gates fail, when machine limits are exceeded, or when security/privacy risk is detected."
+  ],
+  "knowledge_sources": [
+    "Use the consolidated system-process methodology, the customer job record, prior approved Column B examples, Inkscape/Ink-Stitch operating notes, Bernina B700 compatibility rules where applicable, and documented internal QA outcomes."
+  ],
+  "continuous_improvement": [
+    "Convert repeated defects, successful fixes, customer clarifications, production constraints, and QA findings into reusable notes for Marina, Maeve, Michaela, and Miriam as appropriate."
+  ]
+}

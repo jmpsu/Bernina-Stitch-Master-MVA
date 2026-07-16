@@ -1,0 +1,72 @@
+{
+  "object": "logo",
+  "name": "logo",
+  "width_mm": 414.9,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 7347,
+  "jump_count": 235,
+  "trim_count": 229,
+  "color_count": 6,
+  "thread_rgb": [
+    [
+      135,
+      113,
+      99
+    ],
+    [
+      210,
+      170,
+      125
+    ],
+    [
+      240,
+      242,
+      242
+    ],
+    [
+      201,
+      57,
+      51
+    ],
+    [
+      86,
+      77,
+      76
+    ],
+    [
+      61,
+      128,
+      173
+    ]
+  ],
+  "line_art": false,
+  "satin": {
+    "borders": 0,
+    "width_mm": 1.6,
+    "spacing_mm": 0.35,
+    "width_cap_mm": 7.0,
+    "width_floor_mm": 1.0,
+    "density_floor_mm": 0.35
+  },
+  "density": {
+    "cell_mm": 3.0,
+    "max_local_density_per_mm2": 1.111,
+    "limit_per_mm2": 1.2,
+    "cells_over_limit": 0,
+    "cells_total": 1806,
+    "stitch_count": 7347,
+    "max_stitches_warn": 60000,
+    "stitch_count_ok": true,
+    "density_ok": true,
+    "ok": true,
+    "backoff_attempts": 1
+  },
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "order_0003_coastal_objects_all_logo.exp",
+    "pes": "order_0003_coastal_objects_all_logo.pes",
+    "preview": "order_0003_coastal_objects_all_logo_preview.png"
+  }
+}

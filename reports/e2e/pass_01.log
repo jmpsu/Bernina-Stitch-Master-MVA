@@ -1,0 +1,319 @@
+[pass 1] 1/98 beach_strip_cabana.png
+
+=== beach_strip_cabana  bg=fallback(corner+otsu)  fg_frac=0.489  objects=1 ===
+  [visuals] beach_strip_cabana: 3 JPEG(s)
+  logo       49.3 x   76.9 mm stitches=  3403 jumps= 215 trims= 77 colors=3 FILL
+[pass 1] 2/98 beach_strip_crab.png
+
+=== beach_strip_crab  bg=fallback(corner+otsu)  fg_frac=0.323  objects=1 ===
+  [visuals] beach_strip_crab: 3 JPEG(s)
+  logo       58.8 x   76.2 mm stitches=  1212 jumps=  56 trims= 38 colors=2 FILL
+[pass 1] 3/98 beach_strip_lighthouse.png
+
+=== beach_strip_lighthouse  bg=fallback(corner+otsu)  fg_frac=0.318  objects=1 ===
+  [visuals] beach_strip_lighthouse: 3 JPEG(s)
+  logo       37.0 x   76.2 mm stitches=   849 jumps=  70 trims= 48 colors=4 FILL
+[pass 1] 4/98 beach_strip_surfboard.png
+
+=== beach_strip_surfboard  bg=fallback(corner+otsu)  fg_frac=0.223  objects=1 ===
+  [visuals] beach_strip_surfboard: 3 JPEG(s)
+  logo       31.8 x   76.2 mm stitches=   749 jumps=  28 trims= 20 colors=2 FILL
+[pass 1] 5/98 bikini_bikini.png
+
+=== bikini_bikini  bg=fallback(corner+otsu)  fg_frac=0.278  objects=1 ===
+  [visuals] bikini_bikini: 3 JPEG(s)
+  logo       40.4 x   77.1 mm stitches=  1847 jumps=  96 trims= 42 colors=1 FILL
+[pass 1] 6/98 caddie_original.jpg
+[pass 1] 7/98 cape_may_crest_crest.png
+
+=== cape_may_crest_crest  bg=fallback(corner+otsu)  fg_frac=0.366  objects=1 ===
+  [visuals] cape_may_crest_crest: 3 JPEG(s)
+  logo       75.6 x   76.2 mm stitches=  2029 jumps=  79 trims= 70 colors=3 FILL
+[pass 1] 8/98 coastal_objects_all_raster_logo.png
+[pass 1] 9/98 coastal_objects_all_raster_original.jpg
+[pass 1] 10/98 cr_img_0263_logo.png
+
+=== cr_img_0263_logo  bg=fallback(corner+otsu)  fg_frac=0.110  objects=1 ===
+  [visuals] cr_img_0263_logo: 3 JPEG(s)
+  logo       63.5 x   76.2 mm stitches=  1098 jumps=  64 trims= 60 colors=3 FILL
+[pass 1] 11/98 cr_img_0263_original.jpg
+[pass 1] 12/98 cr_img_0293_logo.png
+[pass 1] 13/98 cr_img_0293_original.jpg
+[pass 1] 14/98 cr_img_0322_logo.png
+
+=== cr_img_0322_logo  bg=fallback(corner+otsu)  fg_frac=0.135  objects=1 ===
+  [visuals] cr_img_0322_logo: 3 JPEG(s)
+  logo       57.0 x   76.2 mm stitches=   793 jumps=  65 trims= 50 colors=3 FILL
+[pass 1] 15/98 cr_img_0322_original.jpg
+[pass 1] 16/98 cr_img_0331_logo.png
+[pass 1] 17/98 cr_img_0331_original.jpg
+[pass 1] 18/98 cr_img_1126_logo.png
+
+=== cr_img_1126_logo  bg=fallback(corner+otsu)  fg_frac=0.332  objects=1 ===
+  [visuals] cr_img_1126_logo: 3 JPEG(s)
+  logo       73.1 x   76.2 mm stitches=  1843 jumps= 123 trims=103 colors=4 FILL
+[pass 1] 19/98 cr_img_1126_original.jpg
+[pass 1] 20/98 crest_original.jpg
+[pass 1] 21/98 drink_trace_raster_logo.png
+[pass 1] 22/98 drink_trace_raster_original.jpg
+[pass 1] 23/98 drink_v2_raster_logo.png
+
+=== drink_v2_raster_logo  bg=fallback(corner+otsu)  fg_frac=0.379  objects=1 ===
+  [visuals] drink_v2_raster_logo: 3 JPEG(s)
+  logo       63.9 x   77.1 mm stitches=  3172 jumps= 164 trims=118 colors=4 FILL
+[pass 1] 24/98 drink_v2_raster_original.jpg
+[pass 1] 25/98 flags_original.jpg
+[pass 1] 26/98 house_original.jpg
+[pass 1] 27/98 img_0226_logo.png
+
+=== img_0226_logo  bg=fallback(corner+otsu)  fg_frac=0.093  objects=1 ===
+  [visuals] img_0226_logo: 3 JPEG(s)
+  logo       62.0 x   76.2 mm stitches=   330 jumps=  14 trims= 13 colors=1 LINE
+[pass 1] 28/98 img_0227_logo.png
+
+=== img_0227_logo  bg=fallback(corner+otsu)  fg_frac=0.221  objects=1 ===
+  [visuals] img_0227_logo: 3 JPEG(s)
+  logo       30.8 x   76.2 mm stitches=   813 jumps=  48 trims= 28 colors=4 FILL
+[pass 1] 29/98 img_0228_logo.png
+[pass 1] 30/98 img_0229_logo.png
+[pass 1] 31/98 img_0230_logo.png
+
+=== img_0230_logo  bg=fallback(corner+otsu)  fg_frac=0.285  objects=1 ===
+  [visuals] img_0230_logo: 3 JPEG(s)
+  logo       54.4 x   76.2 mm stitches=   629 jumps=  36 trims= 31 colors=3 FILL
+[pass 1] 32/98 img_0234_logo.png
+
+=== img_0234_logo  bg=fallback(corner+otsu)  fg_frac=0.244  objects=1 ===
+  [visuals] img_0234_logo: 3 JPEG(s)
+  logo      106.7 x   76.2 mm stitches=  2817 jumps= 132 trims=108 colors=5 FILL
+[pass 1] 33/98 img_0235_logo.png
+
+=== img_0235_logo  bg=fallback(corner+otsu)  fg_frac=0.279  objects=1 ===
+  [visuals] img_0235_logo: 3 JPEG(s)
+  logo       52.4 x   76.2 mm stitches=  1583 jumps=  77 trims= 65 colors=3 FILL
+[pass 1] 34/98 img_0236_logo.png
+
+=== img_0236_logo  bg=fallback(corner+otsu)  fg_frac=0.105  objects=1 ===
+  [visuals] img_0236_logo: 3 JPEG(s)
+  logo       91.9 x   76.2 mm stitches=   998 jumps=  69 trims= 59 colors=5 FILL
+[pass 1] 35/98 img_0238_logo.png
+
+=== img_0238_logo  bg=fallback(corner+otsu)  fg_frac=0.000  objects=0 ===
+[pass 1] 36/98 img_0240_logo.png
+[pass 1] 37/98 img_0241_logo.png
+
+=== img_0241_logo  bg=fallback(corner+otsu)  fg_frac=0.144  objects=1 ===
+  [visuals] img_0241_logo: 3 JPEG(s)
+  logo       71.4 x   76.2 mm stitches=   474 jumps=  15 trims= 13 colors=1 FILL
+[pass 1] 38/98 img_0242_logo.png
+
+=== img_0242_logo  bg=fallback(corner+otsu)  fg_frac=0.000  objects=0 ===
+[pass 1] 39/98 img_0243_logo.png
+
+=== img_0243_logo  bg=fallback(corner+otsu)  fg_frac=0.282  objects=1 ===
+  [visuals] img_0243_logo: 3 JPEG(s)
+  logo       82.3 x   76.2 mm stitches=  1918 jumps= 106 trims= 88 colors=4 FILL
+[pass 1] 40/98 img_0244_logo.png
+
+=== img_0244_logo  bg=fallback(corner+otsu)  fg_frac=0.325  objects=1 ===
+  [visuals] img_0244_logo: 3 JPEG(s)
+  logo       67.8 x   76.2 mm stitches=  1987 jumps= 104 trims= 94 colors=4 FILL
+[pass 1] 41/98 img_0245_logo.png
+
+=== img_0245_logo  bg=fallback(corner+otsu)  fg_frac=0.140  objects=1 ===
+  [visuals] img_0245_logo: 3 JPEG(s)
+  logo       83.0 x   76.2 mm stitches=  1122 jumps=  60 trims= 49 colors=3 FILL
+[pass 1] 42/98 img_0246_logo.png
+
+=== img_0246_logo  bg=fallback(corner+otsu)  fg_frac=0.271  objects=1 ===
+  [visuals] img_0246_logo: 3 JPEG(s)
+  logo       67.8 x   76.2 mm stitches=  2025 jumps=  61 trims= 55 colors=3 FILL
+[pass 1] 43/98 img_0250_logo.png
+
+=== img_0250_logo  bg=fallback(corner+otsu)  fg_frac=0.185  objects=1 ===
+  [visuals] img_0250_logo: 3 JPEG(s)
+  logo       89.6 x   75.8 mm stitches=  1392 jumps=  83 trims= 71 colors=4 FILL
+[pass 1] 44/98 img_0251_logo.png
+
+=== img_0251_logo  bg=fallback(corner+otsu)  fg_frac=0.231  objects=1 ===
+  [visuals] img_0251_logo: 3 JPEG(s)
+  logo       75.3 x   76.2 mm stitches=  1851 jumps= 107 trims= 79 colors=5 FILL
+[pass 1] 45/98 img_0252_logo.png
+
+=== img_0252_logo  bg=fallback(corner+otsu)  fg_frac=0.167  objects=1 ===
+  [visuals] img_0252_logo: 3 JPEG(s)
+  logo       68.0 x   76.2 mm stitches=  1392 jumps= 116 trims= 65 colors=5 FILL
+[pass 1] 46/98 img_0254_logo.png
+[pass 1] 47/98 img_0255_logo.png
+
+=== img_0255_logo  bg=fallback(corner+otsu)  fg_frac=0.399  objects=1 ===
+  [visuals] img_0255_logo: 3 JPEG(s)
+  logo       64.9 x   76.2 mm stitches=  2472 jumps= 264 trims=212 colors=6 FILL
+[pass 1] 48/98 img_0260_logo.png
+[pass 1] 49/98 img_0263_logo.png
+
+=== img_0263_logo  bg=fallback(corner+otsu)  fg_frac=0.099  objects=1 ===
+  [visuals] img_0263_logo: 3 JPEG(s)
+  logo       61.3 x   75.9 mm stitches=  1079 jumps=  59 trims= 52 colors=2 FILL
+[pass 1] 50/98 img_0267_logo.png
+
+=== img_0267_logo  bg=fallback(corner+otsu)  fg_frac=0.270  objects=1 ===
+  [visuals] img_0267_logo: 3 JPEG(s)
+  logo       77.2 x   76.2 mm stitches=   573 jumps=  13 trims=  9 colors=1 FILL
+[pass 1] 51/98 img_0273_logo.png
+
+=== img_0273_logo  bg=fallback(corner+otsu)  fg_frac=0.141  objects=1 ===
+  [visuals] img_0273_logo: 3 JPEG(s)
+  logo       75.2 x   76.2 mm stitches=  1346 jumps=  92 trims= 81 colors=3 FILL
+[pass 1] 52/98 img_0277_logo.png
+
+=== img_0277_logo  bg=fallback(corner+otsu)  fg_frac=0.150  objects=1 ===
+  [visuals] img_0277_logo: 3 JPEG(s)
+  logo       63.0 x   76.2 mm stitches=   522 jumps=  44 trims= 32 colors=4 FILL
+[pass 1] 53/98 img_0281_logo.png
+
+=== img_0281_logo  bg=fallback(corner+otsu)  fg_frac=0.352  objects=1 ===
+  [visuals] img_0281_logo: 3 JPEG(s)
+  logo       58.7 x   76.2 mm stitches=  1657 jumps=  86 trims= 73 colors=5 FILL
+[pass 1] 54/98 img_0282_logo.png
+
+=== img_0282_logo  bg=fallback(corner+otsu)  fg_frac=0.077  objects=1 ===
+  [visuals] img_0282_logo: 3 JPEG(s)
+  logo       46.8 x   76.2 mm stitches=   240 jumps=  12 trims=  9 colors=1 LINE
+[pass 1] 55/98 img_0288_logo.png
+
+=== img_0288_logo  bg=fallback(corner+otsu)  fg_frac=0.132  objects=1 ===
+  [visuals] img_0288_logo: 3 JPEG(s)
+  logo       93.8 x   76.2 mm stitches=   997 jumps=  63 trims= 52 colors=4 FILL
+[pass 1] 56/98 img_0293_logo.png
+
+=== img_0293_logo  bg=fallback(corner+otsu)  fg_frac=0.050  objects=1 ===
+  [visuals] img_0293_logo: 3 JPEG(s)
+  logo      231.9 x   76.2 mm stitches=  1588 jumps=  35 trims= 33 colors=4 FILL
+[pass 1] 57/98 img_0298_logo.png
+
+=== img_0298_logo  bg=fallback(corner+otsu)  fg_frac=0.266  objects=1 ===
+  [visuals] img_0298_logo: 3 JPEG(s)
+  logo       65.0 x   76.2 mm stitches=  1985 jumps=  93 trims= 82 colors=4 FILL
+[pass 1] 58/98 img_0301_logo.png
+[pass 1] 59/98 img_0302_logo.png
+
+=== img_0302_logo  bg=fallback(corner+otsu)  fg_frac=0.111  objects=1 ===
+  [visuals] img_0302_logo: 3 JPEG(s)
+  logo       69.0 x   76.2 mm stitches=   474 jumps=  13 trims= 12 colors=1 LINE
+[pass 1] 60/98 img_0308_logo.png
+[pass 1] 61/98 img_0309_logo.png
+
+=== img_0309_logo  bg=fallback(corner+otsu)  fg_frac=0.354  objects=1 ===
+  [visuals] img_0309_logo: 3 JPEG(s)
+  logo       75.4 x   76.2 mm stitches=  2421 jumps= 141 trims=120 colors=5 FILL
+[pass 1] 62/98 img_0310_logo.png
+[pass 1] 63/98 img_0311_logo.png
+
+=== img_0311_logo  bg=fallback(corner+otsu)  fg_frac=0.192  objects=1 ===
+  [visuals] img_0311_logo: 3 JPEG(s)
+  logo       63.5 x   76.2 mm stitches=  1110 jumps= 113 trims= 90 colors=5 FILL
+[pass 1] 64/98 img_0312_logo.png
+[pass 1] 65/98 img_0313_logo.png
+
+=== img_0313_logo  bg=fallback(corner+otsu)  fg_frac=0.312  objects=1 ===
+  [visuals] img_0313_logo: 3 JPEG(s)
+  logo       36.2 x   76.2 mm stitches=  1193 jumps=  65 trims= 50 colors=3 FILL
+[pass 1] 66/98 img_0314_logo.png
+[pass 1] 67/98 img_0315_logo.png
+
+=== img_0315_logo  bg=fallback(corner+otsu)  fg_frac=0.226  objects=1 ===
+  [visuals] img_0315_logo: 3 JPEG(s)
+  logo       49.0 x   76.2 mm stitches=  1298 jumps=  69 trims= 60 colors=4 FILL
+[pass 1] 68/98 img_0316_logo.png
+[pass 1] 69/98 img_0317_logo.png
+
+=== img_0317_logo  bg=fallback(corner+otsu)  fg_frac=0.246  objects=1 ===
+  [visuals] img_0317_logo: 3 JPEG(s)
+  logo       57.0 x   76.2 mm stitches=  1385 jumps=  94 trims= 70 colors=4 FILL
+[pass 1] 70/98 img_0318_logo.png
+[pass 1] 71/98 img_0319_logo.png
+
+=== img_0319_logo  bg=fallback(corner+otsu)  fg_frac=0.184  objects=1 ===
+  [visuals] img_0319_logo: 3 JPEG(s)
+  logo       52.0 x   76.2 mm stitches=  1295 jumps=  71 trims= 53 colors=4 FILL
+[pass 1] 72/98 img_0320_logo.png
+
+=== img_0320_logo  bg=fallback(corner+otsu)  fg_frac=0.298  objects=1 ===
+  [visuals] img_0320_logo: 3 JPEG(s)
+  logo       60.7 x   76.2 mm stitches=  1941 jumps= 113 trims= 96 colors=3 FILL
+[pass 1] 73/98 img_0321_logo.png
+
+=== img_0321_logo  bg=fallback(corner+otsu)  fg_frac=0.214  objects=1 ===
+  [visuals] img_0321_logo: 3 JPEG(s)
+  logo       54.2 x   76.2 mm stitches=  1216 jumps=  84 trims= 71 colors=4 FILL
+[pass 1] 74/98 img_0322_logo.png
+
+=== img_0322_logo  bg=fallback(corner+otsu)  fg_frac=0.146  objects=1 ===
+  [visuals] img_0322_logo: 3 JPEG(s)
+  logo       59.9 x   76.2 mm stitches=   649 jumps=  37 trims= 32 colors=3 FILL
+[pass 1] 75/98 img_0323_logo.png
+
+=== img_0323_logo  bg=fallback(corner+otsu)  fg_frac=0.207  objects=1 ===
+  [visuals] img_0323_logo: 3 JPEG(s)
+  logo       83.3 x   76.2 mm stitches=  1299 jumps=  81 trims= 63 colors=5 FILL
+[pass 1] 76/98 img_0324_logo.png
+
+=== img_0324_logo  bg=fallback(corner+otsu)  fg_frac=0.235  objects=1 ===
+  [visuals] img_0324_logo: 3 JPEG(s)
+  logo       85.1 x   76.2 mm stitches=  1690 jumps= 124 trims=103 colors=5 FILL
+[pass 1] 77/98 img_0325_logo.png
+
+=== img_0325_logo  bg=fallback(corner+otsu)  fg_frac=0.127  objects=1 ===
+  [visuals] img_0325_logo: 3 JPEG(s)
+  logo      100.9 x   76.2 mm stitches=  1133 jumps=  67 trims= 49 colors=5 FILL
+[pass 1] 78/98 img_0327_logo.png
+[pass 1] 79/98 img_0328_logo.png
+[pass 1] 80/98 img_0330_logo.png
+
+=== img_0330_logo  bg=fallback(corner+otsu)  fg_frac=0.175  objects=1 ===
+  [visuals] img_0330_logo: 3 JPEG(s)
+  logo       74.4 x   76.2 mm stitches=   700 jumps=   8 trims=  7 colors=1 FILL
+[pass 1] 81/98 img_0331_logo.png
+[pass 1] 82/98 img_1126_logo.png
+
+=== img_1126_logo  bg=fallback(corner+otsu)  fg_frac=0.344  objects=1 ===
+  [visuals] img_1126_logo: 3 JPEG(s)
+  logo       76.2 x   76.2 mm stitches=  1962 jumps= 107 trims= 82 colors=4 FILL
+[pass 1] 83/98 img_1126_original.jpg
+[pass 1] 84/98 order_0001_drink_v2_logo.png
+[pass 1] 85/98 order_0001_drink_v2_original.jpg
+[pass 1] 86/98 order_0002_img_0331_logo.png
+[pass 1] 87/98 order_0002_img_0331_original.jpg
+[pass 1] 88/98 order_0003_coastal_objects_all_logo.png
+[pass 1] 89/98 order_0003_coastal_objects_all_original.jpg
+[pass 1] 90/98 seafood_strip_basket.png
+
+=== seafood_strip_basket  bg=fallback(corner+otsu)  fg_frac=0.278  objects=1 ===
+  [visuals] seafood_strip_basket: 3 JPEG(s)
+  logo       76.2 x   76.2 mm stitches=  1365 jumps=  88 trims= 72 colors=2 FILL
+[pass 1] 91/98 seafood_strip_cocktail.png
+
+=== seafood_strip_cocktail  bg=fallback(corner+otsu)  fg_frac=0.127  objects=1 ===
+  [visuals] seafood_strip_cocktail: 3 JPEG(s)
+  logo       63.0 x   76.2 mm stitches=   421 jumps=  13 trims= 12 colors=1 FILL
+[pass 1] 92/98 seafood_strip_lobster.png
+
+=== seafood_strip_lobster  bg=fallback(corner+otsu)  fg_frac=0.374  objects=1 ===
+  [visuals] seafood_strip_lobster: 3 JPEG(s)
+  logo       44.3 x   76.2 mm stitches=   651 jumps=  64 trims= 38 colors=3 FILL
+[pass 1] 93/98 seafood_strip_shell.png
+
+=== seafood_strip_shell  bg=fallback(corner+otsu)  fg_frac=0.175  objects=1 ===
+  [visuals] seafood_strip_shell: 3 JPEG(s)
+  logo       41.5 x   76.2 mm stitches=   292 jumps=   5 trims=  2 colors=1 FILL
+[pass 1] 94/98 skull_moon_rose_design.png
+
+=== skull_moon_rose_design  bg=fallback(corner+otsu)  fg_frac=0.231  objects=1 ===
+  [visuals] skull_moon_rose_design: 3 JPEG(s)
+  logo       51.1 x   76.2 mm stitches=  1212 jumps= 118 trims= 91 colors=3 FILL
+[pass 1] 95/98 squirrel_logo_logo.png
+[pass 1] 96/98 squirrel_logo_logo_5in.png
+[pass 1] 97/98 squirrel_logo_original.jpg
+[pass 1] 98/98 squirrel_original.jpg
+[pass 1] images=98 completed=54 mean_ssim=0.8189 density_pass=0.551

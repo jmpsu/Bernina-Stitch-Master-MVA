@@ -1,0 +1,61 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_01/seafood_strip_lobster_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/seafood_strip_lobster.png",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 48,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#E9E3E3",
+        "#EAE5E5",
+        "#EAE6E5",
+        "#EBE7E6",
+        "#EBE7E7",
+        "#EEECEC",
+        "#F1EEEE",
+        "#F2EFEF",
+        "#F4F3F2",
+        "#F7F7F7"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": true,
+      "count": 0
+    },
+    "zero_area_paths": {
+      "pass": true,
+      "count": 0
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 0,
+      "note": "no white areas"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.5342
+    }
+  },
+  "blocking_failures": [],
+  "ok": true
+}

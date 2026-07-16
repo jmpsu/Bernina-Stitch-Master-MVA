@@ -1,0 +1,59 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_02/beach_strip_lighthouse_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/beach_strip_lighthouse.png",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 66,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#EDEEEE",
+        "#EEEEED",
+        "#F3F4F5",
+        "#F5F5F4",
+        "#F5F6F6",
+        "#F7F7F7",
+        "#F9F9F9",
+        "#FAFAFA"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": true,
+      "count": 0
+    },
+    "zero_area_paths": {
+      "pass": true,
+      "count": 0
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 0,
+      "note": "no white areas"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.6155
+    }
+  },
+  "blocking_failures": [],
+  "ok": true
+}

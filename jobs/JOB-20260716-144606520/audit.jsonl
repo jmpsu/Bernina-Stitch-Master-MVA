@@ -1,0 +1,7 @@
+{"timestamp": "2026-07-16T14:46:06.521107+00:00", "job_id": "JOB-20260716-144606520", "actor": "system", "action": "created", "source": "email", "status": "new_intake"}
+{"timestamp": "2026-07-16T14:46:06.521230+00:00", "job_id": "JOB-20260716-144606520", "actor": "madeline", "action": "attachment_rejected", "ref": "/etc/passwd", "reason": "outside allowed intake roots"}
+{"timestamp": "2026-07-16T14:46:06.521276+00:00", "job_id": "JOB-20260716-144606520", "actor": "madeline", "action": "attachment_rejected", "ref": "../../../etc/hosts", "reason": "outside allowed intake roots"}
+{"timestamp": "2026-07-16T14:46:06.604970+00:00", "job_id": "JOB-20260716-144606520", "actor": "madeline", "action": "status_event", "file": "payload", "event": "received", "note": "1 attachment(s) extracted"}
+{"timestamp": "2026-07-16T14:46:07.260429+00:00", "job_id": "JOB-20260716-144606520", "actor": "madeline", "action": "status_transition", "from": "new_intake", "to": "requirements_extracted", "reason": "intake requirements parsed"}
+{"timestamp": "2026-07-16T14:46:07.260598+00:00", "job_id": "JOB-20260716-144606520", "actor": "madeline", "action": "status_transition", "from": "requirements_extracted", "to": "needs_customer_info", "reason": "missing: garment_color, placement, thread_colors, deadline"}
+{"timestamp": "2026-07-16T14:46:07.261609+00:00", "job_id": "JOB-20260716-144606520", "actor": "melody", "action": "customer_draft", "file": "customer_replies/draft_acknowledgement.md"}

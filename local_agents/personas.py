@@ -282,6 +282,66 @@ def feed_tail(n: int = 20) -> list[dict]:
     return out
 
 
+# --- BRD roster contracts (agents/contracts/*.json) -------------------------
+# The 18×M named roster compiled from docs/requirements/EMBIZ_BRD.md is the
+# canonical operating contract. Every roster agent gets a Persona here (the
+# legacy run-crew personas above stay for the continuous run's internal
+# voice), and CONTRACTS exposes the full machine-readable contract so runtime
+# code can enforce quality gates, Slack-event rules, and handoffs.
+
+CONTRACTS_DIR = Path(__file__).resolve().parent.parent / "agents" / "contracts"
+
+ROSTER_EMOJI = {
+    "maya": ":crown:", "madeline": ":inbox_tray:", "morgan": ":clipboard:",
+    "melody": ":telephone_receiver:", "mila": ":triangular_ruler:",
+    "melanie": ":art:", "monica": ":gear:", "mackenzie": ":mag:",
+    "mckenna": ":thread:", "meredith": ":sewing_needle:",
+    "margaret": ":white_check_mark:", "miranda": ":robot_face:",
+    "marina": ":frame_with_picture:", "maeve": ":books:",
+    "matilda": ":card_index_dividers:", "michaela": ":microscope:",
+    "miriam": ":mortar_board:", "mallory": ":satellite_antenna:",
+}
+
+
+def load_contracts() -> dict[str, dict]:
+    """All compiled roster contracts, keyed by agent_id. Empty if absent."""
+    contracts: dict[str, dict] = {}
+    if CONTRACTS_DIR.is_dir():
+        for path in sorted(CONTRACTS_DIR.glob("*.json")):
+            if path.name == "index.json":
+                continue
+            try:
+                rec = json.loads(path.read_text(encoding="utf-8"))
+                contracts[rec["agent_id"]] = rec
+            except (ValueError, KeyError) as exc:  # never break the runtime
+                log.warning("bad contract %s: %s", path.name, exc)
+    return contracts
+
+
+CONTRACTS: dict[str, dict] = load_contracts()
+
+
+def contract_for(key: str) -> dict | None:
+    """The compiled BRD contract for a persona key, if the agent is on the
+    roster (legacy run-crew personas like mira/marnie have none)."""
+    return CONTRACTS.get(key)
+
+
+def _register_roster_personas() -> None:
+    for agent_id, c in CONTRACTS.items():
+        if agent_id in PERSONAS:
+            continue  # legacy persona keeps its voice; contract still applies
+        PERSONAS[agent_id] = Persona(
+            key=agent_id, name=c["name"], role=c["role"],
+            icon_emoji=ROSTER_EMOJI.get(agent_id, ":bust_in_silhouette:"),
+            style=f"[{c['name']} | {c['role'].lower()}]",
+            home_channels=(CHANNELS["jobs"],),
+        )
+
+
+_register_roster_personas()
+
+
 if __name__ == "__main__":
     # Smoke test: everyone says hello into the local feed (and Slack if up).
     for p in PERSONAS.values():

@@ -1,0 +1,63 @@
+{
+  "object": "logo",
+  "name": "logo",
+  "width_mm": 63.0,
+  "height_mm": 76.2,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 421,
+  "jump_count": 13,
+  "trim_count": 12,
+  "color_count": 1,
+  "thread_rgb": [
+    [
+      250,
+      250,
+      250
+    ]
+  ],
+  "line_art": false,
+  "satin": {
+    "borders": 0,
+    "width_mm": 1.6,
+    "spacing_mm": 0.35,
+    "width_cap_mm": 7.0,
+    "width_floor_mm": 1.0,
+    "density_floor_mm": 0.35
+  },
+  "density": {
+    "cell_mm": 3.0,
+    "max_local_density_per_mm2": 0.556,
+    "limit_per_mm2": 1.2,
+    "cells_over_limit": 0,
+    "cells_total": 192,
+    "stitch_count": 421,
+    "max_stitches_warn": 60000,
+    "stitch_count_ok": true,
+    "density_ok": true,
+    "ok": true,
+    "backoff_attempts": 1
+  },
+  "underlay_runs": 0,
+  "pull_compensation_mm": 0.2,
+  "hoop_fit": {
+    "fits": true,
+    "smallest_hoop": "medium",
+    "hoop_mm": [
+      130.0,
+      100.0
+    ],
+    "design_mm": [
+      63.0,
+      76.2
+    ]
+  },
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "seafood_strip_cocktail_logo.exp",
+    "pes": "seafood_strip_cocktail_logo.pes",
+    "preview": "seafood_strip_cocktail_logo_preview.png",
+    "inf": "seafood_strip_cocktail_logo.inf",
+    "bmp": "seafood_strip_cocktail_logo.bmp"
+  }
+}
