@@ -1,0 +1,63 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_01/order_0003_coastal_objects_all_original_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/order_0003_coastal_objects_all_original.jpg",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 136342,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#E8707E",
+        "#E87281",
+        "#E87482",
+        "#E8757F",
+        "#E87686",
+        "#E87687",
+        "#E87688",
+        "#E87786",
+        "#E87787",
+        "#E87884"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": false,
+      "count": 122625
+    },
+    "zero_area_paths": {
+      "pass": false,
+      "count": 86051
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 75,
+      "note": "white paths present \u2014 confirm knockout vs white-thread against garment color"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.9313
+    }
+  },
+  "blocking_failures": [
+    "duplicate_paths"
+  ],
+  "ok": false
+}

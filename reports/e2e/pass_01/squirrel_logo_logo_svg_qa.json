@@ -1,0 +1,63 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_01/squirrel_logo_logo_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/squirrel_logo_logo.png",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 1307,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#F7F5EE",
+        "#F7F5EF",
+        "#F7F6F0",
+        "#F7F6F1",
+        "#F8F6F2",
+        "#F8F7F2",
+        "#F8F7F3",
+        "#F8F7F4",
+        "#F8F8F5",
+        "#F9F8F6"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": false,
+      "count": 327
+    },
+    "zero_area_paths": {
+      "pass": false,
+      "count": 1
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 0,
+      "note": "no white areas"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.9159
+    }
+  },
+  "blocking_failures": [
+    "duplicate_paths"
+  ],
+  "ok": false
+}

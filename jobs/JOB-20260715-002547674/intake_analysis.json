@@ -1,0 +1,140 @@
+{
+  "inventory": [
+    {
+      "file": "coastal_objects_all_raster_original.jpg",
+      "bytes": 208128,
+      "category": "raster",
+      "valid": true
+    }
+  ],
+  "identification": [
+    {
+      "file": "coastal_objects_all_raster_original.jpg",
+      "artwork_type": "raster",
+      "format": "jpg",
+      "is_vector": false,
+      "is_embroidery": false,
+      "resolution": [
+        1415,
+        1415
+      ],
+      "dimensions_px": [
+        1415,
+        1415
+      ],
+      "has_transparency": false,
+      "background_complexity": 0.3036,
+      "num_colors": 14,
+      "dominant_colors": [
+        {
+          "rgb": [
+            255,
+            255,
+            255
+          ],
+          "share": 0.5626
+        },
+        {
+          "rgb": [
+            152,
+            105,
+            75
+          ],
+          "share": 0.0787
+        },
+        {
+          "rgb": [
+            242,
+            238,
+            226
+          ],
+          "share": 0.0677
+        },
+        {
+          "rgb": [
+            226,
+            118,
+            133
+          ],
+          "share": 0.0336
+        },
+        {
+          "rgb": [
+            254,
+            255,
+            255
+          ],
+          "share": 0.0298
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "file": "coastal_objects_all_raster_original.jpg",
+      "image_quality": 0.9731,
+      "noise_level": 0.0045,
+      "compression_blockiness": 0.0,
+      "edge_clarity": 0.0567,
+      "edge_strength": 0.0417,
+      "thin_line_ratio": 0.0182,
+      "small_feature_density": 0.0289,
+      "text_detected": false,
+      "missing_regions": false,
+      "embroidery_suitability": 0.8029
+    }
+  ],
+  "complexity": {
+    "complexity_score": 0.2855,
+    "band": "low",
+    "color_complexity": 0.875,
+    "geometric_complexity": 0.0417,
+    "small_feature_density": 0.0289,
+    "experiment_budget_iters": 12,
+    "qa_ssim_floor": 0.97,
+    "estimated_difficulty": "low"
+  },
+  "requirements": {},
+  "missing": [
+    "garment",
+    "garment_color",
+    "placement",
+    "size",
+    "thread_colors",
+    "quantity",
+    "deadline"
+  ],
+  "route": "needs_customer_info",
+  "route_reason": "missing: garment, garment_color, placement, size, thread_colors, quantity, deadline",
+  "retrieval": {
+    "queried": true,
+    "hits": 3,
+    "proof": {
+      "timestamp": "2026-07-15T00:25:48.100694+00:00",
+      "job_id": "JOB-20260715-002547674",
+      "agent": "madeline",
+      "task_type": "intake",
+      "query": "artwork intake low complexity File drop: coastal_objects_all_raster_original.jpg",
+      "source_file": null,
+      "current_phase": null,
+      "corpora_consulted": [
+        {
+          "corpus": "global",
+          "required": false,
+          "present": true,
+          "records": 50
+        }
+      ],
+      "records_considered": 50,
+      "records_selected": [
+        "raster-to-vector-agent/Potrace#p1c1",
+        "raster-to-vector-agent/Potrace#p5c0",
+        "raster-to-vector-agent/Potrace#p1c0"
+      ],
+      "decision_supported": true,
+      "status": "ok",
+      "gate": "ok"
+    }
+  },
+  "timestamp": "2026-07-15T00:25:48.102436+00:00"
+}

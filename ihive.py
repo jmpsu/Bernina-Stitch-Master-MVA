@@ -156,6 +156,38 @@ def strip_archival_layers(svg_path: Path, out_path: Path) -> Path:
     return out
 
 
+def cleanup_svg(svg_path: Path, out_path: Path | None = None) -> dict:
+    """SVG structural cleanup (BRD I-HIVE): remove exact duplicate paths —
+    identical geometry AND identical presentation stitches the same shape
+    twice, building thread and risking jams. Distinct fills on the same
+    geometry (stacked layering) are preserved. Returns removal stats."""
+    svg_path = Path(svg_path)
+    out_path = Path(out_path) if out_path else svg_path
+    text = svg_path.read_text(encoding="utf-8")
+    # Identical geometry means the same shape stitched more than once — even
+    # under a different fill the earlier copy is fully occluded in painter's
+    # order and would only double-stitch. Keep the LAST (visible) occurrence.
+    matches = list(re.finditer(r"<path\b[^>]*/?>", text))
+    last_for_d: dict[str, int] = {}
+    for i, m in enumerate(matches):
+        dm = re.search(r'\bd="([^"]*)"', m.group(0))
+        last_for_d[dm.group(1) if dm else f"__nod{i}"] = i
+    keep = set(last_for_d.values())
+    removed = 0
+    out, pos = [], 0
+    for i, m in enumerate(matches):
+        out.append(text[pos:m.start()])
+        if i in keep:
+            out.append(m.group(0))
+        else:
+            removed += 1
+        pos = m.end()
+    out.append(text[pos:])
+    out_path.write_text("".join(out), encoding="utf-8")
+    return {"paths_removed": removed, "paths_kept": len(keep),
+            "file": str(out_path)}
+
+
 def has_archival_layer(svg_path: Path) -> bool:
     return ARCHIVAL_LAYER_ID in Path(svg_path).read_text(encoding="utf-8")
 

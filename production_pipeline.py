@@ -118,6 +118,8 @@ def process_image(img: Path, pass_id: int, budget: int, out_dir: Path) -> dict:
     ihive.add_locked_tracing_layer(svg, img, work_svg)
     prod_svg = out_dir / f"{img.stem}_production.svg"
     ihive.strip_archival_layers(work_svg, prod_svg)
+    cleanup = ihive.cleanup_svg(prod_svg)
+    row["svg_paths_deduped"] = cleanup["paths_removed"]
     qa = svg_topology_qa.run_qa(prod_svg, img,
                                 report_path=out_dir / f"{img.stem}_svg_qa.json")
     row["svg_qa_ok"] = qa["ok"]

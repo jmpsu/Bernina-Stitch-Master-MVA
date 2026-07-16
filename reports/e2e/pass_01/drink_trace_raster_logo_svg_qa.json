@@ -1,0 +1,63 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_01/drink_trace_raster_logo_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/drink_trace_raster_logo.png",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 112,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#E88828",
+        "#E8F7F7",
+        "#E9F9FA",
+        "#EAF9FA",
+        "#EC8A28",
+        "#ECBB8B",
+        "#EDB67E",
+        "#EDF9FA",
+        "#EEAC69",
+        "#F08C27"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": false,
+      "count": 1
+    },
+    "zero_area_paths": {
+      "pass": true,
+      "count": 0
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 0,
+      "note": "no white areas"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.7032
+    }
+  },
+  "blocking_failures": [
+    "duplicate_paths"
+  ],
+  "ok": false
+}

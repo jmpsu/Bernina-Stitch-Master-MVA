@@ -1,0 +1,63 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_01/cr_img_0263_original_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/cr_img_0263_original.jpg",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 61208,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#E8D3B4",
+        "#E8D3B6",
+        "#E8D5B5",
+        "#E8D7C3",
+        "#E8D8C8",
+        "#E8D8C9",
+        "#E8D9C2",
+        "#E8D9C4",
+        "#E8DAC7",
+        "#E8DACA"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": false,
+      "count": 15505
+    },
+    "zero_area_paths": {
+      "pass": false,
+      "count": 109
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 280,
+      "note": "white paths present \u2014 confirm knockout vs white-thread against garment color"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.9537
+    }
+  },
+  "blocking_failures": [
+    "duplicate_paths"
+  ],
+  "ok": false
+}

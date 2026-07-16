@@ -1,0 +1,63 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_01/order_0003_coastal_objects_all_logo_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/order_0003_coastal_objects_all_logo.png",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 844,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#E8E5E3",
+        "#E8E6E5",
+        "#E8E6E6",
+        "#E8E8E7",
+        "#E9CAC8",
+        "#E9E6E4",
+        "#E9E7E6",
+        "#E9E8E8",
+        "#E9EAE9",
+        "#EAE5E0"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": false,
+      "count": 12
+    },
+    "zero_area_paths": {
+      "pass": true,
+      "count": 0
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 0,
+      "note": "no white areas"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.5308
+    }
+  },
+  "blocking_failures": [
+    "duplicate_paths"
+  ],
+  "ok": false
+}

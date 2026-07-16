@@ -1,0 +1,30 @@
+{
+  "queried": true,
+  "hits": 3,
+  "proof": {
+    "timestamp": "2026-07-15T01:54:02.864250+00:00",
+    "job_id": "JOB-20260715-015402845",
+    "agent": "madeline",
+    "task_type": "intake",
+    "query": "artwork intake low complexity File drop: img_0309_logo.png",
+    "source_file": null,
+    "current_phase": null,
+    "corpora_consulted": [
+      {
+        "corpus": "global",
+        "required": false,
+        "present": true,
+        "records": 50
+      }
+    ],
+    "records_considered": 50,
+    "records_selected": [
+      "raster-to-vector-agent/Potrace#p1c1",
+      "raster-to-vector-agent/Potrace#p1c0",
+      "raster-to-vector-agent/Potrace#p2c0"
+    ],
+    "decision_supported": true,
+    "status": "ok",
+    "gate": "ok"
+  }
+}

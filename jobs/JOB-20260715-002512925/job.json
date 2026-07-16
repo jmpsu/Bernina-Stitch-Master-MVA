@@ -1,6 +1,6 @@
 {
   "job_id": "JOB-20260715-002512925",
-  "status": "artwork_review",
+  "status": "customer_approval_needed",
   "created": "2026-07-15T00:25:12.926045+00:00",
   "source": "file_drop",
   "customer": "file_drop",
@@ -15,10 +15,10 @@
   "quantity": "",
   "deadline": "",
   "quote_state": "not_quoted",
-  "svg_state": "none",
-  "stitch_file_state": "none",
-  "qa_state": "none",
-  "machine_compatibility_state": "none",
+  "svg_state": "approved",
+  "stitch_file_state": "exported",
+  "qa_state": "passed",
+  "machine_compatibility_state": "b700_ok",
   "owner": "maya",
-  "updated": "2026-07-15T00:25:12.948593+00:00"
+  "updated": "2026-07-15T00:25:41.390128+00:00"
 }

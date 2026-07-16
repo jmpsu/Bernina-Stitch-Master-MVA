@@ -1,0 +1,61 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_02/beach_strip_crab_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/beach_strip_crab.png",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 83,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#E8E3E3",
+        "#EBE7E7",
+        "#EFECEC",
+        "#F0EDED",
+        "#F2F0F0",
+        "#F3F1F1",
+        "#F3F2F2",
+        "#F4F2F2",
+        "#F5F4F4",
+        "#F7F6F6"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": true,
+      "count": 0
+    },
+    "zero_area_paths": {
+      "pass": true,
+      "count": 0
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 0,
+      "note": "no white areas"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.5285
+    }
+  },
+  "blocking_failures": [],
+  "ok": true
+}

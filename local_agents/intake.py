@@ -78,14 +78,9 @@ def _safe_name(name: str) -> str:
     return name.lstrip(".") or "attachment.bin"
 
 
-def _confine(candidate: str | Path, base: Path) -> str | None:
-    """normpath+realpath containment: the normalized real path of
-    ``candidate`` is returned only if it stays under ``base``; else None."""
-    base_n = os.path.normpath(os.path.realpath(str(base)))
-    cand_n = os.path.normpath(os.path.realpath(str(candidate)))
-    if cand_n == base_n or cand_n.startswith(base_n + os.sep):
-        return cand_n
-    return None
+# Containment guards are written inline at every filesystem sink in the
+# normpath+startswith shape (plus a realpath re-check against symlink
+# escapes) so the sanitization is visible in the same scope as the sink.
 
 
 # --- stage 1: attachment extraction -----------------------------------------
@@ -99,21 +94,24 @@ def extract_attachments(source: Path, dest: Path) -> list[dict]:
     if source.suffix.lower() == ".eml":
         msg = email.message_from_bytes(source.read_bytes(),
                                        policy=email.policy.default)
+        base = os.path.normpath(str(dest))
         for part in msg.iter_attachments():
-            out_n = _confine(dest / _safe_name(part.get_filename()
-                                               or "attachment.bin"), dest)
-            if out_n is None:
+            out_n = os.path.normpath(os.path.join(
+                base, _safe_name(part.get_filename() or "attachment.bin")))
+            if not out_n.startswith(base + os.sep):
                 continue  # hostile filename — never escape the job dir
             out = Path(out_n)
             out.write_bytes(part.get_payload(decode=True) or b"")
             files.append(out)
     elif source.suffix.lower() in ARCHIVE_EXT:
+        base = os.path.normpath(str(dest))
         with zipfile.ZipFile(source) as zf:
             for info in zf.infolist():
                 if info.is_dir() or info.file_size > 100 * 2**20:
                     continue
-                out_n = _confine(dest / _safe_name(info.filename), dest)
-                if out_n is None:
+                out_n = os.path.normpath(os.path.join(
+                    base, _safe_name(info.filename)))
+                if not out_n.startswith(base + os.sep):
                     continue
                 out = Path(out_n)
                 out.write_bytes(zf.read(info))
@@ -323,10 +321,19 @@ def run_intake(source: Path | dict, actor: str = "madeline") -> dict:
     if isinstance(source, dict):
         inventory = []
         for att in source.get("attachments", []):
-            # payload-supplied paths are untrusted: normpath+realpath
-            # containment in an allowed intake root, or rejected+recorded
-            cand = next((c for root in ALLOWED_ATTACHMENT_ROOTS
-                         if (c := _confine(str(att), root))), None)
+            # payload-supplied paths are untrusted: normpath+startswith
+            # containment in an allowed intake root (with a realpath re-check
+            # against symlink escapes), or rejected+recorded
+            cand = None
+            for root in ALLOWED_ATTACHMENT_ROOTS:
+                base = os.path.normpath(str(root))
+                c = os.path.normpath(os.path.join(base, str(att)))
+                if not (c == base or c.startswith(base + os.sep)):
+                    continue
+                real = os.path.realpath(c)
+                if real == base or real.startswith(base + os.sep):
+                    cand = c
+                    break
             if cand and os.path.exists(cand):
                 inventory.extend(extract_attachments(Path(cand), art_dir))
             else:

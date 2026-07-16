@@ -1,0 +1,88 @@
+{
+  "object": "logo_5in",
+  "name": "logo_5in",
+  "width_mm": 108.1,
+  "height_mm": 127.0,
+  "height_target_mm": 76.2,
+  "height_ok": false,
+  "stitch_count": 4447,
+  "jump_count": 274,
+  "trim_count": 248,
+  "color_count": 6,
+  "thread_rgb": [
+    [
+      11,
+      28,
+      76
+    ],
+    [
+      26,
+      45,
+      98
+    ],
+    [
+      92,
+      105,
+      141
+    ],
+    [
+      164,
+      174,
+      202
+    ],
+    [
+      239,
+      241,
+      246
+    ],
+    [
+      250,
+      250,
+      250
+    ]
+  ],
+  "line_art": false,
+  "satin": {
+    "borders": 0,
+    "width_mm": 1.6,
+    "spacing_mm": 0.35,
+    "width_cap_mm": 7.0,
+    "width_floor_mm": 1.0,
+    "density_floor_mm": 0.35
+  },
+  "density": {
+    "cell_mm": 3.0,
+    "max_local_density_per_mm2": 1.111,
+    "limit_per_mm2": 1.2,
+    "cells_over_limit": 0,
+    "cells_total": 876,
+    "stitch_count": 4447,
+    "max_stitches_warn": 60000,
+    "stitch_count_ok": true,
+    "density_ok": true,
+    "ok": true,
+    "backoff_attempts": 1
+  },
+  "underlay_runs": 0,
+  "pull_compensation_mm": 0.2,
+  "hoop_fit": {
+    "fits": true,
+    "smallest_hoop": "large_oval",
+    "hoop_mm": [
+      255.0,
+      145.0
+    ],
+    "design_mm": [
+      108.1,
+      127.0
+    ]
+  },
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "img_0255_logo_logo_5in.exp",
+    "pes": "img_0255_logo_logo_5in.pes",
+    "preview": "img_0255_logo_logo_5in_preview.png",
+    "inf": "img_0255_logo_logo_5in.inf",
+    "bmp": "img_0255_logo_logo_5in.bmp"
+  }
+}

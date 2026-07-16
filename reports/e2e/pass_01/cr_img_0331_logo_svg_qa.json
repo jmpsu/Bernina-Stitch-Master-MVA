@@ -1,0 +1,58 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_01/cr_img_0331_logo_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/cr_img_0331_logo.png",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 3195,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#F3F3F2",
+        "#F3F3F3",
+        "#F6F6F6",
+        "#F9F9F9",
+        "#FAFAFA"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": false,
+      "count": 2584
+    },
+    "zero_area_paths": {
+      "pass": false,
+      "count": 2038
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 0,
+      "note": "no white areas"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.69
+    }
+  },
+  "blocking_failures": [
+    "duplicate_paths"
+  ],
+  "ok": false
+}

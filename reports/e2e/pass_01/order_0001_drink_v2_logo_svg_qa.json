@@ -1,0 +1,59 @@
+{
+  "svg": "/home/user/Bernina-Stitch-Master-MVA/reports/e2e/pass_01/order_0001_drink_v2_logo_production.svg",
+  "source_raster": "/home/user/Bernina-Stitch-Master-MVA/input_images/order_0001_drink_v2_logo.png",
+  "checks": {
+    "inventory": {
+      "pass": true,
+      "detail": {
+        "path": 1549,
+        "rect": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "polygon": 0,
+        "image": 0,
+        "text": 0,
+        "g": 0
+      }
+    },
+    "stray_images": {
+      "pass": true,
+      "count": 0
+    },
+    "background_rect": {
+      "pass": true,
+      "matches": []
+    },
+    "offwhite_fills": {
+      "pass": false,
+      "matches": [
+        "#EE912A",
+        "#F2D25B",
+        "#FAFAFA",
+        "#FBFBFB",
+        "#FCFCFC",
+        "#FDFDFD"
+      ]
+    },
+    "duplicate_paths": {
+      "pass": false,
+      "count": 372
+    },
+    "zero_area_paths": {
+      "pass": false,
+      "count": 6
+    },
+    "white_areas": {
+      "pass": true,
+      "white_paths": 196,
+      "note": "white paths present \u2014 confirm knockout vs white-thread against garment color"
+    },
+    "silhouette_fidelity": {
+      "pass": true,
+      "ssim_vs_source": 0.6851
+    }
+  },
+  "blocking_failures": [
+    "duplicate_paths"
+  ],
+  "ok": false
+}
