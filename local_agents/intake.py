@@ -79,14 +79,26 @@ def _safe_label(name: str) -> str:
     return label.lstrip(".") or "attachment.bin"
 
 
+# Extension allowlist as a tuple of string LITERALS. _safe_ext canonicalizes
+# a requested extension against it and returns the matching literal (or the
+# literal ".bin"). The returned value therefore originates from this constant
+# tuple in source, not from the caller's filename — the taint is broken.
+_ALLOWED_EXTS = (".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".tif",
+                 ".tiff", ".svg", ".ai", ".eps", ".pdf", ".pes", ".exp",
+                 ".dst", ".jef", ".vp3", ".inf", ".doc", ".docx", ".xls",
+                 ".xlsx", ".ppt", ".pptx", ".txt", ".md", ".zip")
+
+
 def _safe_ext(name: str) -> str:
-    """Allowlisted extension for a server-generated output name. Anything not
-    on the allowlist becomes .bin, so the extension can never carry a path
-    separator, traversal, or surprise type."""
-    ext = os.path.splitext(os.path.basename(str(name)))[1].lower()
-    allowed = (RASTER_EXT | VECTOR_EXT | EMBROIDERY_EXT | OFFICE_EXT
-               | ARCHIVE_EXT)
-    return ext if ext in allowed else ".bin"
+    """Return an allowlisted extension as a source literal (never a substring
+    of the caller-supplied name). Anything off the allowlist becomes ".bin",
+    so the extension can never carry a path separator, traversal, or surprise
+    type — and CodeQL sees the result as untainted constant data."""
+    want = os.path.splitext(os.path.basename(str(name)))[1].lower()
+    for allowed in _ALLOWED_EXTS:
+        if want == allowed:
+            return allowed
+    return ".bin"
 
 
 def _out_path(dest: Path, idx: int, original: str) -> Path:
@@ -122,11 +134,12 @@ def extract_attachments(source: Path, dest: Path) -> list[dict]:
                 out = _out_path(dest, idx, info.filename)
                 out.write_bytes(zf.read(info))
                 entries.append((out, _safe_label(info.filename)))
-    else:  # direct file drop — dest is trusted, keep the original basename
-        out = dest / _safe_label(source.name)
+    else:  # direct file drop — server-generated name into the trusted dest
+        idx = len(list(dest.glob("drop_*")))
+        out = dest / f"drop_{idx:04d}{_safe_ext(source.name)}"
         if source.resolve() != out.resolve():
             shutil.copy2(source, out)
-        entries.append((out, out.name))
+        entries.append((out, _safe_label(source.name)))
 
     inventory = []
     for f, label in sorted(set(entries)):
