@@ -17,6 +17,8 @@ missing_questions.md, artwork_review.md.
 
 from __future__ import annotations
 
+import base64
+import binascii
 import datetime
 import email
 import email.policy
@@ -366,34 +368,32 @@ def run_intake(source: Path | dict, actor: str = "madeline") -> dict:
         inventory = []
         art_dir.mkdir(parents=True, exist_ok=True)
         for idx, att in enumerate(source.get("attachments", [])):
-            # payload-supplied paths are untrusted: normpath+startswith
-            # containment in an allowed intake root (with a realpath re-check
-            # against symlink escapes). The vetted source is copied into the
-            # job's artwork dir under a SERVER-GENERATED name (payload_NNNN
-            # + allowlisted extension) — no client byte reaches either the
-            # read or the write path — and only that trusted local copy
-            # enters extract_attachments.
-            copied = None
-            for root in ALLOWED_ATTACHMENT_ROOTS:
-                base = os.path.normpath(str(root))
-                c = os.path.normpath(os.path.join(base, str(att)))
-                if not c.startswith(base + os.sep):
-                    continue
-                real = os.path.realpath(c)
-                if not (real.startswith(base + os.sep)
-                        and os.path.isfile(real)):
-                    continue
-                local = art_dir / f"payload_{idx:04d}{_safe_ext(c)}"
-                shutil.copy2(real, local)
-                copied = local
-                break
-            if copied is not None:
-                inventory.extend(extract_attachments(copied, art_dir))
-            else:
+            # Webhook attachments carry base64 CONTENT, never a server path:
+            # a remote caller cannot name a server file to ingest. Content is
+            # written to a server-generated name (payload_NNNN + allowlisted
+            # extension) under the trusted job dir — nothing client-controlled
+            # reaches any read or write path. (To ingest a trusted LOCAL file,
+            # call run_intake(Path) instead of the dict/webhook form.)
+            if not isinstance(att, dict) or not att.get("content_b64"):
                 jobs_mod._audit(jid, "attachment_rejected",
-                                {"ref": str(att)[:200],
-                                 "reason": "outside allowed intake roots"},
+                                {"ref": str(att)[:120],
+                                 "reason": "webhook attachment must carry "
+                                           "base64 'content_b64'"},
                                 actor=actor)
+                continue
+            try:
+                blob = base64.b64decode(att["content_b64"], validate=True)
+            except (ValueError, binascii.Error):
+                jobs_mod._audit(jid, "attachment_rejected",
+                                {"ref": str(att.get("filename", ""))[:120],
+                                 "reason": "invalid base64 content"},
+                                actor=actor)
+                continue
+            if not blob or len(blob) > 100 * 2**20:
+                continue
+            local = art_dir / f"payload_{idx:04d}{_safe_ext(att.get('filename', ''))}"
+            local.write_bytes(blob)
+            inventory.extend(extract_attachments(local, art_dir))
     else:
         inventory = extract_attachments(src_path, art_dir)
     status_event(actor, jid, str(src_path or "payload"), "received",

@@ -6,7 +6,11 @@ Implements the BRD's internal API surface with the standard library only:
   GET  /api/jobs            job list (BRD "Job API")
   GET  /api/jobs/<id>       one job + its audit history
   POST /cloudflare-email    email-intake webhook (BRD "Email Intake Webhook")
-                            body: {from, subject, body, customer?, attachments?}
+                            body: {from, subject, body, customer?,
+                                   attachments?: [{filename, content_b64}]}
+                            Attachments carry base64 CONTENT, never server
+                            paths — a remote caller cannot name a server file
+                            to ingest.
   POST /api/job-status      status transition control (BRD "Job Status
                             Management"): {job_id, status, reason?} —
                             invalid transitions rejected with 409
