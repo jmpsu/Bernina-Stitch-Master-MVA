@@ -538,5 +538,12 @@ def _ack_draft(customer, subject, missing) -> str:
 
 if __name__ == "__main__":
     import sys
-    job = run_intake(Path(sys.argv[1]))
+    # CLI smoke-test entry. The argument is reduced to a bare basename and
+    # joined to the configured intake root, so argv cannot name a path
+    # outside it (os.path.basename strips every directory component and any
+    # traversal). Production ingestion never uses this path — it goes through
+    # the webhook (base64 content) or the pipeline (directory enumeration).
+    arg_name = os.path.basename(sys.argv[1]) if len(sys.argv) > 1 else ""
+    src = ALLOWED_ATTACHMENT_ROOTS[0] / arg_name
+    job = run_intake(src)
     print(json.dumps(job, indent=2))
