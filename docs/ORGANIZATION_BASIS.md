@@ -69,12 +69,39 @@ predate this branch; rewriting them belongs in its own change.
 105.6 MB bundle + 97.8 MB tarball, both checksum-verified. The pushed GitHub
 remote is the continuous offsite copy of tracked content.
 
-**AWS stage: ON HOLD at operator request** — the operator will supply AWS
-credentials. This environment's `AWS_*` variables are egress-proxy plumbing
-(STS rejects them); no upload was performed or faked. When credentials
-arrive: `python3 scripts/backup_machine.py --upload s3://<bucket>/embiz`
-(STS-verifies identity before any write; uploads bundle, tarball, manifest
-with sha256 object metadata).
+**AWS stage — cannot run from the session container; handed off as a script.**
+This environment's `AWS_*` variables are egress-proxy plumbing (STS rejects
+them with `InvalidClientTokenId`), and the uploaded credential reports are
+redacted (masked key IDs/fingerprints only, no secret values). The AWS backup
+must therefore run **on the operator's machine**, where the real credentials
+and the real files both live. One command does inventory + local backup +
+S3 upload:
+
+```bash
+scripts/bootstrap_offsite_backup.sh s3://<your-bucket>/embiz
+```
+
+It reads credentials from the standard AWS chain (never the command line),
+STS-verifies identity first, and runs `backup_machine.py --upload` (uploads
+bundle, tarball, and manifest with sha256 object metadata).
+
+### Security finding from the credential search (act before backing up)
+
+The operator's own AWS-credential search report flags access key
+`AKIA…CHVX` as **Active** and present **in plaintext** in `Downloads/
+rootkey.csv` beside its secret, and copied into multiple documents,
+backups, and `project_credentials_aggregate.txt`. `rootkey.csv` is the file
+AWS emits when you create an access key for the **account root**. Using a
+widely-copied root key for routine backups is a standing risk. Recommended:
+
+1. Create a scoped IAM user (`embiz-backup`) with an S3-only policy limited
+   to the backup bucket (template printed by the bootstrap script).
+2. Configure a named AWS profile for that user.
+3. **Delete the root access key** in the IAM console and purge the plaintext
+   copies (`rootkey.csv`, the aggregate files) found in the report.
+
+`bootstrap_offsite_backup.sh` enforces this: it **refuses to upload** when
+the resolved identity is the account root unless `--allow-root` is passed.
 
 ## Standing rules
 
