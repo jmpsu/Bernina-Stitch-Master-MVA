@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# deploy-to-vps — place this instruction set at the runtime root and bring the
+# supervised loop online. Run this ON the VPS (it operates on local paths).
+#
+# It is idempotent: safe to re-run. It does NOT delete existing job artifacts.
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$DIR"
+
+RUNTIME_ROOT="$(python3 -c 'import json;print(json.load(open("config/runtime.json"))["runtime_root"])')"
+SUBDIR="$(python3 -c 'import json;print(json.load(open("config/runtime.json"))["instruction_set_subdir"])')"
+TARGET="$RUNTIME_ROOT/$SUBDIR"
+
+echo "[deploy] runtime root: $RUNTIME_ROOT"
+echo "[deploy] target:       $TARGET"
+mkdir -p "$RUNTIME_ROOT"
+
+if [ "$DIR" != "$TARGET" ]; then
+  echo "[deploy] syncing instruction set into place (preserving state/ evidence/)..."
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -a --exclude 'state/attempts.jsonl' --exclude 'state/hash_chain.jsonl' \
+          --exclude 'evidence/*.json' "$DIR/" "$TARGET/"
+  else
+    mkdir -p "$TARGET"; cp -a "$DIR/." "$TARGET/"
+  fi
+else
+  echo "[deploy] already at target."
+fi
+
+cd "$TARGET"
+echo "[deploy] preflight py_compile..."
+python3 -m py_compile engine/*.py validators/*.py
+echo "[deploy] regenerating steps + manifest..."
+python3 engine/generate_steps.py
+echo "[deploy] self-test..."
+python3 validators/selftest.py
+echo "[deploy] init supervised loop..."
+python3 engine/supervisor.py --init
+python3 engine/supervisor.py --current
+echo
+echo "[deploy] DONE. The system now lives at $TARGET and is ready to run."
+echo "[deploy] Next: build the knowledge object library on this host:"
+echo "         python3 $TARGET/engine/kb_build.py"

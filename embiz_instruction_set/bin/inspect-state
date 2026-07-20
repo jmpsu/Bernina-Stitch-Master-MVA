@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# inspect-state — human-readable snapshot of the loop (Airflow-style lifecycle view).
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$DIR"
+echo "== supervisor status =="
+python3 engine/supervisor.py --status
+echo
+echo "== last 10 attempts (state/attempts.jsonl) =="
+[ -f state/attempts.jsonl ] && tail -n 10 state/attempts.jsonl || echo "(none yet)"
+echo
+echo "== hash chain integrity =="
+python3 engine/hash_chain.py --verify

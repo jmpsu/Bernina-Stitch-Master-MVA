@@ -1,0 +1,3077 @@
+{
+  "version": 1,
+  "first_step": "#S00-01_TOOLING_INVENTORY",
+  "count": 228,
+  "steps": {
+    "#S00-01_TOOLING_INVENTORY": {
+      "file": "workflows/00_bootstrap_environment/S00-01_TOOLING_INVENTORY.md",
+      "section": "S00",
+      "title": "Core System Tooling Inventory",
+      "on_success": "#S00-02_IMAGE_TOOLS_VERIFY",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Required Tooling > Core System (python3, git, curl, systemctl, node, npm)",
+        "Dependency Management: identified/installed/verified"
+      ]
+    },
+    "#S00-02_IMAGE_TOOLS_VERIFY": {
+      "file": "workflows/00_bootstrap_environment/S00-02_IMAGE_TOOLS_VERIFY.md",
+      "section": "S00",
+      "title": "Image Processing Tools Verification",
+      "on_success": "#S00-03_PYTHON_LIBS_VERIFY",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Required Tooling > Image Processing (inkscape, imagemagick, potrace)"
+      ]
+    },
+    "#S00-03_PYTHON_LIBS_VERIFY": {
+      "file": "workflows/00_bootstrap_environment/S00-03_PYTHON_LIBS_VERIFY.md",
+      "section": "S00",
+      "title": "Python Libraries Verification",
+      "on_success": "#S00-04_UTILITIES_VERIFY",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Required Tooling > Python Libraries (python3-pil, python3-bs4, python3-lxml)"
+      ]
+    },
+    "#S00-04_UTILITIES_VERIFY": {
+      "file": "workflows/00_bootstrap_environment/S00-04_UTILITIES_VERIFY.md",
+      "section": "S00",
+      "title": "Archive/File Utilities Verification",
+      "on_success": "#S00-05_CLOUDFLARE_TOOLS_VERIFY",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Required Tooling > Utilities (zip, unzip, file)"
+      ]
+    },
+    "#S00-05_CLOUDFLARE_TOOLS_VERIFY": {
+      "file": "workflows/00_bootstrap_environment/S00-05_CLOUDFLARE_TOOLS_VERIFY.md",
+      "section": "S00",
+      "title": "Cloudflare Tooling Verification",
+      "on_success": "#S00-06_DEP_DIAGNOSTICS_EMIT",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Required Tooling > Cloudflare (cloudflared, wrangler)",
+        "Flue/Cloudflare execution substrate"
+      ]
+    },
+    "#S00-06_DEP_DIAGNOSTICS_EMIT": {
+      "file": "workflows/00_bootstrap_environment/S00-06_DEP_DIAGNOSTICS_EMIT.md",
+      "section": "S00",
+      "title": "Missing-Dependency Diagnostics",
+      "on_success": "#S00-07_STARTUP_HEALTHCHECK",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Missing dependencies shall generate actionable diagnostics.",
+        "Dependency Management"
+      ]
+    },
+    "#S00-07_STARTUP_HEALTHCHECK": {
+      "file": "workflows/00_bootstrap_environment/S00-07_STARTUP_HEALTHCHECK.md",
+      "section": "S00",
+      "title": "Startup Healthcheck Gate",
+      "on_success": "#S01-01_LIBRARY_INVENTORY",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Every dependency shall be verified during pipeline startup.",
+        "Production Readiness > Dependency verification"
+      ]
+    },
+    "#S01-01_LIBRARY_INVENTORY": {
+      "file": "workflows/01_knowledge_library/S01-01_LIBRARY_INVENTORY.md",
+      "section": "S01",
+      "title": "Knowledge Source Inventory",
+      "on_success": "#S01-02_INGESTION_PIPELINE",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge Sources (enumerated)",
+        "Knowledge repositories (foundational)"
+      ]
+    },
+    "#S01-02_INGESTION_PIPELINE": {
+      "file": "workflows/01_knowledge_library/S01-02_INGESTION_PIPELINE.md",
+      "section": "S01",
+      "title": "Knowledge Ingestion Pipeline",
+      "on_success": "#S01-03_SEMANTIC_INDEX",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge Ingestion (native text extraction, OCR, metadata, semantic indexing, tagging, embeddings)"
+      ]
+    },
+    "#S01-03_SEMANTIC_INDEX": {
+      "file": "workflows/01_knowledge_library/S01-03_SEMANTIC_INDEX.md",
+      "section": "S01",
+      "title": "Searchable Semantic Index",
+      "on_success": "#S01-04_RETRIEVAL_API",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Search and Retrieval (keyword/semantic/similarity/metadata/historical/cross-reference)"
+      ]
+    },
+    "#S01-04_RETRIEVAL_API": {
+      "file": "workflows/01_knowledge_library/S01-04_RETRIEVAL_API.md",
+      "section": "S01",
+      "title": "Retrieval Interface",
+      "on_success": "#S01-05_SOURCE_ENFORCEMENT_GATE",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Mandatory Retrieval (similar jobs, standards, references, limitations, procedures)"
+      ]
+    },
+    "#S01-05_SOURCE_ENFORCEMENT_GATE": {
+      "file": "workflows/01_knowledge_library/S01-05_SOURCE_ENFORCEMENT_GATE.md",
+      "section": "S01",
+      "title": "Retrieval-Before-Implementation Gate",
+      "on_success": "#S01-06_DECISION_TRACE_WRITER",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Source Enforcement (sources consulted, knowledge retrieved, guidance applied, validation, decision trace)",
+        "Static Knowledge Library Risk"
+      ]
+    },
+    "#S01-06_DECISION_TRACE_WRITER": {
+      "file": "workflows/01_knowledge_library/S01-06_DECISION_TRACE_WRITER.md",
+      "section": "S01",
+      "title": "Decision Trace Writer",
+      "on_success": "#S01-07_MEMORIALIZATION",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Decision Trace Requirements (decision/reasoning/knowledge/alternatives/criteria/outcome/evidence)"
+      ]
+    },
+    "#S01-07_MEMORIALIZATION": {
+      "file": "workflows/01_knowledge_library/S01-07_MEMORIALIZATION.md",
+      "section": "S01",
+      "title": "Knowledge Memorialization",
+      "on_success": "#S01-08_LIBRARY_EXPANSION",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge Memorialization (standards, workflows, parameters, methodologies, lessons)"
+      ]
+    },
+    "#S01-08_LIBRARY_EXPANSION": {
+      "file": "workflows/01_knowledge_library/S01-08_LIBRARY_EXPANSION.md",
+      "section": "S01",
+      "title": "Continuous Library Expansion Hook",
+      "on_success": "#S01-09_KNOWLEDGE_GRAPH",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Continuous Library Expansion (successes, failures, observations, QA findings, feedback)"
+      ]
+    },
+    "#S01-09_KNOWLEDGE_GRAPH": {
+      "file": "workflows/01_knowledge_library/S01-09_KNOWLEDGE_GRAPH.md",
+      "section": "S01",
+      "title": "Knowledge Graph Construction",
+      "on_success": "#S01-10_KB_SOURCES_INVENTORY",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge graph construction (core capability)",
+        "Knowledge graph integration"
+      ]
+    },
+    "#S01-10_KB_SOURCES_INVENTORY": {
+      "file": "workflows/01_knowledge_library/S01-10_KB_SOURCES_INVENTORY.md",
+      "section": "S01",
+      "title": "Knowledge-Object Source Inventory (web archive + PDFs)",
+      "on_success": "#S01-11_KB_BUILD_LIBRARY",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Knowledge Sources (HTML sites, PDFs, image collections, diagrams, screenshots); new knowledge object library from all provided HTML sites and PDFs"
+      ]
+    },
+    "#S01-11_KB_BUILD_LIBRARY": {
+      "file": "workflows/01_knowledge_library/S01-11_KB_BUILD_LIBRARY.md",
+      "section": "S01",
+      "title": "Build the New Knowledge Object Library",
+      "on_success": "#S01-12_KB_PDF_EXTRACTION_VERIFY",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge Ingestion (native text extraction, OCR, metadata, semantic indexing); copy/derive from example stores however best suits new library"
+      ]
+    },
+    "#S01-12_KB_PDF_EXTRACTION_VERIFY": {
+      "file": "workflows/01_knowledge_library/S01-12_KB_PDF_EXTRACTION_VERIFY.md",
+      "section": "S01",
+      "title": "Verify PDF Extraction Quality",
+      "on_success": "#S01-13_KB_VISUAL_CAPTIONS",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "PDFs ingested (Bernina B700 manual, Inkscape/Ink-Stitch/Potrace/SVG tutorials, setup sheets)"
+      ]
+    },
+    "#S01-13_KB_VISUAL_CAPTIONS": {
+      "file": "workflows/01_knowledge_library/S01-13_KB_VISUAL_CAPTIONS.md",
+      "section": "S01",
+      "title": "Visual Assets & Captions Store",
+      "on_success": "#S01-14_KB_RETRIEVAL_BIND",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Visual Knowledge Extraction / Visual Semantics; visual_captions store for images/diagrams/rendered SVGs/PDF figures/source-vs-output comparison"
+      ]
+    },
+    "#S01-14_KB_RETRIEVAL_BIND": {
+      "file": "workflows/01_knowledge_library/S01-14_KB_RETRIEVAL_BIND.md",
+      "section": "S01",
+      "title": "Bind Retrieval to the New Library",
+      "on_success": "#S02-01_INTAKE_SOURCES",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Primary all-agent retrieval corpus is the global multimodal store; specialist corpora for B700 / Ink-Stitch / visual semantics"
+      ]
+    },
+    "#S02-01_INTAKE_SOURCES": {
+      "file": "workflows/02_intake/S02-01_INTAKE_SOURCES.md",
+      "section": "S02",
+      "title": "Multi-Source Intake Support",
+      "on_success": "#S02-02_ATTACHMENT_EXTRACTION",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Intake Sources (email, web forms, uploads, artwork, sketches, existing files, notes)"
+      ]
+    },
+    "#S02-02_ATTACHMENT_EXTRACTION": {
+      "file": "workflows/02_intake/S02-02_ATTACHMENT_EXTRACTION.md",
+      "section": "S02",
+      "title": "Automatic Attachment Extraction",
+      "on_success": "#S02-03_FILE_VALIDATION",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Automatic attachment extraction (near-term critical)",
+        "Attachment Extraction (raster/vector/PDF/embroidery/office/archive)"
+      ]
+    },
+    "#S02-03_FILE_VALIDATION": {
+      "file": "workflows/02_intake/S02-03_FILE_VALIDATION.md",
+      "section": "S02",
+      "title": "Attachment File Validation",
+      "on_success": "#S02-04_METADATA_EXTRACTION",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Intake Processing Pipeline > File validation"
+      ]
+    },
+    "#S02-04_METADATA_EXTRACTION": {
+      "file": "workflows/02_intake/S02-04_METADATA_EXTRACTION.md",
+      "section": "S02",
+      "title": "Customer & Request Metadata Extraction",
+      "on_success": "#S02-05_ARTWORK_IDENTIFICATION",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Intake Processing Pipeline > Metadata extraction, Customer identification"
+      ]
+    },
+    "#S02-05_ARTWORK_IDENTIFICATION": {
+      "file": "workflows/02_intake/S02-05_ARTWORK_IDENTIFICATION.md",
+      "section": "S02",
+      "title": "Artwork Identification",
+      "on_success": "#S02-06_ARTWORK_REVIEW",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Artwork Identification (type/format/resolution/dimensions/transparency/colors/vector status/suitability)"
+      ]
+    },
+    "#S02-06_ARTWORK_REVIEW": {
+      "file": "workflows/02_intake/S02-06_ARTWORK_REVIEW.md",
+      "section": "S02",
+      "title": "Automated Artwork Review",
+      "on_success": "#S02-07_COMPLEXITY_ANALYSIS",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Real artwork review (near-term critical)",
+        "Artwork Review (quality/artifacts/noise/background/features/lines/text/edges/suitability)"
+      ]
+    },
+    "#S02-07_COMPLEXITY_ANALYSIS": {
+      "file": "workflows/02_intake/S02-07_COMPLEXITY_ANALYSIS.md",
+      "section": "S02",
+      "title": "Artwork Complexity Analysis",
+      "on_success": "#S02-08_MISSING_INFO_DETECTION",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Complexity Analysis (path/color/geometric/feature/edge/expected density/difficulty)"
+      ]
+    },
+    "#S02-08_MISSING_INFO_DETECTION": {
+      "file": "workflows/02_intake/S02-08_MISSING_INFO_DETECTION.md",
+      "section": "S02",
+      "title": "Missing Information Detection",
+      "on_success": "#S02-09_CANONICAL_ARTIFACTS",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Missing Information Detection (garment/color/placement/dimensions/threads/quantity/deadline/approval)"
+      ]
+    },
+    "#S02-09_CANONICAL_ARTIFACTS": {
+      "file": "workflows/02_intake/S02-09_CANONICAL_ARTIFACTS.md",
+      "section": "S02",
+      "title": "Canonical Intake Artifacts",
+      "on_success": "#S02-10_KNOWLEDGE_RETRIEVAL_INTAKE",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Canonical Intake Artifacts (intake_summary.md, job.json, raw_email.json, missing_questions.md, artwork_review.md)",
+        "Canonical job record (Flue/Cloudflare)"
+      ]
+    },
+    "#S02-10_KNOWLEDGE_RETRIEVAL_INTAKE": {
+      "file": "workflows/02_intake/S02-10_KNOWLEDGE_RETRIEVAL_INTAKE.md",
+      "section": "S02",
+      "title": "Knowledge Retrieval Before Routing",
+      "on_success": "#S02-11_CUSTOMER_ACK",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge Retrieval During Intake (similar jobs, guidance, standards, limitations, history)"
+      ]
+    },
+    "#S02-11_CUSTOMER_ACK": {
+      "file": "workflows/02_intake/S02-11_CUSTOMER_ACK.md",
+      "section": "S02",
+      "title": "Customer Acknowledgement (approval-gated)",
+      "on_success": "#S02-12_AUTONOMOUS_ROUTING",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": true,
+      "brd": [
+        "Customer Communication (acknowledgements, clarifications, updates); every message traceable"
+      ]
+    },
+    "#S02-12_AUTONOMOUS_ROUTING": {
+      "file": "workflows/02_intake/S02-12_AUTONOMOUS_ROUTING.md",
+      "section": "S02",
+      "title": "Deterministic Intake Routing",
+      "on_success": "#S03-01_IMAGE_NORMALIZATION",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Autonomous Routing (deterministic, observable, reproducible)"
+      ]
+    },
+    "#S03-01_IMAGE_NORMALIZATION": {
+      "file": "workflows/03_raster_analysis/S03-01_IMAGE_NORMALIZATION.md",
+      "section": "S03",
+      "title": "Image Normalization",
+      "on_success": "#S03-02_IMAGE_ANALYSIS",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Raster Processing Pipeline > Image normalization",
+        "source-of-truth reference preserved (Flue/Cloudflare)"
+      ]
+    },
+    "#S03-02_IMAGE_ANALYSIS": {
+      "file": "workflows/03_raster_analysis/S03-02_IMAGE_ANALYSIS.md",
+      "section": "S03",
+      "title": "Raster Image Analysis",
+      "on_success": "#S03-03_BACKGROUND_DETECTION",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Image Analysis (dimensions/resolution/aspect/transparency/background/colors/edges/artifacts/line/features/text/complexity)"
+      ]
+    },
+    "#S03-03_BACKGROUND_DETECTION": {
+      "file": "workflows/03_raster_analysis/S03-03_BACKGROUND_DETECTION.md",
+      "section": "S03",
+      "title": "Background Detection",
+      "on_success": "#S03-04_BACKGROUND_REMOVAL",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Background Processing (preserve/remove/transparent/replace/isolate/refine/cleanup)"
+      ]
+    },
+    "#S03-04_BACKGROUND_REMOVAL": {
+      "file": "workflows/03_raster_analysis/S03-04_BACKGROUND_REMOVAL.md",
+      "section": "S03",
+      "title": "Background Removal",
+      "on_success": "#S03-05_TRANSPARENCY_GENERATION",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Background removal, Foreground isolation",
+        "Background Removal (near-term pipeline stage)"
+      ]
+    },
+    "#S03-05_TRANSPARENCY_GENERATION": {
+      "file": "workflows/03_raster_analysis/S03-05_TRANSPARENCY_GENERATION.md",
+      "section": "S03",
+      "title": "Transparency Generation",
+      "on_success": "#S03-06_CONTRAST_ENHANCE",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Transparency generation"
+      ]
+    },
+    "#S03-06_CONTRAST_ENHANCE": {
+      "file": "workflows/03_raster_analysis/S03-06_CONTRAST_ENHANCE.md",
+      "section": "S03",
+      "title": "Contrast Enhancement",
+      "on_success": "#S03-07_NOISE_REDUCTION",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Raster Processing Pipeline > Contrast enhancement"
+      ]
+    },
+    "#S03-07_NOISE_REDUCTION": {
+      "file": "workflows/03_raster_analysis/S03-07_NOISE_REDUCTION.md",
+      "section": "S03",
+      "title": "Noise Reduction / Speck Removal",
+      "on_success": "#S03-08_EDGE_ENHANCE",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Raster Cleanup (noise/speck/small-artifact removal)"
+      ]
+    },
+    "#S03-08_EDGE_ENHANCE": {
+      "file": "workflows/03_raster_analysis/S03-08_EDGE_ENHANCE.md",
+      "section": "S03",
+      "title": "Edge Enhancement",
+      "on_success": "#S03-09_LINE_STRENGTHEN",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Raster Processing Pipeline > Edge enhancement"
+      ]
+    },
+    "#S03-09_LINE_STRENGTHEN": {
+      "file": "workflows/03_raster_analysis/S03-09_LINE_STRENGTHEN.md",
+      "section": "S03",
+      "title": "Line Strengthening",
+      "on_success": "#S03-10_MORPH_CLEANUP",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Line strengthening, Gap filling, Line continuity improvement"
+      ]
+    },
+    "#S03-10_MORPH_CLEANUP": {
+      "file": "workflows/03_raster_analysis/S03-10_MORPH_CLEANUP.md",
+      "section": "S03",
+      "title": "Morphological Cleanup",
+      "on_success": "#S03-11_RASTER_CANDIDATES_PRESERVE",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Morphological cleanup, Shape preservation, Boundary smoothing"
+      ]
+    },
+    "#S03-11_RASTER_CANDIDATES_PRESERVE": {
+      "file": "workflows/03_raster_analysis/S03-11_RASTER_CANDIDATES_PRESERVE.md",
+      "section": "S03",
+      "title": "Preserve Raster Candidates",
+      "on_success": "#S04-01_IHIVE_ARCH_DOC",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Every preprocessing stage shall preserve intermediate artifacts for comparison and future learning."
+      ]
+    },
+    "#S04-01_IHIVE_ARCH_DOC": {
+      "file": "workflows/04_vectorization_ihive/S04-01_IHIVE_ARCH_DOC.md",
+      "section": "S04",
+      "title": "I-HIVE Architecture Documentation",
+      "on_success": "#S04-02_EXPERIMENT_SANDBOX",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Raster-to-SVG vector image file architecture exists and is documented (I-HIVE verification)"
+      ]
+    },
+    "#S04-02_EXPERIMENT_SANDBOX": {
+      "file": "workflows/04_vectorization_ihive/S04-02_EXPERIMENT_SANDBOX.md",
+      "section": "S04",
+      "title": "Vectorization Experiment Sandbox",
+      "on_success": "#S04-03_POTRACE_PARAM_SWEEP",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Vectorization Experiment Pipeline (input/variants/metrics/selected/report.md)",
+        "Vectorization experiment pipeline exists (I-HIVE verification)"
+      ]
+    },
+    "#S04-03_POTRACE_PARAM_SWEEP": {
+      "file": "workflows/04_vectorization_ihive/S04-03_POTRACE_PARAM_SWEEP.md",
+      "section": "S04",
+      "title": "Potrace Parameter Sweep",
+      "on_success": "#S04-04_INKSCAPE_TRACE_VARIANTS",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Potrace experimentation, Parameter Exploration (threshold/corner/curve/simplification/noise/speck/precision/node)",
+        "Vector Generation > Potrace"
+      ]
+    },
+    "#S04-04_INKSCAPE_TRACE_VARIANTS": {
+      "file": "workflows/04_vectorization_ihive/S04-04_INKSCAPE_TRACE_VARIANTS.md",
+      "section": "S04",
+      "title": "Inkscape Trace Variants",
+      "on_success": "#S04-05_MULTIPASS_LAYER_TRACE",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Inkscape experimentation, Vector Generation > Inkscape"
+      ]
+    },
+    "#S04-05_MULTIPASS_LAYER_TRACE": {
+      "file": "workflows/04_vectorization_ihive/S04-05_MULTIPASS_LAYER_TRACE.md",
+      "section": "S04",
+      "title": "Multi-Pass / Layer-Specific Tracing",
+      "on_success": "#S04-06_PARAM_EXPLORATION_RECORD",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Vector Generation > Multi-pass tracing, Layer-specific tracing"
+      ]
+    },
+    "#S04-06_PARAM_EXPLORATION_RECORD": {
+      "file": "workflows/04_vectorization_ihive/S04-06_PARAM_EXPLORATION_RECORD.md",
+      "section": "S04",
+      "title": "Parameter\u2192Candidate Records",
+      "on_success": "#S04-07_CANDIDATE_GENERATION",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Every parameter set shall generate a measurable candidate."
+      ]
+    },
+    "#S04-07_CANDIDATE_GENERATION": {
+      "file": "workflows/04_vectorization_ihive/S04-07_CANDIDATE_GENERATION.md",
+      "section": "S04",
+      "title": "Candidate Population Assembly",
+      "on_success": "#S04-08_BAYESIAN_PATHSCORE",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Candidate Generation (params/method/metrics/history/artifacts/evaluation), deterministic + reproducible",
+        "Massive candidate generation (I-HIVE)"
+      ]
+    },
+    "#S04-08_BAYESIAN_PATHSCORE": {
+      "file": "workflows/04_vectorization_ihive/S04-08_BAYESIAN_PATHSCORE.md",
+      "section": "S04",
+      "title": "Bayesian Path-Quality Scoring",
+      "on_success": "#S04-09_VECTOR_BASE_CONVERGENCE",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Bayesian path-quality scoring, Geometric deviation minimization"
+      ]
+    },
+    "#S04-09_VECTOR_BASE_CONVERGENCE": {
+      "file": "workflows/04_vectorization_ihive/S04-09_VECTOR_BASE_CONVERGENCE.md",
+      "section": "S04",
+      "title": "Phase 1 \u2014 Vector Base Convergence",
+      "on_success": "#S04-10_SANDBOX_ISOLATION_VERIFY",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Phase 1 \u2014 Vector Base Convergence (corner tolerances/node/topology/curve/profile/continuity)"
+      ]
+    },
+    "#S04-10_SANDBOX_ISOLATION_VERIFY": {
+      "file": "workflows/04_vectorization_ihive/S04-10_SANDBOX_ISOLATION_VERIFY.md",
+      "section": "S04",
+      "title": "Sandbox Isolation Verification",
+      "on_success": "#S05-01_STRUCTURAL_VERIFICATION",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Sandbox isolation functions correctly (I-HIVE verification)",
+        "Prevent production artifacts from being overwritten"
+      ]
+    },
+    "#S05-01_STRUCTURAL_VERIFICATION": {
+      "file": "workflows/05_vector_validation/S05-01_STRUCTURAL_VERIFICATION.md",
+      "section": "S05",
+      "title": "Phase 2 \u2014 Structural Verification",
+      "on_success": "#S05-02_SVG_OPTIMIZATION",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Phase 2 \u2014 Structural Verification (size/coordinate/line-weight/continuity/closed-path/node/geometry/scaling)"
+      ]
+    },
+    "#S05-02_SVG_OPTIMIZATION": {
+      "file": "workflows/05_vector_validation/S05-02_SVG_OPTIMIZATION.md",
+      "section": "S05",
+      "title": "SVG Structural Optimization",
+      "on_success": "#S05-03_SVG_TOPOLOGY_QA",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "SVG Optimization (node reduction/simplify/merge/dedup/open-path/closed-path/self-intersection/cleanup)"
+      ]
+    },
+    "#S05-03_SVG_TOPOLOGY_QA": {
+      "file": "workflows/05_vector_validation/S05-03_SVG_TOPOLOGY_QA.md",
+      "section": "S05",
+      "title": "SVG Topology QA",
+      "on_success": "#S05-04_SVG_QA_METRICS",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "SVG topology optimization, SVG Topology QA (agent responsibility)"
+      ]
+    },
+    "#S05-04_SVG_QA_METRICS": {
+      "file": "workflows/05_vector_validation/S05-04_SVG_QA_METRICS.md",
+      "section": "S05",
+      "title": "Objective SVG QA Metrics",
+      "on_success": "#S05-05_CANDIDATE_RANKING",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "SVG Quality Assurance (similarity/silhouette/edge/node/continuity/simplicity/fidelity/suitability)"
+      ]
+    },
+    "#S05-05_CANDIDATE_RANKING": {
+      "file": "workflows/05_vector_validation/S05-05_CANDIDATE_RANKING.md",
+      "section": "S05",
+      "title": "Candidate Leaderboard",
+      "on_success": "#S05-06_PRODUCTION_SVG_SELECT",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Candidate Ranking / Candidate Leaderboard (overall/vector/suitability/structural/topology/stitch/time)"
+      ]
+    },
+    "#S05-06_PRODUCTION_SVG_SELECT": {
+      "file": "workflows/05_vector_validation/S05-06_PRODUCTION_SVG_SELECT.md",
+      "section": "S05",
+      "title": "Canonical Production SVG Selection",
+      "on_success": "#S05-07_VECTOR_HISTORICAL_LEARNING",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "The highest-ranked candidate shall become the default production candidate while preserving all alternatives.",
+        "Canonical production SVG files are generated"
+      ]
+    },
+    "#S05-07_VECTOR_HISTORICAL_LEARNING": {
+      "file": "workflows/05_vector_validation/S05-07_VECTOR_HISTORICAL_LEARNING.md",
+      "section": "S05",
+      "title": "Vectorization Historical Learning",
+      "on_success": "#S05-08_VISUAL_FIDELITY_ATTESTATION_SVG",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Historical Learning (vector): parameter selections/winning/failed/metrics/decision traces/regression"
+      ]
+    },
+    "#S05-08_VISUAL_FIDELITY_ATTESTATION_SVG": {
+      "file": "workflows/05_vector_validation/S05-08_VISUAL_FIDELITY_ATTESTATION_SVG.md",
+      "section": "S05",
+      "title": "MANDATORY Visual-Fidelity Attestation (SVG vs source)",
+      "on_success": "#S06-01_VISUAL_FIDELITY_ATTESTATION_PRESTITCH",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "CRITICAL: agent MUST verbally confirm the SVG preserves silhouette/proportions/intent/scale vs the customer source image BEFORE positing a finished vectorized SVG (visual-fidelity mandate)"
+      ]
+    },
+    "#S06-01_VISUAL_FIDELITY_ATTESTATION_PRESTITCH": {
+      "file": "workflows/06_stitch_planning/S06-01_VISUAL_FIDELITY_ATTESTATION_PRESTITCH.md",
+      "section": "S06",
+      "title": "MANDATORY Visual-Fidelity Attestation (pre-stitch)",
+      "on_success": "#S06-02_SVG_VALIDATION_DIGITIZE",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "CRITICAL: agent MUST verbally confirm fidelity vs the customer source image BEFORE creating embroidery stitch plans from the SVG (visual-fidelity mandate)"
+      ]
+    },
+    "#S06-02_SVG_VALIDATION_DIGITIZE": {
+      "file": "workflows/06_stitch_planning/S06-02_SVG_VALIDATION_DIGITIZE.md",
+      "section": "S06",
+      "title": "Pre-Digitization SVG Validation",
+      "on_success": "#S06-03_EMBROIDERY_SUITABILITY",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "SVG Validation (closed/open/dup/self-intersection/layer/geometry/scaling/coords/separation)",
+        "SVG validation functions correctly"
+      ]
+    },
+    "#S06-03_EMBROIDERY_SUITABILITY": {
+      "file": "workflows/06_stitch_planning/S06-03_EMBROIDERY_SUITABILITY.md",
+      "section": "S06",
+      "title": "Embroidery Suitability Analysis",
+      "on_success": "#S06-04_LAYER_ANALYSIS",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Embroidery Suitability Analysis (feature/density/satin/fill/running/pull/push/break/registration/complexity)"
+      ]
+    },
+    "#S06-04_LAYER_ANALYSIS": {
+      "file": "workflows/06_stitch_planning/S06-04_LAYER_ANALYSIS.md",
+      "section": "S06",
+      "title": "Layer Analysis",
+      "on_success": "#S06-05_OBJECT_CLASSIFICATION",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Digitization Pipeline > Layer analysis"
+      ]
+    },
+    "#S06-05_OBJECT_CLASSIFICATION": {
+      "file": "workflows/06_stitch_planning/S06-05_OBJECT_CLASSIFICATION.md",
+      "section": "S06",
+      "title": "Object Classification",
+      "on_success": "#S06-06_STITCH_STRATEGY_SELECT",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Object Classification (satin/fill/running/bean/lettering/border/decorative/underlay/travel)"
+      ]
+    },
+    "#S06-06_STITCH_STRATEGY_SELECT": {
+      "file": "workflows/06_stitch_planning/S06-06_STITCH_STRATEGY_SELECT.md",
+      "section": "S06",
+      "title": "Stitch Strategy Selection",
+      "on_success": "#S06-07_UNDERLAY_PLANNING",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Stitch Strategy Selection (satin/tatami/running/triple/bean/motif/decorative/underlay)"
+      ]
+    },
+    "#S06-07_UNDERLAY_PLANNING": {
+      "file": "workflows/06_stitch_planning/S06-07_UNDERLAY_PLANNING.md",
+      "section": "S06",
+      "title": "Underlay Planning",
+      "on_success": "#S06-08_PULL_COMPENSATION",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Underlay Planning (edge walk/center walk/zig-zag/tatami/double/combinations)"
+      ]
+    },
+    "#S06-08_PULL_COMPENSATION": {
+      "file": "workflows/06_stitch_planning/S06-08_PULL_COMPENSATION.md",
+      "section": "S06",
+      "title": "Pull Compensation",
+      "on_success": "#S06-09_SATIN_GENERATION",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Pull Compensation (direction/material/density/geometry/width/fill/history)"
+      ]
+    },
+    "#S06-09_SATIN_GENERATION": {
+      "file": "workflows/06_stitch_planning/S06-09_SATIN_GENERATION.md",
+      "section": "S06",
+      "title": "Satin Column Generation",
+      "on_success": "#S06-10_FILL_GENERATION",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Satin generation, Satin column planning, Rail direction validation"
+      ]
+    },
+    "#S06-10_FILL_GENERATION": {
+      "file": "workflows/06_stitch_planning/S06-10_FILL_GENERATION.md",
+      "section": "S06",
+      "title": "Fill Generation",
+      "on_success": "#S06-11_RUNNING_STITCH_GENERATION",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Fill generation, Stitch strategies > Tatami/Motif/Decorative fill"
+      ]
+    },
+    "#S06-11_RUNNING_STITCH_GENERATION": {
+      "file": "workflows/06_stitch_planning/S06-11_RUNNING_STITCH_GENERATION.md",
+      "section": "S06",
+      "title": "Running/Bean Stitch Generation",
+      "on_success": "#S06-12_TRAVEL_OPTIMIZATION",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Running stitch generation, Triple running, Bean stitch"
+      ]
+    },
+    "#S06-12_TRAVEL_OPTIMIZATION": {
+      "file": "workflows/06_stitch_planning/S06-12_TRAVEL_OPTIMIZATION.md",
+      "section": "S06",
+      "title": "Travel/Jump Optimization",
+      "on_success": "#S06-13_TRIM_OPTIMIZATION",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Stitch Optimization (travel/trim/jump reduction, ordering, efficiency)"
+      ]
+    },
+    "#S06-13_TRIM_OPTIMIZATION": {
+      "file": "workflows/06_stitch_planning/S06-13_TRIM_OPTIMIZATION.md",
+      "section": "S06",
+      "title": "Trim Command Insertion & Optimization",
+      "on_success": "#S06-14_COLOR_SEQUENCING",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Trim command insertion, Trim reduction/optimization"
+      ]
+    },
+    "#S06-14_COLOR_SEQUENCING": {
+      "file": "workflows/06_stitch_planning/S06-14_COLOR_SEQUENCING.md",
+      "section": "S06",
+      "title": "Color Block Sequencing",
+      "on_success": "#S06-15_STITCH_PLAN_ARTIFACT",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Color block optimization, Color sequencing, Color ordering"
+      ]
+    },
+    "#S06-15_STITCH_PLAN_ARTIFACT": {
+      "file": "workflows/06_stitch_planning/S06-15_STITCH_PLAN_ARTIFACT.md",
+      "section": "S06",
+      "title": "Canonical Stitch Plan Artifact",
+      "on_success": "#S07-01_INKSTITCH_PATH_CONFIRM",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Production Artifacts > Stitch plan; canonical artifacts consumed downstream"
+      ]
+    },
+    "#S07-01_INKSTITCH_PATH_CONFIRM": {
+      "file": "workflows/07_stitch_validation/S07-01_INKSTITCH_PATH_CONFIRM.md",
+      "section": "S07",
+      "title": "Confirm Inkscape Extension Path",
+      "on_success": "#S07-02_INKSTITCH_INSTALL",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Ink/Stitch Validation > Confirm Inkscape extension path"
+      ]
+    },
+    "#S07-02_INKSTITCH_INSTALL": {
+      "file": "workflows/07_stitch_validation/S07-02_INKSTITCH_INSTALL.md",
+      "section": "S07",
+      "title": "Install Ink/Stitch",
+      "on_success": "#S07-03_INKSTITCH_REGISTRATION_VERIFY",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Ink/Stitch Validation > Install Ink/Stitch",
+        "Ink/Stitch integration (expansion)"
+      ]
+    },
+    "#S07-03_INKSTITCH_REGISTRATION_VERIFY": {
+      "file": "workflows/07_stitch_validation/S07-03_INKSTITCH_REGISTRATION_VERIFY.md",
+      "section": "S07",
+      "title": "Verify Ink/Stitch Registration",
+      "on_success": "#S07-04_TEST_SVG_GENERATE",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Ink/Stitch Validation > Verify extension registration"
+      ]
+    },
+    "#S07-04_TEST_SVG_GENERATE": {
+      "file": "workflows/07_stitch_validation/S07-04_TEST_SVG_GENERATE.md",
+      "section": "S07",
+      "title": "Generate Test SVG (NOT customer artwork)",
+      "on_success": "#S07-05_TEST_EXPORT_EMBROIDERY",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "The initial validation shall never use customer artwork; only simple test artwork until export verified."
+      ]
+    },
+    "#S07-05_TEST_EXPORT_EMBROIDERY": {
+      "file": "workflows/07_stitch_validation/S07-05_TEST_EXPORT_EMBROIDERY.md",
+      "section": "S07",
+      "title": "Export Test Embroidery File (gate)",
+      "on_success": "#S07-06_STITCH_SIMULATION",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": true,
+      "brd": [
+        "Ink/Stitch Validation > Generate SVG, Export test embroidery file, Confirm output exists, Validate export",
+        "Ink/Stitch export validation succeeds"
+      ]
+    },
+    "#S07-06_STITCH_SIMULATION": {
+      "file": "workflows/07_stitch_validation/S07-06_STITCH_SIMULATION.md",
+      "section": "S07",
+      "title": "Stitch Simulation",
+      "on_success": "#S07-07_DENSITY_MAP_GENERATION",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Stitch Simulation (visualization/needle seq/travel/trim/color/timing/count)",
+        "Embroidery stitch plan simulation"
+      ]
+    },
+    "#S07-07_DENSITY_MAP_GENERATION": {
+      "file": "workflows/07_stitch_validation/S07-07_DENSITY_MAP_GENERATION.md",
+      "section": "S07",
+      "title": "Density Map Generation",
+      "on_success": "#S07-08_DENSITY_MAP_QA",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Density-map generation, Density-map QA"
+      ]
+    },
+    "#S07-08_DENSITY_MAP_QA": {
+      "file": "workflows/07_stitch_validation/S07-08_DENSITY_MAP_QA.md",
+      "section": "S07",
+      "title": "Density Map QA",
+      "on_success": "#S07-09_PRODUCTION_QA",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Density Analysis (excessive/insufficient/accumulation/stress/overlap/registration/risk)",
+        "Embroidery stitch plan density-map quality assurance"
+      ]
+    },
+    "#S07-09_PRODUCTION_QA": {
+      "file": "workflows/07_stitch_validation/S07-09_PRODUCTION_QA.md",
+      "section": "S07",
+      "title": "Production Quality Assurance",
+      "on_success": "#S07-10_BERNINA_B700_COMPLIANCE",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Production Quality Assurance (integrity/structural/layer/density/color/machine/B700/readiness)",
+        "Embroidery stitch plan quality assurance"
+      ]
+    },
+    "#S07-10_BERNINA_B700_COMPLIANCE": {
+      "file": "workflows/07_stitch_validation/S07-10_BERNINA_B700_COMPLIANCE.md",
+      "section": "S07",
+      "title": "Bernina B700 Standards Compliance",
+      "on_success": "#S07-11_BERNINA_B700_PROTOCOL_QA",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Bernina B700 stitch plan standards compliance, Bernina B700 compatibility is validated"
+      ]
+    },
+    "#S07-11_BERNINA_B700_PROTOCOL_QA": {
+      "file": "workflows/07_stitch_validation/S07-11_BERNINA_B700_PROTOCOL_QA.md",
+      "section": "S07",
+      "title": "Bernina B700 Production Protocol QA",
+      "on_success": "#S07-12_QA_APPROVAL_GATE",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Bernina B700 production protocol quality assurance"
+      ]
+    },
+    "#S07-12_QA_APPROVAL_GATE": {
+      "file": "workflows/07_stitch_validation/S07-12_QA_APPROVAL_GATE.md",
+      "section": "S07",
+      "title": "QA Approval Gate",
+      "on_success": "#S08-01_EXPORT_PES",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": true,
+      "brd": [
+        "Only plans satisfying QA requirements shall advance to export.",
+        "Automated production QA approval"
+      ]
+    },
+    "#S08-01_EXPORT_PES": {
+      "file": "workflows/08_production_export/S08-01_EXPORT_PES.md",
+      "section": "S08",
+      "title": "PES Export",
+      "on_success": "#S08-02_EXPORT_DST",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "PES embroidery file export, Production Export > PES",
+        "Production-grade PES generation"
+      ]
+    },
+    "#S08-02_EXPORT_DST": {
+      "file": "workflows/08_production_export/S08-02_EXPORT_DST.md",
+      "section": "S08",
+      "title": "DST Export",
+      "on_success": "#S08-03_EXPORT_EXP",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Production Export > DST"
+      ]
+    },
+    "#S08-03_EXPORT_EXP": {
+      "file": "workflows/08_production_export/S08-03_EXPORT_EXP.md",
+      "section": "S08",
+      "title": "EXP Export",
+      "on_success": "#S08-04_HEADLESS_OUTPUT",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Production Export > EXP"
+      ]
+    },
+    "#S08-04_HEADLESS_OUTPUT": {
+      "file": "workflows/08_production_export/S08-04_HEADLESS_OUTPUT.md",
+      "section": "S08",
+      "title": "Headless Production Output",
+      "on_success": "#S08-05_DIMENSION_PRESERVATION_VERIFY",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Phase 3 \u2014 Headless Production Output (GUIs not required); inkscape --actions example"
+      ]
+    },
+    "#S08-05_DIMENSION_PRESERVATION_VERIFY": {
+      "file": "workflows/08_production_export/S08-05_DIMENSION_PRESERVATION_VERIFY.md",
+      "section": "S08",
+      "title": "Dimension & Integrity Preservation",
+      "on_success": "#S08-06_DUAL_SIZE_EXPORT",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Preserving Artwork proportions/Geometric precision/Production dimensions/Structural integrity"
+      ]
+    },
+    "#S08-06_DUAL_SIZE_EXPORT": {
+      "file": "workflows/08_production_export/S08-06_DUAL_SIZE_EXPORT.md",
+      "section": "S08",
+      "title": "Dual-Size Export",
+      "on_success": "#S08-07_EXPORT_METADATA",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dual-size export"
+      ]
+    },
+    "#S08-07_EXPORT_METADATA": {
+      "file": "workflows/08_production_export/S08-07_EXPORT_METADATA.md",
+      "section": "S08",
+      "title": "Export Production Metadata",
+      "on_success": "#S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Every export shall preserve Artwork dimensions/Stitch integrity/Color sequence/Production metadata"
+      ]
+    },
+    "#S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT": {
+      "file": "workflows/08_production_export/S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT.md",
+      "section": "S08",
+      "title": "MANDATORY Visual-Fidelity Attestation (SVG + PES vs source)",
+      "on_success": "#S08-09_EXPORT_ARTIFACTS_REGISTER",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "CRITICAL: agent MUST verbally confirm 'I HAVE REVIEWED xxxx.svg and xxxy.pes ... preserve consistent silhouette, proportions, recognizable artistic intent, and relative scale with the customer source image' BEFORE finalizing embroidery output (visual-fidelity mandate)"
+      ]
+    },
+    "#S08-09_EXPORT_ARTIFACTS_REGISTER": {
+      "file": "workflows/08_production_export/S08-09_EXPORT_ARTIFACTS_REGISTER.md",
+      "section": "S08",
+      "title": "Register Export Artifacts",
+      "on_success": "#S09-01_JOB_STATUS_API",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Production Artifacts > Export files; All production artifacts shall remain reproducible"
+      ]
+    },
+    "#S09-01_JOB_STATUS_API": {
+      "file": "workflows/09_production_tracking/S09-01_JOB_STATUS_API.md",
+      "section": "S09",
+      "title": "Job Status API Endpoint",
+      "on_success": "#S09-02_STATE_TRANSITION_TABLE",
+      "on_failure": "#REC-S09_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Job Status Management > POST /api/job-status",
+        "Status transition controls (near-term critical)"
+      ]
+    },
+    "#S09-02_STATE_TRANSITION_TABLE": {
+      "file": "workflows/09_production_tracking/S09-02_STATE_TRANSITION_TABLE.md",
+      "section": "S09",
+      "title": "Canonical State Transition Table",
+      "on_success": "#S09-03_INVALID_TRANSITION_REJECT",
+      "on_failure": "#REC-S09_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Allowed state transitions (artwork_review\u2192\u2026\u2192project_complete, full list)"
+      ]
+    },
+    "#S09-03_INVALID_TRANSITION_REJECT": {
+      "file": "workflows/09_production_tracking/S09-03_INVALID_TRANSITION_REJECT.md",
+      "section": "S09",
+      "title": "Reject Invalid Transitions",
+      "on_success": "#S09-04_AUDIT_HISTORY",
+      "on_failure": "#REC-S09_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Invalid state transitions shall be rejected.",
+        "Job status API validates state transitions"
+      ]
+    },
+    "#S09-04_AUDIT_HISTORY": {
+      "file": "workflows/09_production_tracking/S09-04_AUDIT_HISTORY.md",
+      "section": "S09",
+      "title": "Transition Audit History",
+      "on_success": "#S09-05_STATUS_TRANSITION_CONTROLS",
+      "on_failure": "#REC-S09_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Every transition shall be recorded in the project audit history."
+      ]
+    },
+    "#S09-05_STATUS_TRANSITION_CONTROLS": {
+      "file": "workflows/09_production_tracking/S09-05_STATUS_TRANSITION_CONTROLS.md",
+      "section": "S09",
+      "title": "Operator Status Controls",
+      "on_success": "#S09-06_DASHBOARD_AUTH",
+      "on_failure": "#REC-S09_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Status transition controls (near-term critical); operator actions recorded"
+      ]
+    },
+    "#S09-06_DASHBOARD_AUTH": {
+      "file": "workflows/09_production_tracking/S09-06_DASHBOARD_AUTH.md",
+      "section": "S09",
+      "title": "Dashboard Authentication",
+      "on_success": "#S10-01_SLACK_MIRROR_OUTBOUND",
+      "on_failure": "#REC-S09_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dashboard authentication (near-term critical)"
+      ]
+    },
+    "#S10-01_SLACK_MIRROR_OUTBOUND": {
+      "file": "workflows/10_slack_collaboration/S10-01_SLACK_MIRROR_OUTBOUND.md",
+      "section": "S10",
+      "title": "Mirror Outbound Messages",
+      "on_success": "#S10-02_SLACK_TRANSCRIPT_LOCAL",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Slack can receive mirrored messages.",
+        "Slack-visible multi-agent collaboration"
+      ]
+    },
+    "#S10-02_SLACK_TRANSCRIPT_LOCAL": {
+      "file": "workflows/10_slack_collaboration/S10-02_SLACK_TRANSCRIPT_LOCAL.md",
+      "section": "S10",
+      "title": "Local Slack Transcript",
+      "on_success": "#S10-03_SLACK_READ_REPLIES",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Slack transcript is written locally (I-HIVE verification)"
+      ]
+    },
+    "#S10-03_SLACK_READ_REPLIES": {
+      "file": "workflows/10_slack_collaboration/S10-03_SLACK_READ_REPLIES.md",
+      "section": "S10",
+      "title": "Read Slack Replies Automatically",
+      "on_success": "#S10-04_SLACK_APPROVALS",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Agents read Slack replies automatically."
+      ]
+    },
+    "#S10-04_SLACK_APPROVALS": {
+      "file": "workflows/10_slack_collaboration/S10-04_SLACK_APPROVALS.md",
+      "section": "S10",
+      "title": "Slack Approvals",
+      "on_success": "#S10-05_SLACK_SLASH_COMMANDS",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Slack approvals enabled.",
+        "Slack approvals",
+        "Manual approvals"
+      ]
+    },
+    "#S10-05_SLACK_SLASH_COMMANDS": {
+      "file": "workflows/10_slack_collaboration/S10-05_SLACK_SLASH_COMMANDS.md",
+      "section": "S10",
+      "title": "Signed Slack Slash Commands",
+      "on_success": "#S10-06_SLACK_AGENT_CONVERSATION",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Slack slash commands implemented.",
+        "Signed Slack command support is implemented or scaffolded"
+      ]
+    },
+    "#S10-06_SLACK_AGENT_CONVERSATION": {
+      "file": "workflows/10_slack_collaboration/S10-06_SLACK_AGENT_CONVERSATION.md",
+      "section": "S10",
+      "title": "Visible Continuous Agent Conversation",
+      "on_success": "#S10-07_SLACK_HUMAN_LANGUAGE_EVIDENCE",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Agents chatting continuously.",
+        "Visible Slack agent conversation (near-term critical)",
+        "Slack agent conversations function"
+      ]
+    },
+    "#S10-07_SLACK_HUMAN_LANGUAGE_EVIDENCE": {
+      "file": "workflows/10_slack_collaboration/S10-07_SLACK_HUMAN_LANGUAGE_EVIDENCE.md",
+      "section": "S10",
+      "title": "Human-Language Evidence Messages",
+      "on_success": "#S11-01_AWS_DISCOVERY",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Every implementation includes observable evidence that can be sent as a human-language Slack message."
+      ]
+    },
+    "#S11-01_AWS_DISCOVERY": {
+      "file": "workflows/11_infrastructure_multicloud/S11-01_AWS_DISCOVERY.md",
+      "section": "S11",
+      "title": "Existing AWS Inventory",
+      "on_success": "#S11-02_AWS_CONFIG_RESOLUTION",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Existing AWS Infrastructure Discovery (binaries/config/creds/env/processes/packages/services/fs)"
+      ]
+    },
+    "#S11-02_AWS_CONFIG_RESOLUTION": {
+      "file": "workflows/11_infrastructure_multicloud/S11-02_AWS_CONFIG_RESOLUTION.md",
+      "section": "S11",
+      "title": "Preserve AWS Config Resolution Order",
+      "on_success": "#S11-03_S3_BACKUP",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Configuration Resolution Order (CLI args/env/credentials/config)"
+      ]
+    },
+    "#S11-03_S3_BACKUP": {
+      "file": "workflows/11_infrastructure_multicloud/S11-03_S3_BACKUP.md",
+      "section": "S11",
+      "title": "S3 Backup (preserve existing capability)",
+      "on_success": "#S11-04_MULTICLOUD_PROFILES",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Existing implementation stores system backups; preserving this capability is mandatory.",
+        "Backup infrastructure"
+      ]
+    },
+    "#S11-04_MULTICLOUD_PROFILES": {
+      "file": "workflows/11_infrastructure_multicloud/S11-04_MULTICLOUD_PROFILES.md",
+      "section": "S11",
+      "title": "Multi-Cloud Provider Profiles",
+      "on_success": "#S11-05_ARTIFACT_SYNC",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Multi-Cloud Architecture, Contabo Object Storage Reference, Cloudflare R2 Reference"
+      ]
+    },
+    "#S11-05_ARTIFACT_SYNC": {
+      "file": "workflows/11_infrastructure_multicloud/S11-05_ARTIFACT_SYNC.md",
+      "section": "S11",
+      "title": "Artifact / Knowledge / Production Sync",
+      "on_success": "#S11-06_DISASTER_RECOVERY",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Job artifact synchronization, Multi-server synchronization, Artifact synchronization"
+      ]
+    },
+    "#S11-06_DISASTER_RECOVERY": {
+      "file": "workflows/11_infrastructure_multicloud/S11-06_DISASTER_RECOVERY.md",
+      "section": "S11",
+      "title": "Disaster Recovery Procedures",
+      "on_success": "#S11-07_INFRA_MONITORING",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Disaster recovery, Disaster recovery procedures are documented"
+      ]
+    },
+    "#S11-07_INFRA_MONITORING": {
+      "file": "workflows/11_infrastructure_multicloud/S11-07_INFRA_MONITORING.md",
+      "section": "S11",
+      "title": "Infrastructure Monitoring",
+      "on_success": "#S11-08_BACKUP_RESTORE_TEST",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Infrastructure Monitoring (CPU/memory/disk/storage/network/service/process/queue/workers/cloud)"
+      ]
+    },
+    "#S11-08_BACKUP_RESTORE_TEST": {
+      "file": "workflows/11_infrastructure_multicloud/S11-08_BACKUP_RESTORE_TEST.md",
+      "section": "S11",
+      "title": "Backup Restoration Test",
+      "on_success": "#S11-09_LONGTERM_ARCHIVE",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Backups shall be periodically validated through restoration testing.",
+        "Recovery verification"
+      ]
+    },
+    "#S11-09_LONGTERM_ARCHIVE": {
+      "file": "workflows/11_infrastructure_multicloud/S11-09_LONGTERM_ARCHIVE.md",
+      "section": "S11",
+      "title": "Long-Term Versioned Archive",
+      "on_success": "#S12-01_AGENT_RESPONSIBILITY_MAP",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Long-term archival, Versioned historical archives"
+      ]
+    },
+    "#S12-01_AGENT_RESPONSIBILITY_MAP": {
+      "file": "workflows/12_agent_orchestration/S12-01_AGENT_RESPONSIBILITY_MAP.md",
+      "section": "S12",
+      "title": "Agent Responsibility Map",
+      "on_success": "#S12-02_ORCHESTRATOR",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Agent Responsibility Separation; Except the Orchestrator, no agent owns the full pipeline"
+      ]
+    },
+    "#S12-02_ORCHESTRATOR": {
+      "file": "workflows/12_agent_orchestration/S12-02_ORCHESTRATOR.md",
+      "section": "S12",
+      "title": "Workflow Orchestrator",
+      "on_success": "#S12-03_AGENT_COMMUNICATION",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Workflow Orchestration, Autonomous Coordination (assignment/scheduling/dependency/workload/retry/recovery/progression)"
+      ]
+    },
+    "#S12-03_AGENT_COMMUNICATION": {
+      "file": "workflows/12_agent_orchestration/S12-03_AGENT_COMMUNICATION.md",
+      "section": "S12",
+      "title": "Observable Agent Communication",
+      "on_success": "#S12-04_SHARED_ARTIFACTS",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Autonomous AI agents communicating continuously; Observable communication"
+      ]
+    },
+    "#S12-04_SHARED_ARTIFACTS": {
+      "file": "workflows/12_agent_orchestration/S12-04_SHARED_ARTIFACTS.md",
+      "section": "S12",
+      "title": "Structured Shared Artifacts",
+      "on_success": "#S12-05_COORDINATION",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge Sharing (structured artifacts: reports/traces/evaluations)"
+      ]
+    },
+    "#S12-05_COORDINATION": {
+      "file": "workflows/12_agent_orchestration/S12-05_COORDINATION.md",
+      "section": "S12",
+      "title": "Coordination & Scheduling",
+      "on_success": "#S12-06_FAILURE_RECOVERY_AGENTS",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Autonomous Coordination; Production prioritization"
+      ]
+    },
+    "#S12-06_FAILURE_RECOVERY_AGENTS": {
+      "file": "workflows/12_agent_orchestration/S12-06_FAILURE_RECOVERY_AGENTS.md",
+      "section": "S12",
+      "title": "Agent Failure Recovery",
+      "on_success": "#S12-07_KNOWLEDGE_SHARING",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Failure Recovery (retry/alternative routing/reassignment/escalation/reporting)"
+      ]
+    },
+    "#S12-07_KNOWLEDGE_SHARING": {
+      "file": "workflows/12_agent_orchestration/S12-07_KNOWLEDGE_SHARING.md",
+      "section": "S12",
+      "title": "Permanent Knowledge Sharing",
+      "on_success": "#S12-08_SKILL_MD_STANDARD",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Shared knowledge shall remain permanently available for future retrieval."
+      ]
+    },
+    "#S12-08_SKILL_MD_STANDARD": {
+      "file": "workflows/12_agent_orchestration/S12-08_SKILL_MD_STANDARD.md",
+      "section": "S12",
+      "title": "SKILL.md Standard Conformance",
+      "on_success": "#S12-09_SKILL_VERIFICATION",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Repository Consistency Requirement, Verification Standard (skills/ layout, SKILL.md, YAML, name match, references/)",
+        "Agent Skill Standards and SKILL.md Specification"
+      ]
+    },
+    "#S12-09_SKILL_VERIFICATION": {
+      "file": "workflows/12_agent_orchestration/S12-09_SKILL_VERIFICATION.md",
+      "section": "S12",
+      "title": "Skill Verification Evidence",
+      "on_success": "#S12-10_FINAL_REPORT_STANDARD",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Verification (checklist/observable evidence/command output/artifacts/diffs/reports/traces)",
+        "Common Rationalizations, Red Flags documented"
+      ]
+    },
+    "#S12-10_FINAL_REPORT_STANDARD": {
+      "file": "workflows/12_agent_orchestration/S12-10_FINAL_REPORT_STANDARD.md",
+      "section": "S12",
+      "title": "Final Report Standard",
+      "on_success": "#S13-01_DASHBOARD_MISSION_CONTROL",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Final Report Standard (full required field list); every implementation concludes with a final report"
+      ]
+    },
+    "#S13-01_DASHBOARD_MISSION_CONTROL": {
+      "file": "workflows/13_dashboard_observability/S13-01_DASHBOARD_MISSION_CONTROL.md",
+      "section": "S13",
+      "title": "Mission Control View",
+      "on_success": "#S13-02_DASHBOARD_JOBS_AGENTS",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Required Dashboard Areas > Mission Control; Complete observability"
+      ]
+    },
+    "#S13-02_DASHBOARD_JOBS_AGENTS": {
+      "file": "workflows/13_dashboard_observability/S13-02_DASHBOARD_JOBS_AGENTS.md",
+      "section": "S13",
+      "title": "Jobs & Agent Activity Views",
+      "on_success": "#S13-03_DASHBOARD_SLACK_KNOWLEDGE",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dashboard displays current jobs / agent activity"
+      ]
+    },
+    "#S13-03_DASHBOARD_SLACK_KNOWLEDGE": {
+      "file": "workflows/13_dashboard_observability/S13-03_DASHBOARD_SLACK_KNOWLEDGE.md",
+      "section": "S13",
+      "title": "Slack Intelligence & Knowledge Views",
+      "on_success": "#S13-04_DASHBOARD_EXPERIMENTS_LEADERBOARD",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dashboard Areas > Slack Intelligence / Knowledge Retrieval"
+      ]
+    },
+    "#S13-04_DASHBOARD_EXPERIMENTS_LEADERBOARD": {
+      "file": "workflows/13_dashboard_observability/S13-04_DASHBOARD_EXPERIMENTS_LEADERBOARD.md",
+      "section": "S13",
+      "title": "Experiments & Leaderboard Views",
+      "on_success": "#S13-05_DASHBOARD_QA_LEARNING_REGRESSION",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dashboard Areas > Vectorization Experiments / Candidate Leaderboard"
+      ]
+    },
+    "#S13-05_DASHBOARD_QA_LEARNING_REGRESSION": {
+      "file": "workflows/13_dashboard_observability/S13-05_DASHBOARD_QA_LEARNING_REGRESSION.md",
+      "section": "S13",
+      "title": "QA / Learning / Regression Views",
+      "on_success": "#S13-06_DASHBOARD_REWARD_PENALTY",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dashboard Areas > QA Results / Historical Learning / Regression Results"
+      ]
+    },
+    "#S13-06_DASHBOARD_REWARD_PENALTY": {
+      "file": "workflows/13_dashboard_observability/S13-06_DASHBOARD_REWARD_PENALTY.md",
+      "section": "S13",
+      "title": "Reward & Penalty Views",
+      "on_success": "#S13-07_DASHBOARD_INFRA_ALERTS",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dashboard Areas > Reward Dashboard / Penalty Dashboard; Reward and Improvement Tracking; Failure Analysis"
+      ]
+    },
+    "#S13-07_DASHBOARD_INFRA_ALERTS": {
+      "file": "workflows/13_dashboard_observability/S13-07_DASHBOARD_INFRA_ALERTS.md",
+      "section": "S13",
+      "title": "Infrastructure Health & Alerts",
+      "on_success": "#S13-08_DASHBOARD_HISTORICAL",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dashboard Areas > Infrastructure Health / System Alerts; Alerts shall remain visible until resolved"
+      ]
+    },
+    "#S13-08_DASHBOARD_HISTORICAL": {
+      "file": "workflows/13_dashboard_observability/S13-08_DASHBOARD_HISTORICAL.md",
+      "section": "S13",
+      "title": "Historical Dashboards",
+      "on_success": "#S13-09_OPERATOR_ACTIONS_RECORDED",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Historical Dashboards (production/QA/candidate/experiment/learning/regression/infra/agent)"
+      ]
+    },
+    "#S13-09_OPERATOR_ACTIONS_RECORDED": {
+      "file": "workflows/13_dashboard_observability/S13-09_OPERATOR_ACTIONS_RECORDED.md",
+      "section": "S13",
+      "title": "Operator Actions Recorded",
+      "on_success": "#S14-01_EMBEDDED_QA_CHECKPOINTS",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "All operator actions shall be recorded within the system history; Manual overrides where authorized"
+      ]
+    },
+    "#S14-01_EMBEDDED_QA_CHECKPOINTS": {
+      "file": "workflows/14_qa_continuous_improvement/S14-01_EMBEDDED_QA_CHECKPOINTS.md",
+      "section": "S14",
+      "title": "Embedded QA Checkpoints",
+      "on_success": "#S14-02_DECISION_TRACE_PRESERVE",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Continuous Quality Assurance Philosophy (embedded QA at every checkpoint)",
+        "QA exists throughout the production pipeline"
+      ]
+    },
+    "#S14-02_DECISION_TRACE_PRESERVE": {
+      "file": "workflows/14_qa_continuous_improvement/S14-02_DECISION_TRACE_PRESERVE.md",
+      "section": "S14",
+      "title": "Preserve Decision Traces",
+      "on_success": "#S14-03_HISTORICAL_LEARNING_SUBSYSTEM",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Decision traces are preserved; Verification Philosophy"
+      ]
+    },
+    "#S14-03_HISTORICAL_LEARNING_SUBSYSTEM": {
+      "file": "workflows/14_qa_continuous_improvement/S14-03_HISTORICAL_LEARNING_SUBSYSTEM.md",
+      "section": "S14",
+      "title": "Historical Learning Subsystem",
+      "on_success": "#S14-04_REGRESSION_FRAMEWORK",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Historical Learning (permanent subsystem); Continuous historical learning"
+      ]
+    },
+    "#S14-04_REGRESSION_FRAMEWORK": {
+      "file": "workflows/14_qa_continuous_improvement/S14-04_REGRESSION_FRAMEWORK.md",
+      "section": "S14",
+      "title": "Regression Framework",
+      "on_success": "#S14-05_KNOWLEDGE_MEMORIALIZATION_QA",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Regression Framework (quality/SVG/stitch/ranking/QA pass rates/performance/timing/accuracy)"
+      ]
+    },
+    "#S14-05_KNOWLEDGE_MEMORIALIZATION_QA": {
+      "file": "workflows/14_qa_continuous_improvement/S14-05_KNOWLEDGE_MEMORIALIZATION_QA.md",
+      "section": "S14",
+      "title": "QA Knowledge Memorialization",
+      "on_success": "#S14-06_AUTONOMOUS_CODE_REVIEW",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge Memorialization; Validated improvements shall become permanent engineering knowledge"
+      ]
+    },
+    "#S14-06_AUTONOMOUS_CODE_REVIEW": {
+      "file": "workflows/14_qa_continuous_improvement/S14-06_AUTONOMOUS_CODE_REVIEW.md",
+      "section": "S14",
+      "title": "Autonomous Code Review",
+      "on_success": "#S14-07_SELF_IMPROVEMENT_OBJECTIVES",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Autonomous Code Review (static/style/dead-code/complexity/docs/security/perf/deps); Code review"
+      ]
+    },
+    "#S14-07_SELF_IMPROVEMENT_OBJECTIVES": {
+      "file": "workflows/14_qa_continuous_improvement/S14-07_SELF_IMPROVEMENT_OBJECTIVES.md",
+      "section": "S14",
+      "title": "Self-Improvement Objectives",
+      "on_success": "#S14-08_IDLE_EXPERIMENTATION",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Self-Improvement Objectives; Improvements shall be validated before becoming permanent behavior"
+      ]
+    },
+    "#S14-08_IDLE_EXPERIMENTATION": {
+      "file": "workflows/14_qa_continuous_improvement/S14-08_IDLE_EXPERIMENTATION.md",
+      "section": "S14",
+      "title": "Never-Idle Autonomous Experimentation",
+      "on_success": "#S14-09_CONTINUE_AS_NEW",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Autonomous Experimentation; During idle periods the platform shall continuously perform useful autonomous work"
+      ]
+    },
+    "#S14-09_CONTINUE_AS_NEW": {
+      "file": "workflows/14_qa_continuous_improvement/S14-09_CONTINUE_AS_NEW.md",
+      "section": "S14",
+      "title": "Continue-As-New Loop Checkpoint",
+      "on_success": "#S15-01_PRODUCTION_READINESS_GATE",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Never-idle rule; The system is intended to become a permanent production platform; Long-Term Autonomous Evolution"
+      ]
+    },
+    "#S15-01_PRODUCTION_READINESS_GATE": {
+      "file": "workflows/15_production_readiness/S15-01_PRODUCTION_READINESS_GATE.md",
+      "section": "S15",
+      "title": "Production Readiness Gate",
+      "on_success": "#S15-02_DEPLOYMENT_AUTOMATION",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": true,
+      "brd": [
+        "Production Readiness (deterministic/observable/verified/traceable/recoverable/validated/repeatable/documented); No subsystem promoted on one success"
+      ]
+    },
+    "#S15-02_DEPLOYMENT_AUTOMATION": {
+      "file": "workflows/15_production_readiness/S15-02_DEPLOYMENT_AUTOMATION.md",
+      "section": "S15",
+      "title": "Deployment Automation",
+      "on_success": "#S15-03_CONFIG_MANAGEMENT",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Deployment Architecture (repeatable/automated/config/version/rollback/isolation/verification); Deployment automation"
+      ]
+    },
+    "#S15-03_CONFIG_MANAGEMENT": {
+      "file": "workflows/15_production_readiness/S15-03_CONFIG_MANAGEMENT.md",
+      "section": "S15",
+      "title": "Configuration Management",
+      "on_success": "#S15-04_DEPENDENCY_MANAGEMENT",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Configuration Management (version-controlled/observable/reproducible/auditable/secure/documented)"
+      ]
+    },
+    "#S15-04_DEPENDENCY_MANAGEMENT": {
+      "file": "workflows/15_production_readiness/S15-04_DEPENDENCY_MANAGEMENT.md",
+      "section": "S15",
+      "title": "Dependency Management",
+      "on_success": "#S15-05_OPERATIONAL_HEALTH",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Dependency Management (identified/installed/verified/tracked/monitored)"
+      ]
+    },
+    "#S15-05_OPERATIONAL_HEALTH": {
+      "file": "workflows/15_production_readiness/S15-05_OPERATIONAL_HEALTH.md",
+      "section": "S15",
+      "title": "Operational Health Monitoring",
+      "on_success": "#S15-06_BACKUP_STRATEGY",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Operational Health (availability/pipeline/throughput/queues/agents/cloud/storage/knowledge/dashboard/Slack/API)"
+      ]
+    },
+    "#S15-06_BACKUP_STRATEGY": {
+      "file": "workflows/15_production_readiness/S15-06_BACKUP_STRATEGY.md",
+      "section": "S15",
+      "title": "Backup Strategy",
+      "on_success": "#S15-07_DR_PROCEDURES",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Backup Strategy (scheduled/artifact/config/knowledge/archive/recovery verification)"
+      ]
+    },
+    "#S15-07_DR_PROCEDURES": {
+      "file": "workflows/15_production_readiness/S15-07_DR_PROCEDURES.md",
+      "section": "S15",
+      "title": "Disaster Recovery Procedures (readiness)",
+      "on_success": "#S15-08_PRODUCTION_DOCS",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Disaster recovery procedures are documented; Recoverability"
+      ]
+    },
+    "#S15-08_PRODUCTION_DOCS": {
+      "file": "workflows/15_production_readiness/S15-08_PRODUCTION_DOCS.md",
+      "section": "S15",
+      "title": "Production Documentation",
+      "on_success": "#S15-09_GIT_CICD",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Operational documentation exists; Production documentation"
+      ]
+    },
+    "#S15-09_GIT_CICD": {
+      "file": "workflows/15_production_readiness/S15-09_GIT_CICD.md",
+      "section": "S15",
+      "title": "Git-Based CI/CD",
+      "on_success": "#S15-10_DEPLOY_TO_RUNTIME",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Git-based continuous integration and continuous deployment; Large Heredoc Command Risk mitigation; py_compile before restart"
+      ]
+    },
+    "#S15-10_DEPLOY_TO_RUNTIME": {
+      "file": "workflows/15_production_readiness/S15-10_DEPLOY_TO_RUNTIME.md",
+      "section": "S15",
+      "title": "Deploy to VPS Runtime Root",
+      "on_success": "#S15-11_GLOBAL_PRINCIPLES_AUDIT",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Runtime requirement: the system must live and run on the VPS at /root/projects/embiz; Repeatable/automated deployment"
+      ]
+    },
+    "#S15-11_GLOBAL_PRINCIPLES_AUDIT": {
+      "file": "workflows/15_production_readiness/S15-11_GLOBAL_PRINCIPLES_AUDIT.md",
+      "section": "S15",
+      "title": "Global Engineering Principles Audit",
+      "on_success": "#S14-08_IDLE_EXPERIMENTATION",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Global Engineering Principles (full list); No subsystem complete until implementation+verification+docs+observability+learning+improvement satisfied"
+      ]
+    },
+    "#REC-BOOT_DIAGNOSE": {
+      "file": "recovery/REC-BOOT_DIAGNOSE.md",
+      "section": "BOOT-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-BOOT_REPAIR",
+      "on_failure": "#REC-BOOT_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-BOOT_REPAIR": {
+      "file": "recovery/REC-BOOT_REPAIR.md",
+      "section": "BOOT-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-BOOT_VERIFY",
+      "on_failure": "#REC-BOOT_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-BOOT_VERIFY": {
+      "file": "recovery/REC-BOOT_VERIFY.md",
+      "section": "BOOT-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-BOOT_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-BOOT_ESCALATE": {
+      "file": "recovery/REC-BOOT_ESCALATE.md",
+      "section": "BOOT-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-BOOT_DIAGNOSE",
+      "on_failure": "#REC-BOOT_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S00_DIAGNOSE": {
+      "file": "recovery/REC-S00_DIAGNOSE.md",
+      "section": "S00-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S00_REPAIR",
+      "on_failure": "#REC-S00_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S00_REPAIR": {
+      "file": "recovery/REC-S00_REPAIR.md",
+      "section": "S00-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S00_VERIFY",
+      "on_failure": "#REC-S00_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S00_VERIFY": {
+      "file": "recovery/REC-S00_VERIFY.md",
+      "section": "S00-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S00_ESCALATE": {
+      "file": "recovery/REC-S00_ESCALATE.md",
+      "section": "S00-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S00_DIAGNOSE",
+      "on_failure": "#REC-S00_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S01_DIAGNOSE": {
+      "file": "recovery/REC-S01_DIAGNOSE.md",
+      "section": "S01-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S01_REPAIR",
+      "on_failure": "#REC-S01_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S01_REPAIR": {
+      "file": "recovery/REC-S01_REPAIR.md",
+      "section": "S01-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S01_VERIFY",
+      "on_failure": "#REC-S01_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S01_VERIFY": {
+      "file": "recovery/REC-S01_VERIFY.md",
+      "section": "S01-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S01_ESCALATE": {
+      "file": "recovery/REC-S01_ESCALATE.md",
+      "section": "S01-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S01_DIAGNOSE",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S02_DIAGNOSE": {
+      "file": "recovery/REC-S02_DIAGNOSE.md",
+      "section": "S02-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S02_REPAIR",
+      "on_failure": "#REC-S02_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S02_REPAIR": {
+      "file": "recovery/REC-S02_REPAIR.md",
+      "section": "S02-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S02_VERIFY",
+      "on_failure": "#REC-S02_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S02_VERIFY": {
+      "file": "recovery/REC-S02_VERIFY.md",
+      "section": "S02-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S02_ESCALATE": {
+      "file": "recovery/REC-S02_ESCALATE.md",
+      "section": "S02-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S02_DIAGNOSE",
+      "on_failure": "#REC-S02_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S03_DIAGNOSE": {
+      "file": "recovery/REC-S03_DIAGNOSE.md",
+      "section": "S03-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S03_REPAIR",
+      "on_failure": "#REC-S03_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S03_REPAIR": {
+      "file": "recovery/REC-S03_REPAIR.md",
+      "section": "S03-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S03_VERIFY",
+      "on_failure": "#REC-S03_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S03_VERIFY": {
+      "file": "recovery/REC-S03_VERIFY.md",
+      "section": "S03-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S03_ESCALATE": {
+      "file": "recovery/REC-S03_ESCALATE.md",
+      "section": "S03-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S03_DIAGNOSE",
+      "on_failure": "#REC-S03_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S04_DIAGNOSE": {
+      "file": "recovery/REC-S04_DIAGNOSE.md",
+      "section": "S04-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S04_REPAIR",
+      "on_failure": "#REC-S04_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S04_REPAIR": {
+      "file": "recovery/REC-S04_REPAIR.md",
+      "section": "S04-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S04_VERIFY",
+      "on_failure": "#REC-S04_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S04_VERIFY": {
+      "file": "recovery/REC-S04_VERIFY.md",
+      "section": "S04-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S04_ESCALATE": {
+      "file": "recovery/REC-S04_ESCALATE.md",
+      "section": "S04-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S04_DIAGNOSE",
+      "on_failure": "#REC-S04_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S05_DIAGNOSE": {
+      "file": "recovery/REC-S05_DIAGNOSE.md",
+      "section": "S05-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S05_REPAIR",
+      "on_failure": "#REC-S05_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S05_REPAIR": {
+      "file": "recovery/REC-S05_REPAIR.md",
+      "section": "S05-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S05_VERIFY",
+      "on_failure": "#REC-S05_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S05_VERIFY": {
+      "file": "recovery/REC-S05_VERIFY.md",
+      "section": "S05-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S05_ESCALATE": {
+      "file": "recovery/REC-S05_ESCALATE.md",
+      "section": "S05-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S05_DIAGNOSE",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S06_DIAGNOSE": {
+      "file": "recovery/REC-S06_DIAGNOSE.md",
+      "section": "S06-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S06_REPAIR",
+      "on_failure": "#REC-S06_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S06_REPAIR": {
+      "file": "recovery/REC-S06_REPAIR.md",
+      "section": "S06-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S06_VERIFY",
+      "on_failure": "#REC-S06_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S06_VERIFY": {
+      "file": "recovery/REC-S06_VERIFY.md",
+      "section": "S06-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S06_ESCALATE": {
+      "file": "recovery/REC-S06_ESCALATE.md",
+      "section": "S06-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S06_DIAGNOSE",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S07_DIAGNOSE": {
+      "file": "recovery/REC-S07_DIAGNOSE.md",
+      "section": "S07-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S07_REPAIR",
+      "on_failure": "#REC-S07_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S07_REPAIR": {
+      "file": "recovery/REC-S07_REPAIR.md",
+      "section": "S07-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S07_VERIFY",
+      "on_failure": "#REC-S07_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S07_VERIFY": {
+      "file": "recovery/REC-S07_VERIFY.md",
+      "section": "S07-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S07_ESCALATE": {
+      "file": "recovery/REC-S07_ESCALATE.md",
+      "section": "S07-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S07_DIAGNOSE",
+      "on_failure": "#REC-S07_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S08_DIAGNOSE": {
+      "file": "recovery/REC-S08_DIAGNOSE.md",
+      "section": "S08-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S08_REPAIR",
+      "on_failure": "#REC-S08_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S08_REPAIR": {
+      "file": "recovery/REC-S08_REPAIR.md",
+      "section": "S08-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S08_VERIFY",
+      "on_failure": "#REC-S08_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S08_VERIFY": {
+      "file": "recovery/REC-S08_VERIFY.md",
+      "section": "S08-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S08_ESCALATE": {
+      "file": "recovery/REC-S08_ESCALATE.md",
+      "section": "S08-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S08_DIAGNOSE",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S09_DIAGNOSE": {
+      "file": "recovery/REC-S09_DIAGNOSE.md",
+      "section": "S09-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S09_REPAIR",
+      "on_failure": "#REC-S09_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S09_REPAIR": {
+      "file": "recovery/REC-S09_REPAIR.md",
+      "section": "S09-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S09_VERIFY",
+      "on_failure": "#REC-S09_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S09_VERIFY": {
+      "file": "recovery/REC-S09_VERIFY.md",
+      "section": "S09-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S09_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S09_ESCALATE": {
+      "file": "recovery/REC-S09_ESCALATE.md",
+      "section": "S09-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S09_DIAGNOSE",
+      "on_failure": "#REC-S09_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S10_DIAGNOSE": {
+      "file": "recovery/REC-S10_DIAGNOSE.md",
+      "section": "S10-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S10_REPAIR",
+      "on_failure": "#REC-S10_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S10_REPAIR": {
+      "file": "recovery/REC-S10_REPAIR.md",
+      "section": "S10-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S10_VERIFY",
+      "on_failure": "#REC-S10_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S10_VERIFY": {
+      "file": "recovery/REC-S10_VERIFY.md",
+      "section": "S10-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S10_ESCALATE": {
+      "file": "recovery/REC-S10_ESCALATE.md",
+      "section": "S10-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S10_DIAGNOSE",
+      "on_failure": "#REC-S10_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S11_DIAGNOSE": {
+      "file": "recovery/REC-S11_DIAGNOSE.md",
+      "section": "S11-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S11_REPAIR",
+      "on_failure": "#REC-S11_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S11_REPAIR": {
+      "file": "recovery/REC-S11_REPAIR.md",
+      "section": "S11-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S11_VERIFY",
+      "on_failure": "#REC-S11_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S11_VERIFY": {
+      "file": "recovery/REC-S11_VERIFY.md",
+      "section": "S11-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S11_ESCALATE": {
+      "file": "recovery/REC-S11_ESCALATE.md",
+      "section": "S11-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S11_DIAGNOSE",
+      "on_failure": "#REC-S11_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S12_DIAGNOSE": {
+      "file": "recovery/REC-S12_DIAGNOSE.md",
+      "section": "S12-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S12_REPAIR",
+      "on_failure": "#REC-S12_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S12_REPAIR": {
+      "file": "recovery/REC-S12_REPAIR.md",
+      "section": "S12-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S12_VERIFY",
+      "on_failure": "#REC-S12_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S12_VERIFY": {
+      "file": "recovery/REC-S12_VERIFY.md",
+      "section": "S12-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S12_ESCALATE": {
+      "file": "recovery/REC-S12_ESCALATE.md",
+      "section": "S12-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S12_DIAGNOSE",
+      "on_failure": "#REC-S12_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S13_DIAGNOSE": {
+      "file": "recovery/REC-S13_DIAGNOSE.md",
+      "section": "S13-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S13_REPAIR",
+      "on_failure": "#REC-S13_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S13_REPAIR": {
+      "file": "recovery/REC-S13_REPAIR.md",
+      "section": "S13-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S13_VERIFY",
+      "on_failure": "#REC-S13_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S13_VERIFY": {
+      "file": "recovery/REC-S13_VERIFY.md",
+      "section": "S13-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S13_ESCALATE": {
+      "file": "recovery/REC-S13_ESCALATE.md",
+      "section": "S13-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S13_DIAGNOSE",
+      "on_failure": "#REC-S13_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S14_DIAGNOSE": {
+      "file": "recovery/REC-S14_DIAGNOSE.md",
+      "section": "S14-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S14_REPAIR",
+      "on_failure": "#REC-S14_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S14_REPAIR": {
+      "file": "recovery/REC-S14_REPAIR.md",
+      "section": "S14-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S14_VERIFY",
+      "on_failure": "#REC-S14_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S14_VERIFY": {
+      "file": "recovery/REC-S14_VERIFY.md",
+      "section": "S14-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S14_ESCALATE": {
+      "file": "recovery/REC-S14_ESCALATE.md",
+      "section": "S14-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S14_DIAGNOSE",
+      "on_failure": "#REC-S14_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S15_DIAGNOSE": {
+      "file": "recovery/REC-S15_DIAGNOSE.md",
+      "section": "S15-REC",
+      "title": "Recovery diagnose",
+      "on_success": "#REC-S15_REPAIR",
+      "on_failure": "#REC-S15_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S15_REPAIR": {
+      "file": "recovery/REC-S15_REPAIR.md",
+      "section": "S15-REC",
+      "title": "Recovery repair",
+      "on_success": "#REC-S15_VERIFY",
+      "on_failure": "#REC-S15_ESCALATE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S15_VERIFY": {
+      "file": "recovery/REC-S15_VERIFY.md",
+      "section": "S15-REC",
+      "title": "Recovery verify",
+      "on_success": "#RETURN_TO_FAILED",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": true,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#REC-S15_ESCALATE": {
+      "file": "recovery/REC-S15_ESCALATE.md",
+      "section": "S15-REC",
+      "title": "Recovery escalate",
+      "on_success": "#REC-S15_DIAGNOSE",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "dynamic_return_on_success": false,
+      "brd": [
+        "Recovery branch (Step Functions catcher)"
+      ]
+    },
+    "#BEGIN": {
+      "file": "BEGIN_HERE.md",
+      "section": "BOOT",
+      "title": "Begin",
+      "on_success": "#S00-01_TOOLING_INVENTORY",
+      "on_failure": "#REC-BOOT_DIAGNOSE",
+      "max_attempts": 1,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Entry point"
+      ]
+    }
+  }
+}

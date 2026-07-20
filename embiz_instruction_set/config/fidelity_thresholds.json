@@ -1,0 +1,8 @@
+{
+  "silhouette_iou_min": 0.80,
+  "proportion_error_max": 0.10,
+  "scale_ratio_min": 0.75,
+  "scale_ratio_max": 1.25,
+  "intent_score_min": 0.80,
+  "notes": "Tunable via historical learning. A candidate SVG/PES may only pass the visual-fidelity attestation gate when every metric is within these bounds AND the mandated confirmation sentence is present in the evidence."
+}

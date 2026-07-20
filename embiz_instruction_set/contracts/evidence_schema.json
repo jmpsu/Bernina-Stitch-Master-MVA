@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EMBIZ step evidence artifact",
+  "type": "object",
+  "required": ["step", "commands", "stdout", "changed_files", "predicate_results"],
+  "additionalProperties": true,
+  "properties": {
+    "step": {"type": "string", "pattern": "^#"},
+    "classification": {"type": "string", "enum": ["SUCCESS", "FAILURE"]},
+    "inspect_only": {"type": "boolean"},
+    "commands": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "stdout": {"type": "string"},
+    "stderr": {"type": "string"},
+    "changed_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": {"type": "string"},
+          "lines": {"type": "string"},
+          "excerpt": {"type": "string"}
+        }
+      }
+    },
+    "predicate_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["predicate", "passed"],
+        "properties": {
+          "predicate": {"type": "string"},
+          "passed": {"type": "boolean"},
+          "detail": {"type": "string"}
+        }
+      }
+    },
+    "binary_answers": {"type": "object"}
+  }
+}

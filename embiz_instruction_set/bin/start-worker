@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# start-worker — initialize the supervised loop and print the first step to open.
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$DIR"
+python3 engine/generate_steps.py
+python3 engine/supervisor.py --init
+python3 engine/supervisor.py --current
+echo
+echo "Open the file printed above (OPEN_THIS_FILE=...) and execute exactly one step."
+echo "Then run: python3 engine/supervisor.py --resolve '<STEP>' --classification <SUCCESS|FAILURE>"
