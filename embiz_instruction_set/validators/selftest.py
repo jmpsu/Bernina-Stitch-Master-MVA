@@ -57,12 +57,16 @@ def main() -> int:
                 t2bad.append(s)
     ok(not t2bad, f"T2 pipeline failures route to section DIAGNOSE (bad={t2bad[:5]})")
 
-    # T3 closed loop: last pipeline step loops back into idle work
-    last = "#S15-10_GLOBAL_PRINCIPLES_AUDIT"
-    ok(last in steps and steps[last]["on_success"] == "#S14-08_IDLE_EXPERIMENTATION",
-       "T3 pipeline end loops back into never-idle work")
-    ok(steps["#S14-09_CONTINUE_AS_NEW"]["on_success"] == "#S15-01_PRODUCTION_READINESS_GATE"
-       or steps["#S14-08_IDLE_EXPERIMENTATION"]["on_success"].startswith("#S14-09"),
+    # T3 closed loop: the highest-numbered pipeline step loops back into idle work.
+    import re as _re
+    def _key(sid):
+        m = _re.match(r"#S(\d\d)-(\d\d)_", sid)
+        return (int(m.group(1)), int(m.group(2))) if m else (-1, -1)
+    pipeline = [s for s in steps if _re.match(r"#S\d\d-\d\d_", s)]
+    last = max(pipeline, key=_key)
+    ok(steps[last]["on_success"] == "#S14-08_IDLE_EXPERIMENTATION",
+       f"T3 pipeline end ({last}) loops back into never-idle work")
+    ok(steps["#S14-08_IDLE_EXPERIMENTATION"]["on_success"].startswith("#S14-09"),
        "T3b idle experimentation advances within the loop")
 
     # T4 recovery VERIFY dynamic return
@@ -125,6 +129,40 @@ def main() -> int:
     # T10 hash chain verifies (may be empty -> OK)
     import hash_chain as hc  # noqa: E402
     ok(hc.verify_chain(), "T10 hash chain verifies")
+
+    # T11 the three mandatory visual-fidelity attestation gates exist and route.
+    gates = ["#S05-08_VISUAL_FIDELITY_ATTESTATION_SVG",
+             "#S06-01_VISUAL_FIDELITY_ATTESTATION_PRESTITCH"]
+    export_gate = [s for s in steps if s.endswith("_VISUAL_FIDELITY_ATTESTATION_EXPORT")]
+    ok(all(g in steps for g in gates) and export_gate,
+       f"T11 fidelity gates present (svg/prestitch/export={export_gate[:1]})")
+
+    # T12 fidelity gates come BEFORE their downstream (SVG gate before stitch planning).
+    ok(_key("#S05-08_VISUAL_FIDELITY_ATTESTATION_SVG") < _key("#S06-01_VISUAL_FIDELITY_ATTESTATION_PRESTITCH"),
+       "T12 SVG fidelity gate precedes stitch planning")
+
+    # T13 attestation validator rejects a recited sentence with no metrics, accepts a full one.
+    sys.path.insert(0, os.path.join(ROOT, "validators"))
+    import fidelity_attestation as fa  # noqa: E402
+    bad_att = {"attestation": "I HAVE REVIEWED logo.svg and can confirm they preserve "
+               "consistent silhouette, proportions, recognizable artistic intent, and "
+               "relative scale with the customer source image",
+               "attested_files": ["logo.svg"]}  # no fidelity_metrics
+    okr, _ = fa.verify_attestation(bad_att)
+    ok(not okr, "T13 attestation rejected when metrics are absent")
+    good_att = dict(bad_att, fidelity_metrics={"silhouette_iou": 0.9, "proportion_error": 0.03,
+                    "scale_ratio": 1.02, "intent_score": 0.9, "errors": []})
+    okr2, probs2 = fa.verify_attestation(good_att)
+    ok(okr2, f"T13b attestation accepted when verbatim + passing metrics present ({probs2})")
+
+    # T14 knowledge-object-library + deploy steps exist.
+    for need in ["#S01-11_KB_BUILD_LIBRARY", "#S15-10_DEPLOY_TO_RUNTIME"]:
+        ok(need in steps, f"T14 required step present: {need}")
+
+    # T15 the new engine/validator modules exist and compile.
+    for mod in ["engine/kb_build.py", "engine/fidelity_compare.py",
+                "validators/fidelity_attestation.py"]:
+        ok(os.path.exists(os.path.join(ROOT, mod)), f"T15 module present: {mod}")
 
     print(f"\nSELFTEST: {'ALL PASS' if not FAILS else 'FAILURES: ' + str(FAILS)}")
     return 0 if not FAILS else 1

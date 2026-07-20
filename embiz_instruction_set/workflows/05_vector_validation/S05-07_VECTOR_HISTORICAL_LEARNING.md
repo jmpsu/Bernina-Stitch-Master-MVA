@@ -4,7 +4,7 @@
 ## ROUTING HEADER
 - STEP: #S05-07_VECTOR_HISTORICAL_LEARNING
 - FILE: workflows/05_vector_validation/S05-07_VECTOR_HISTORICAL_LEARNING.md
-- ON SUCCESS →: #S06-01_SVG_VALIDATION_DIGITIZE @ workflows/06_stitch_planning/S06-01_SVG_VALIDATION_DIGITIZE.md
+- ON SUCCESS →: #S05-08_VISUAL_FIDELITY_ATTESTATION_SVG @ workflows/05_vector_validation/S05-08_VISUAL_FIDELITY_ATTESTATION_SVG.md
 - ON FAILURE →: #REC-S05_DIAGNOSE @ recovery/REC-S05_DIAGNOSE.md
 - SECTION: S05 — Vector Validation & Ranking
 - ATTEMPT LEDGER: state/attempts.jsonl (key = #S05-07_VECTOR_HISTORICAL_LEARNING)
@@ -48,7 +48,7 @@ PY
 
 ## EXECUTION CONTRACT (recite clauses 1–10 from authority/00_MASTER_CONTRACT.md)
 1. State the hash-tagged name of this step: #S05-07_VECTOR_HISTORICAL_LEARNING.
-2. State the SUCCESS route: #S06-01_SVG_VALIDATION_DIGITIZE @ workflows/06_stitch_planning/S06-01_SVG_VALIDATION_DIGITIZE.md.
+2. State the SUCCESS route: #S05-08_VISUAL_FIDELITY_ATTESTATION_SVG @ workflows/05_vector_validation/S05-08_VISUAL_FIDELITY_ATTESTATION_SVG.md.
 3. State the FAILURE route: #REC-S05_DIAGNOSE @ recovery/REC-S05_DIAGNOSE.md.
 4. State the immediate objective of this step in your own words (1–2 sentences).
 5. State the overall objective of this section in your own words (1–2 sentences).

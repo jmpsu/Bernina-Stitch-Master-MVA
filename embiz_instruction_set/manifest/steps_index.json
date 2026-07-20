@@ -1,7 +1,7 @@
 {
   "version": 1,
   "first_step": "#S00-01_TOOLING_INVENTORY",
-  "count": 219,
+  "count": 228,
   "steps": {
     "#S00-01_TOOLING_INVENTORY": {
       "file": "workflows/00_bootstrap_environment/S00-01_TOOLING_INVENTORY.md",
@@ -208,7 +208,7 @@
       "file": "workflows/01_knowledge_library/S01-09_KNOWLEDGE_GRAPH.md",
       "section": "S01",
       "title": "Knowledge Graph Construction",
-      "on_success": "#S02-01_INTAKE_SOURCES",
+      "on_success": "#S01-10_KB_SOURCES_INVENTORY",
       "on_failure": "#REC-S01_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -216,6 +216,71 @@
       "brd": [
         "Knowledge graph construction (core capability)",
         "Knowledge graph integration"
+      ]
+    },
+    "#S01-10_KB_SOURCES_INVENTORY": {
+      "file": "workflows/01_knowledge_library/S01-10_KB_SOURCES_INVENTORY.md",
+      "section": "S01",
+      "title": "Knowledge-Object Source Inventory (web archive + PDFs)",
+      "on_success": "#S01-11_KB_BUILD_LIBRARY",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": true,
+      "gate": false,
+      "brd": [
+        "Knowledge Sources (HTML sites, PDFs, image collections, diagrams, screenshots); new knowledge object library from all provided HTML sites and PDFs"
+      ]
+    },
+    "#S01-11_KB_BUILD_LIBRARY": {
+      "file": "workflows/01_knowledge_library/S01-11_KB_BUILD_LIBRARY.md",
+      "section": "S01",
+      "title": "Build the New Knowledge Object Library",
+      "on_success": "#S01-12_KB_PDF_EXTRACTION_VERIFY",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Knowledge Ingestion (native text extraction, OCR, metadata, semantic indexing); copy/derive from example stores however best suits new library"
+      ]
+    },
+    "#S01-12_KB_PDF_EXTRACTION_VERIFY": {
+      "file": "workflows/01_knowledge_library/S01-12_KB_PDF_EXTRACTION_VERIFY.md",
+      "section": "S01",
+      "title": "Verify PDF Extraction Quality",
+      "on_success": "#S01-13_KB_VISUAL_CAPTIONS",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "PDFs ingested (Bernina B700 manual, Inkscape/Ink-Stitch/Potrace/SVG tutorials, setup sheets)"
+      ]
+    },
+    "#S01-13_KB_VISUAL_CAPTIONS": {
+      "file": "workflows/01_knowledge_library/S01-13_KB_VISUAL_CAPTIONS.md",
+      "section": "S01",
+      "title": "Visual Assets & Captions Store",
+      "on_success": "#S01-14_KB_RETRIEVAL_BIND",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Visual Knowledge Extraction / Visual Semantics; visual_captions store for images/diagrams/rendered SVGs/PDF figures/source-vs-output comparison"
+      ]
+    },
+    "#S01-14_KB_RETRIEVAL_BIND": {
+      "file": "workflows/01_knowledge_library/S01-14_KB_RETRIEVAL_BIND.md",
+      "section": "S01",
+      "title": "Bind Retrieval to the New Library",
+      "on_success": "#S02-01_INTAKE_SOURCES",
+      "on_failure": "#REC-S01_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Primary all-agent retrieval corpus is the global multimodal store; specialist corpora for B700 / Ink-Stitch / visual semantics"
       ]
     },
     "#S02-01_INTAKE_SOURCES": {
@@ -739,7 +804,7 @@
       "file": "workflows/05_vector_validation/S05-07_VECTOR_HISTORICAL_LEARNING.md",
       "section": "S05",
       "title": "Vectorization Historical Learning",
-      "on_success": "#S06-01_SVG_VALIDATION_DIGITIZE",
+      "on_success": "#S05-08_VISUAL_FIDELITY_ATTESTATION_SVG",
       "on_failure": "#REC-S05_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -748,11 +813,37 @@
         "Historical Learning (vector): parameter selections/winning/failed/metrics/decision traces/regression"
       ]
     },
-    "#S06-01_SVG_VALIDATION_DIGITIZE": {
-      "file": "workflows/06_stitch_planning/S06-01_SVG_VALIDATION_DIGITIZE.md",
+    "#S05-08_VISUAL_FIDELITY_ATTESTATION_SVG": {
+      "file": "workflows/05_vector_validation/S05-08_VISUAL_FIDELITY_ATTESTATION_SVG.md",
+      "section": "S05",
+      "title": "MANDATORY Visual-Fidelity Attestation (SVG vs source)",
+      "on_success": "#S06-01_VISUAL_FIDELITY_ATTESTATION_PRESTITCH",
+      "on_failure": "#REC-S05_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "CRITICAL: agent MUST verbally confirm the SVG preserves silhouette/proportions/intent/scale vs the customer source image BEFORE positing a finished vectorized SVG (visual-fidelity mandate)"
+      ]
+    },
+    "#S06-01_VISUAL_FIDELITY_ATTESTATION_PRESTITCH": {
+      "file": "workflows/06_stitch_planning/S06-01_VISUAL_FIDELITY_ATTESTATION_PRESTITCH.md",
+      "section": "S06",
+      "title": "MANDATORY Visual-Fidelity Attestation (pre-stitch)",
+      "on_success": "#S06-02_SVG_VALIDATION_DIGITIZE",
+      "on_failure": "#REC-S06_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "CRITICAL: agent MUST verbally confirm fidelity vs the customer source image BEFORE creating embroidery stitch plans from the SVG (visual-fidelity mandate)"
+      ]
+    },
+    "#S06-02_SVG_VALIDATION_DIGITIZE": {
+      "file": "workflows/06_stitch_planning/S06-02_SVG_VALIDATION_DIGITIZE.md",
       "section": "S06",
       "title": "Pre-Digitization SVG Validation",
-      "on_success": "#S06-02_EMBROIDERY_SUITABILITY",
+      "on_success": "#S06-03_EMBROIDERY_SUITABILITY",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -762,11 +853,11 @@
         "SVG validation functions correctly"
       ]
     },
-    "#S06-02_EMBROIDERY_SUITABILITY": {
-      "file": "workflows/06_stitch_planning/S06-02_EMBROIDERY_SUITABILITY.md",
+    "#S06-03_EMBROIDERY_SUITABILITY": {
+      "file": "workflows/06_stitch_planning/S06-03_EMBROIDERY_SUITABILITY.md",
       "section": "S06",
       "title": "Embroidery Suitability Analysis",
-      "on_success": "#S06-03_LAYER_ANALYSIS",
+      "on_success": "#S06-04_LAYER_ANALYSIS",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -775,11 +866,11 @@
         "Embroidery Suitability Analysis (feature/density/satin/fill/running/pull/push/break/registration/complexity)"
       ]
     },
-    "#S06-03_LAYER_ANALYSIS": {
-      "file": "workflows/06_stitch_planning/S06-03_LAYER_ANALYSIS.md",
+    "#S06-04_LAYER_ANALYSIS": {
+      "file": "workflows/06_stitch_planning/S06-04_LAYER_ANALYSIS.md",
       "section": "S06",
       "title": "Layer Analysis",
-      "on_success": "#S06-04_OBJECT_CLASSIFICATION",
+      "on_success": "#S06-05_OBJECT_CLASSIFICATION",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -788,11 +879,11 @@
         "Digitization Pipeline > Layer analysis"
       ]
     },
-    "#S06-04_OBJECT_CLASSIFICATION": {
-      "file": "workflows/06_stitch_planning/S06-04_OBJECT_CLASSIFICATION.md",
+    "#S06-05_OBJECT_CLASSIFICATION": {
+      "file": "workflows/06_stitch_planning/S06-05_OBJECT_CLASSIFICATION.md",
       "section": "S06",
       "title": "Object Classification",
-      "on_success": "#S06-05_STITCH_STRATEGY_SELECT",
+      "on_success": "#S06-06_STITCH_STRATEGY_SELECT",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -801,11 +892,11 @@
         "Object Classification (satin/fill/running/bean/lettering/border/decorative/underlay/travel)"
       ]
     },
-    "#S06-05_STITCH_STRATEGY_SELECT": {
-      "file": "workflows/06_stitch_planning/S06-05_STITCH_STRATEGY_SELECT.md",
+    "#S06-06_STITCH_STRATEGY_SELECT": {
+      "file": "workflows/06_stitch_planning/S06-06_STITCH_STRATEGY_SELECT.md",
       "section": "S06",
       "title": "Stitch Strategy Selection",
-      "on_success": "#S06-06_UNDERLAY_PLANNING",
+      "on_success": "#S06-07_UNDERLAY_PLANNING",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -814,11 +905,11 @@
         "Stitch Strategy Selection (satin/tatami/running/triple/bean/motif/decorative/underlay)"
       ]
     },
-    "#S06-06_UNDERLAY_PLANNING": {
-      "file": "workflows/06_stitch_planning/S06-06_UNDERLAY_PLANNING.md",
+    "#S06-07_UNDERLAY_PLANNING": {
+      "file": "workflows/06_stitch_planning/S06-07_UNDERLAY_PLANNING.md",
       "section": "S06",
       "title": "Underlay Planning",
-      "on_success": "#S06-07_PULL_COMPENSATION",
+      "on_success": "#S06-08_PULL_COMPENSATION",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -827,11 +918,11 @@
         "Underlay Planning (edge walk/center walk/zig-zag/tatami/double/combinations)"
       ]
     },
-    "#S06-07_PULL_COMPENSATION": {
-      "file": "workflows/06_stitch_planning/S06-07_PULL_COMPENSATION.md",
+    "#S06-08_PULL_COMPENSATION": {
+      "file": "workflows/06_stitch_planning/S06-08_PULL_COMPENSATION.md",
       "section": "S06",
       "title": "Pull Compensation",
-      "on_success": "#S06-08_SATIN_GENERATION",
+      "on_success": "#S06-09_SATIN_GENERATION",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -840,11 +931,11 @@
         "Pull Compensation (direction/material/density/geometry/width/fill/history)"
       ]
     },
-    "#S06-08_SATIN_GENERATION": {
-      "file": "workflows/06_stitch_planning/S06-08_SATIN_GENERATION.md",
+    "#S06-09_SATIN_GENERATION": {
+      "file": "workflows/06_stitch_planning/S06-09_SATIN_GENERATION.md",
       "section": "S06",
       "title": "Satin Column Generation",
-      "on_success": "#S06-09_FILL_GENERATION",
+      "on_success": "#S06-10_FILL_GENERATION",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -853,11 +944,11 @@
         "Satin generation, Satin column planning, Rail direction validation"
       ]
     },
-    "#S06-09_FILL_GENERATION": {
-      "file": "workflows/06_stitch_planning/S06-09_FILL_GENERATION.md",
+    "#S06-10_FILL_GENERATION": {
+      "file": "workflows/06_stitch_planning/S06-10_FILL_GENERATION.md",
       "section": "S06",
       "title": "Fill Generation",
-      "on_success": "#S06-10_RUNNING_STITCH_GENERATION",
+      "on_success": "#S06-11_RUNNING_STITCH_GENERATION",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -866,11 +957,11 @@
         "Fill generation, Stitch strategies > Tatami/Motif/Decorative fill"
       ]
     },
-    "#S06-10_RUNNING_STITCH_GENERATION": {
-      "file": "workflows/06_stitch_planning/S06-10_RUNNING_STITCH_GENERATION.md",
+    "#S06-11_RUNNING_STITCH_GENERATION": {
+      "file": "workflows/06_stitch_planning/S06-11_RUNNING_STITCH_GENERATION.md",
       "section": "S06",
       "title": "Running/Bean Stitch Generation",
-      "on_success": "#S06-11_TRAVEL_OPTIMIZATION",
+      "on_success": "#S06-12_TRAVEL_OPTIMIZATION",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -879,11 +970,11 @@
         "Running stitch generation, Triple running, Bean stitch"
       ]
     },
-    "#S06-11_TRAVEL_OPTIMIZATION": {
-      "file": "workflows/06_stitch_planning/S06-11_TRAVEL_OPTIMIZATION.md",
+    "#S06-12_TRAVEL_OPTIMIZATION": {
+      "file": "workflows/06_stitch_planning/S06-12_TRAVEL_OPTIMIZATION.md",
       "section": "S06",
       "title": "Travel/Jump Optimization",
-      "on_success": "#S06-12_TRIM_OPTIMIZATION",
+      "on_success": "#S06-13_TRIM_OPTIMIZATION",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -892,11 +983,11 @@
         "Stitch Optimization (travel/trim/jump reduction, ordering, efficiency)"
       ]
     },
-    "#S06-12_TRIM_OPTIMIZATION": {
-      "file": "workflows/06_stitch_planning/S06-12_TRIM_OPTIMIZATION.md",
+    "#S06-13_TRIM_OPTIMIZATION": {
+      "file": "workflows/06_stitch_planning/S06-13_TRIM_OPTIMIZATION.md",
       "section": "S06",
       "title": "Trim Command Insertion & Optimization",
-      "on_success": "#S06-13_COLOR_SEQUENCING",
+      "on_success": "#S06-14_COLOR_SEQUENCING",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -905,11 +996,11 @@
         "Trim command insertion, Trim reduction/optimization"
       ]
     },
-    "#S06-13_COLOR_SEQUENCING": {
-      "file": "workflows/06_stitch_planning/S06-13_COLOR_SEQUENCING.md",
+    "#S06-14_COLOR_SEQUENCING": {
+      "file": "workflows/06_stitch_planning/S06-14_COLOR_SEQUENCING.md",
       "section": "S06",
       "title": "Color Block Sequencing",
-      "on_success": "#S06-14_STITCH_PLAN_ARTIFACT",
+      "on_success": "#S06-15_STITCH_PLAN_ARTIFACT",
       "on_failure": "#REC-S06_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -918,8 +1009,8 @@
         "Color block optimization, Color sequencing, Color ordering"
       ]
     },
-    "#S06-14_STITCH_PLAN_ARTIFACT": {
-      "file": "workflows/06_stitch_planning/S06-14_STITCH_PLAN_ARTIFACT.md",
+    "#S06-15_STITCH_PLAN_ARTIFACT": {
+      "file": "workflows/06_stitch_planning/S06-15_STITCH_PLAN_ARTIFACT.md",
       "section": "S06",
       "title": "Canonical Stitch Plan Artifact",
       "on_success": "#S07-01_INKSTITCH_PATH_CONFIRM",
@@ -1176,7 +1267,7 @@
       "file": "workflows/08_production_export/S08-07_EXPORT_METADATA.md",
       "section": "S08",
       "title": "Export Production Metadata",
-      "on_success": "#S08-08_EXPORT_ARTIFACTS_REGISTER",
+      "on_success": "#S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT",
       "on_failure": "#REC-S08_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -1185,8 +1276,21 @@
         "Every export shall preserve Artwork dimensions/Stitch integrity/Color sequence/Production metadata"
       ]
     },
-    "#S08-08_EXPORT_ARTIFACTS_REGISTER": {
-      "file": "workflows/08_production_export/S08-08_EXPORT_ARTIFACTS_REGISTER.md",
+    "#S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT": {
+      "file": "workflows/08_production_export/S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT.md",
+      "section": "S08",
+      "title": "MANDATORY Visual-Fidelity Attestation (SVG + PES vs source)",
+      "on_success": "#S08-09_EXPORT_ARTIFACTS_REGISTER",
+      "on_failure": "#REC-S08_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "CRITICAL: agent MUST verbally confirm 'I HAVE REVIEWED xxxx.svg and xxxy.pes ... preserve consistent silhouette, proportions, recognizable artistic intent, and relative scale with the customer source image' BEFORE finalizing embroidery output (visual-fidelity mandate)"
+      ]
+    },
+    "#S08-09_EXPORT_ARTIFACTS_REGISTER": {
+      "file": "workflows/08_production_export/S08-09_EXPORT_ARTIFACTS_REGISTER.md",
       "section": "S08",
       "title": "Register Export Artifacts",
       "on_success": "#S09-01_JOB_STATUS_API",
@@ -1969,7 +2073,7 @@
       "file": "workflows/15_production_readiness/S15-09_GIT_CICD.md",
       "section": "S15",
       "title": "Git-Based CI/CD",
-      "on_success": "#S15-10_GLOBAL_PRINCIPLES_AUDIT",
+      "on_success": "#S15-10_DEPLOY_TO_RUNTIME",
       "on_failure": "#REC-S15_DIAGNOSE",
       "max_attempts": 3,
       "inspect_only": false,
@@ -1978,8 +2082,21 @@
         "Git-based continuous integration and continuous deployment; Large Heredoc Command Risk mitigation; py_compile before restart"
       ]
     },
-    "#S15-10_GLOBAL_PRINCIPLES_AUDIT": {
-      "file": "workflows/15_production_readiness/S15-10_GLOBAL_PRINCIPLES_AUDIT.md",
+    "#S15-10_DEPLOY_TO_RUNTIME": {
+      "file": "workflows/15_production_readiness/S15-10_DEPLOY_TO_RUNTIME.md",
+      "section": "S15",
+      "title": "Deploy to VPS Runtime Root",
+      "on_success": "#S15-11_GLOBAL_PRINCIPLES_AUDIT",
+      "on_failure": "#REC-S15_DIAGNOSE",
+      "max_attempts": 3,
+      "inspect_only": false,
+      "gate": false,
+      "brd": [
+        "Runtime requirement: the system must live and run on the VPS at /root/projects/embiz; Repeatable/automated deployment"
+      ]
+    },
+    "#S15-11_GLOBAL_PRINCIPLES_AUDIT": {
+      "file": "workflows/15_production_readiness/S15-11_GLOBAL_PRINCIPLES_AUDIT.md",
       "section": "S15",
       "title": "Global Engineering Principles Audit",
       "on_success": "#S14-08_IDLE_EXPERIMENTATION",

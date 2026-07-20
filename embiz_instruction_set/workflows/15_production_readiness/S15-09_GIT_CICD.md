@@ -4,7 +4,7 @@
 ## ROUTING HEADER
 - STEP: #S15-09_GIT_CICD
 - FILE: workflows/15_production_readiness/S15-09_GIT_CICD.md
-- ON SUCCESS →: #S15-10_GLOBAL_PRINCIPLES_AUDIT @ workflows/15_production_readiness/S15-10_GLOBAL_PRINCIPLES_AUDIT.md
+- ON SUCCESS →: #S15-10_DEPLOY_TO_RUNTIME @ workflows/15_production_readiness/S15-10_DEPLOY_TO_RUNTIME.md
 - ON FAILURE →: #REC-S15_DIAGNOSE @ recovery/REC-S15_DIAGNOSE.md
 - SECTION: S15 — Production Readiness, Deployment & CI/CD
 - ATTEMPT LEDGER: state/attempts.jsonl (key = #S15-09_GIT_CICD)
@@ -49,7 +49,7 @@ PY
 
 ## EXECUTION CONTRACT (recite clauses 1–10 from authority/00_MASTER_CONTRACT.md)
 1. State the hash-tagged name of this step: #S15-09_GIT_CICD.
-2. State the SUCCESS route: #S15-10_GLOBAL_PRINCIPLES_AUDIT @ workflows/15_production_readiness/S15-10_GLOBAL_PRINCIPLES_AUDIT.md.
+2. State the SUCCESS route: #S15-10_DEPLOY_TO_RUNTIME @ workflows/15_production_readiness/S15-10_DEPLOY_TO_RUNTIME.md.
 3. State the FAILURE route: #REC-S15_DIAGNOSE @ recovery/REC-S15_DIAGNOSE.md.
 4. State the immediate objective of this step in your own words (1–2 sentences).
 5. State the overall objective of this section in your own words (1–2 sentences).

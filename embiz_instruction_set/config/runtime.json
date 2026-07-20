@@ -1,0 +1,12 @@
+{
+  "runtime_root": "/root/projects/embiz",
+  "instruction_set_subdir": "embiz_instruction_set",
+  "knowledge_object_library_dir": "/root/projects/embiz/knowledge_object_library",
+  "notes": [
+    "This system is intended to LIVE and RUN on the VPS under runtime_root.",
+    "The engine is path-independent (paths resolve relative to each file), so the",
+    "tree can be cloned/copied to runtime_root and run in place.",
+    "Deploy with bin/deploy-to-vps (see RUNTIME.md). The deploy + knowledge-build",
+    "steps execute ON the VPS where the source archives below actually exist."
+  ]
+}

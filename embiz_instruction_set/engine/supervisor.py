@@ -77,6 +77,22 @@ def cmd_resolve(step_id: str, classification: str) -> int:
     evidence_path = os.path.join(ROOT, "evidence", step_id.lstrip("#") + ".json")
     verified, problems = ev.verify(evidence_path)
 
+    # Mandatory visual-fidelity gate: attestation steps must carry the verbatim
+    # confirmation sentence backed by REAL passing metrics, or they cannot pass.
+    if "VISUAL_FIDELITY" in step_id and os.path.exists(evidence_path):
+        try:
+            sys.path.insert(0, os.path.join(ROOT, "validators"))
+            import fidelity_attestation as fa  # noqa: E402
+            ev_obj = json.load(open(evidence_path))
+            att_ok, att_probs = fa.verify_attestation(ev_obj)
+            if not att_ok:
+                verified = False
+                problems = (problems or []) + ["visual-fidelity attestation rejected: "
+                                               + "; ".join(att_probs)]
+        except Exception as exc:  # noqa: BLE001
+            verified = False
+            problems = (problems or []) + [f"attestation validator error: {exc}"]
+
     # A claimed SUCCESS with unverifiable evidence is mechanically downgraded.
     effective = classification
     if classification == "SUCCESS" and not verified:

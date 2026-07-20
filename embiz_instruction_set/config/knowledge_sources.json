@@ -1,0 +1,45 @@
+{
+  "description": "Source roots for building the NEW knowledge object library on the VPS. Paths are on the VPS (root@vmi3178359). The kb_build.py builder ingests HTML + PDF (and imports existing global stores) into runtime knowledge_object_library/.",
+  "primary_archive_root": "/root/web-archive/ai_agents_skills_library",
+  "backup_sorted_root": "/root/web-archive/ai_agents_skills_library_BACKUP_VERIFIED_SORT",
+  "focused_raster_to_svg_export": "/root/EMBIZ_EXPORTS/embiz_raster_pixel_to_svg_only_20260628_211609/library",
+  "portable_export_root": "/root/EMBIZ_EXPORTS/embiz_ai_agents_skills_library_portable_20260628_205844/library",
+  "import_existing_global_stores": [
+    "/root/web-archive/ai_agents_skills_library/global_knowledge_objects.multimodal.jsonl",
+    "/root/web-archive/ai_agents_skills_library/global_knowledge_objects.clean.jsonl",
+    "/root/web-archive/ai_agents_skills_library/global_knowledge_objects.jsonl",
+    "/root/web-archive/ai_agents_skills_library/visual_captions.jsonl",
+    "/root/web-archive/ai_agents_skills_library/embroidery_knowledge_objects.jsonl",
+    "/root/web-archive/ai_agents_skills_library/svg_topology.jsonl"
+  ],
+  "primary_multimodal_corpus": "/root/web-archive/ai_agents_skills_library/global_knowledge_objects.multimodal.jsonl",
+  "clean_text_fallback_corpus": "/root/web-archive/ai_agents_skills_library/global_knowledge_objects.clean.jsonl",
+  "visual_caption_store": "/root/web-archive/ai_agents_skills_library/visual_captions.jsonl",
+  "specialist_corpora": {
+    "bernina_b700_compatibility": "/root/web-archive/ai_agents_skills_library/15-bernina-b700-compatibility-framework/documents/knowledge_objects.jsonl",
+    "ink_stitch_documents": "/root/web-archive/ai_agents_skills_library/14-ink-stitch-automation-framework/documents/knowledge_objects.jsonl",
+    "ink_stitch_embroidery_techniques": "/root/web-archive/ai_agents_skills_library/14-ink-stitch-automation-framework/embroidery-techniques/knowledge_objects.jsonl",
+    "visual_pen_practice_templates": "/root/web-archive/ai_agents_skills_library/10-visual-knowledge-extraction-architecture/pen-practice-templates/knowledge_objects.jsonl",
+    "svg_rendering_visual_semantics": "/root/web-archive/ai_agents_skills_library/10-visual-knowledge-extraction-architecture/svg-rendering-visual-semantics/knowledge_objects.jsonl"
+  },
+  "ingest_file_globs": ["**/*.pdf", "**/*.html", "**/*.htm", "**/*.md", "**/*.txt", "**/*.json"],
+  "ingest_image_globs": ["**/*.png", "**/*.jpg", "**/*.jpeg", "**/*.svg"],
+  "output_dir": "/root/projects/embiz/knowledge_object_library",
+  "outputs": {
+    "new_objects": "knowledge_objects.jsonl",
+    "merged_global": "global_knowledge_objects.jsonl",
+    "visual_captions": "visual_captions.jsonl",
+    "manifest": "MANIFEST.json"
+  },
+  "domain_tag_hints": {
+    "bernina": "bernina-b700",
+    "ink_stitch": "ink-stitch",
+    "inkscape": "inkscape",
+    "potrace": "potrace-vectorization",
+    "svg": "svg",
+    "b700": "bernina-b700",
+    "embroider": "embroidery",
+    "stitch": "embroidery",
+    "vector": "vectorization"
+  }
+}

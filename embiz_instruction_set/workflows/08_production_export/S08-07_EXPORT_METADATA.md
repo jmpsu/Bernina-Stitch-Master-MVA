@@ -4,7 +4,7 @@
 ## ROUTING HEADER
 - STEP: #S08-07_EXPORT_METADATA
 - FILE: workflows/08_production_export/S08-07_EXPORT_METADATA.md
-- ON SUCCESS →: #S08-08_EXPORT_ARTIFACTS_REGISTER @ workflows/08_production_export/S08-08_EXPORT_ARTIFACTS_REGISTER.md
+- ON SUCCESS →: #S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT @ workflows/08_production_export/S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT.md
 - ON FAILURE →: #REC-S08_DIAGNOSE @ recovery/REC-S08_DIAGNOSE.md
 - SECTION: S08 — Production Export
 - ATTEMPT LEDGER: state/attempts.jsonl (key = #S08-07_EXPORT_METADATA)
@@ -48,7 +48,7 @@ PY
 
 ## EXECUTION CONTRACT (recite clauses 1–10 from authority/00_MASTER_CONTRACT.md)
 1. State the hash-tagged name of this step: #S08-07_EXPORT_METADATA.
-2. State the SUCCESS route: #S08-08_EXPORT_ARTIFACTS_REGISTER @ workflows/08_production_export/S08-08_EXPORT_ARTIFACTS_REGISTER.md.
+2. State the SUCCESS route: #S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT @ workflows/08_production_export/S08-08_VISUAL_FIDELITY_ATTESTATION_EXPORT.md.
 3. State the FAILURE route: #REC-S08_DIAGNOSE @ recovery/REC-S08_DIAGNOSE.md.
 4. State the immediate objective of this step in your own words (1–2 sentences).
 5. State the overall objective of this section in your own words (1–2 sentences).
