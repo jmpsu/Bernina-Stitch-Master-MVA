@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EMBIZ steps_index manifest",
+  "type": "object",
+  "required": ["version", "first_step", "count", "steps"],
+  "properties": {
+    "version": {"type": "integer"},
+    "first_step": {"type": "string", "pattern": "^#"},
+    "count": {"type": "integer"},
+    "steps": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["file", "section", "title", "on_success", "on_failure"],
+        "properties": {
+          "file": {"type": "string"},
+          "section": {"type": "string"},
+          "title": {"type": "string"},
+          "on_success": {"type": "string"},
+          "on_failure": {"type": "string"},
+          "max_attempts": {"type": "integer"},
+          "inspect_only": {"type": "boolean"},
+          "gate": {"type": "boolean"},
+          "dynamic_return_on_success": {"type": "boolean"},
+          "brd": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

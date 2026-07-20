@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# resume-worker — after a crash/restart, print the current step from durable state.
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$DIR"
+python3 engine/hash_chain.py --verify
+python3 engine/supervisor.py --current
+echo "Resume from OPEN_THIS_FILE above. Durable state was recovered from state/ + hash_chain."

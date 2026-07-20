@@ -1,0 +1,10 @@
+# Runtime state produced while the worker executes steps. The system regenerates
+# these; they are not part of the instruction set itself.
+evidence/*.json
+logs/*
+artifacts/*
+state/attempts.jsonl
+state/hash_chain.jsonl
+__pycache__/
+*.pyc
+!**/.gitkeep
