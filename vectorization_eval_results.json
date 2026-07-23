@@ -1,0 +1,68 @@
+[
+  {
+    "iteration": "e784db9",
+    "image": "order_0001_drink_v2.png",
+    "svg_path": "vectorized_svg/order_0001_drink_v2_v2.svg",
+    "silhouette_iou": 0.9852508291873964,
+    "contour_points": 24,
+    "avg_point_spacing": 91.83333333333333,
+    "bbox_iou": 1.0,
+    "area_preservation": 0.9852508291873964,
+    "complexity_score": 0.48
+  },
+  {
+    "iteration": "e784db9",
+    "image": "order_0002_img_0331.png",
+    "svg_path": "vectorized_svg/order_0002_img_0331_v2.svg",
+    "silhouette_iou": 0.915330547112462,
+    "contour_points": 4,
+    "avg_point_spacing": 568.0,
+    "bbox_iou": 1.0,
+    "area_preservation": 0.915330547112462,
+    "complexity_score": 0.08
+  },
+  {
+    "iteration": "e784db9",
+    "image": "order_0003_coastal_objects_all.png",
+    "svg_path": "vectorized_svg/order_0003_coastal_objects_all_v2.svg",
+    "silhouette_iou": 0.7044507575757576,
+    "contour_points": 36,
+    "avg_point_spacing": 64.55555555555556,
+    "bbox_iou": 1.0,
+    "area_preservation": 0.7044507575757576,
+    "complexity_score": 0.72
+  },
+  {
+    "iteration": "45b30bd",
+    "image": "order_0001_drink_v2.png",
+    "svg_path": "vectorized_svg/order_0001_drink_v2_v2.svg",
+    "silhouette_iou": 0.06324628222848057,
+    "contour_points": 73,
+    "avg_point_spacing": 17.730367974990045,
+    "bbox_iou": 0.14208768267223382,
+    "area_preservation": 0.0763331474799331,
+    "complexity_score": 1.46
+  },
+  {
+    "iteration": "45b30bd",
+    "image": "order_0002_img_0331.png",
+    "svg_path": "vectorized_svg/order_0002_img_0331_v2.svg",
+    "silhouette_iou": 0.003190981051252836,
+    "contour_points": 18,
+    "avg_point_spacing": 36.280493043686995,
+    "bbox_iou": 0.1070787377304951,
+    "area_preservation": 0.03852672796076071,
+    "complexity_score": 0.36
+  },
+  {
+    "iteration": "45b30bd",
+    "image": "order_0003_coastal_objects_all.png",
+    "svg_path": "vectorized_svg/order_0003_coastal_objects_all_v2.svg",
+    "silhouette_iou": 0.18160933623303827,
+    "contour_points": 121,
+    "avg_point_spacing": 11.830628048949736,
+    "bbox_iou": 0.7930314592181988,
+    "area_preservation": 0.2964108079042882,
+    "complexity_score": 2.0
+  }
+]

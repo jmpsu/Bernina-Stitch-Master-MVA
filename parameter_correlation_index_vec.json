@@ -128,5 +128,31 @@
     },
     "ssim_color": 0.980599,
     "updated": "2026-07-05T21:24:44Z"
+  },
+  "multicolor|c8|e2": {
+    "composite": 0.783529,
+    "features": {
+      "aspect": 5.4545,
+      "distinct_colors": 32,
+      "edge_density": 0.11081,
+      "foreground_fraction": 0.5151,
+      "height": 88,
+      "is_line_art": false,
+      "width": 480
+    },
+    "params": {
+      "color_precision": 8,
+      "colormode": "color",
+      "corner_threshold": 70,
+      "filter_speckle": 0,
+      "hierarchical": "stacked",
+      "layer_difference": 4,
+      "length_threshold": 5.0,
+      "mode": "spline",
+      "path_precision": 8,
+      "splice_threshold": 30
+    },
+    "ssim_color": 0.859613,
+    "updated": "2026-07-08T13:24:47Z"
   }
 }

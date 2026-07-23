@@ -1,0 +1,62 @@
+{
+  "object": "logo",
+  "name": "logo",
+  "width_mm": 97.1,
+  "height_mm": 76.9,
+  "height_target_mm": 76.2,
+  "height_ok": true,
+  "stitch_count": 2483,
+  "jump_count": 194,
+  "trim_count": 178,
+  "color_count": 4,
+  "thread_rgb": [
+    [
+      42,
+      79,
+      54
+    ],
+    [
+      161,
+      141,
+      115
+    ],
+    [
+      93,
+      89,
+      81
+    ],
+    [
+      241,
+      241,
+      241
+    ]
+  ],
+  "line_art": false,
+  "satin": {
+    "borders": 5,
+    "width_mm": 1.6,
+    "spacing_mm": 0.35,
+    "width_cap_mm": 7.0,
+    "width_floor_mm": 1.0,
+    "density_floor_mm": 0.35
+  },
+  "density": {
+    "cell_mm": 3.0,
+    "max_local_density_per_mm2": 1.111,
+    "limit_per_mm2": 1.2,
+    "cells_over_limit": 0,
+    "cells_total": 332,
+    "stitch_count": 2483,
+    "max_stitches_warn": 60000,
+    "stitch_count_ok": true,
+    "density_ok": true,
+    "ok": true,
+    "backoff_attempts": 1
+  },
+  "bg_removal_method": "fallback(corner+otsu)",
+  "files": {
+    "exp": "order_0002_img_0331_logo.exp",
+    "pes": "order_0002_img_0331_logo.pes",
+    "preview": "order_0002_img_0331_logo_preview.png"
+  }
+}
