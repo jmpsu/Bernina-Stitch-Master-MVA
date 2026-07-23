@@ -58,8 +58,39 @@ def posterize_aggressive(rgb: np.ndarray, max_colors: int = 8) -> np.ndarray:
     return (np.clip(rgb_out, 0, 1) * 255).astype(np.uint8)
 
 
+def rdp_simplify(points: np.ndarray, epsilon: float = 1.0) -> np.ndarray:
+    """Ramer-Douglas-Peucker contour simplification."""
+    if len(points) < 3:
+        return points
+
+    start = points[0]
+    end = points[-1]
+    dmax = 0
+    index = 0
+
+    for i in range(1, len(points) - 1):
+        # Point-to-line distance
+        line_vec = end - start
+        point_vec = points[i] - start
+        line_len = np.linalg.norm(line_vec)
+        if line_len > 0:
+            d = np.abs(line_vec[0] * point_vec[1] - line_vec[1] * point_vec[0]) / line_len
+        else:
+            d = np.linalg.norm(point_vec)
+        if d > dmax:
+            dmax = d
+            index = i
+
+    if dmax > epsilon:
+        rec1 = rdp_simplify(points[:index+1], epsilon)
+        rec2 = rdp_simplify(points[index:], epsilon)
+        return np.vstack([rec1[:-1], rec2])
+    else:
+        return np.array([start, end])
+
+
 def extract_contours(rgb: np.ndarray, min_area: int = 100) -> list[dict]:
-    """Extract contours from posterized image via connected components."""
+    """Extract actual contours from posterized image via connected components."""
     # Convert to grayscale
     gray = rgb.mean(axis=2).astype(np.uint8)
 
@@ -77,16 +108,35 @@ def extract_contours(rgb: np.ndarray, min_area: int = 100) -> list[dict]:
         if area < min_area:
             continue
 
+        # Trace actual contour using skimage
+        contours = measure.find_contours(mask.astype(float), level=0.5)
+
+        if not contours:
+            continue
+
+        # Use longest contour (outer boundary)
+        contour_pts = contours[0]
+        if len(contours) > 1:
+            contour_pts = max(contours, key=len)
+
+        # Simplify contour by decimation + RDP
+        if len(contour_pts) > 4:
+            # Decimate by keeping every nth point
+            decimated = contour_pts[::max(1, len(contour_pts) // 20)]
+            # Apply RDP simplification
+            simplified = rdp_simplify(decimated, epsilon=1.0)
+            contour_pts = simplified
+
+        # Convert from (row, col) to (x, y) and to list of lists
+        contour = [[int(x), int(y)] for y, x in contour_pts]
+
+        # Get mean color from mask
+        color = tuple(int(c) for c in rgb[mask].mean(axis=0))
+
         # Get bounding box
         rows, cols = np.where(mask)
-        y_min, y_max = rows.min(), rows.max()
         x_min, x_max = cols.min(), cols.max()
-
-        # Extract contour points (simplified: corners)
-        contour = [[x_min, y_min], [x_max, y_min], [x_max, y_max], [x_min, y_max]]
-
-        # Get mean color
-        color = tuple(int(c) for c in rgb[mask].mean(axis=0))
+        y_min, y_max = rows.min(), rows.max()
 
         regions.append({
             "contour": contour,
@@ -102,7 +152,7 @@ def extract_contours(rgb: np.ndarray, min_area: int = 100) -> list[dict]:
 
 
 def paths_to_svg(regions: list[dict], width: int, height: int) -> str:
-    """Convert regions (paths + colors) to SVG."""
+    """Convert regions (actual contours) to SVG polygon paths."""
     svg_lines = [
         f'<?xml version="1.0" encoding="UTF-8"?>',
         f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
@@ -112,21 +162,13 @@ def paths_to_svg(regions: list[dict], width: int, height: int) -> str:
 
     for region in regions:
         contour = region["contour"]
-        if not contour:
+        if not contour or len(contour) < 3:
             continue
 
-        # Path from contour points
-        points = []
-        for pt in contour:
-            if isinstance(pt, list):
-                points.append(f"{pt[0]},{pt[1]}")
-            else:
-                points.append(f"{pt[0]},{pt[1]}")
+        # Build path from contour points: M x,y L x,y ... Z
+        points_str = " L ".join(f"{int(pt[0])},{int(pt[1])}" for pt in contour)
+        path_d = f"M {points_str} Z"
 
-        if len(points) < 3:
-            continue
-
-        path_d = "M " + " L ".join(points) + " Z"
         color = region["color"]
         color_hex = f"#{color[0]:02x}{color[1]:02x}{color[2]:02x}"
 

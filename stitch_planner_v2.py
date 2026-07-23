@@ -37,9 +37,14 @@ def simplify_path(points: list[tuple], epsilon: float = 1.0) -> list[tuple]:
         # Find point with max distance from line
         line_start = pts[0]
         line_end = pts[-1]
-        dists = np.abs(
-            np.cross(line_end - line_start, line_start - pts) / np.linalg.norm(line_end - line_start)
-        )
+        line_vec = line_end - line_start
+        line_len = np.linalg.norm(line_vec)
+        if line_len > 0:
+            dists = np.abs(
+                line_vec[0] * (line_start[1] - pts[:, 1]) - line_vec[1] * (line_start[0] - pts[:, 0])
+            ) / line_len
+        else:
+            dists = np.zeros(len(pts))
         max_idx = np.argmax(dists)
         if dists[max_idx] > eps:
             return np.vstack([rdp(pts[:max_idx+1], eps), rdp(pts[max_idx:], eps)[1:]])
@@ -97,7 +102,7 @@ def generate_satin_border(
 ) -> list[tuple]:
     """Generate satin column along shape boundary."""
     # Trace boundary
-    boundary = morphology.binary_dilation(mask) ^ mask
+    boundary = morphology.dilation(mask) ^ mask
     boundary_pts = np.argwhere(boundary)
 
     if len(boundary_pts) < 2:
